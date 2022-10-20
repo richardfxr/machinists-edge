@@ -1,0 +1,23 @@
+// Partial SCSS file containing variables
+
+// === USE ====================================
+@use 'colors' as *;
+
+/* ============================================
+   VARIABLES
+   ============================================ */
+
+// === BREAKPOINTS ============================
+$breakpoint-smdesktop: 1450px;
+$breakpoint-tablet: 1250px;
+$breakpoint-mobile: 650px;
+
+:root {
+    /* === COLORS ============================= */
+
+    /* light theme (default) */
+    // parse $light into CSS variables
+    @each $name, $value in $light {
+        --clr-#{$name}: #{$value};
+    }
+}
