@@ -16,6 +16,9 @@ $breakpoint-mobile: 650px;
     /* === CSS VARIABLES ====================== */
     --max-width: 1560px;
 
+    --border-width: 1px;
+    --border: solid var(--border-width);
+
     --pad-hrz: 80px;
 
     /* === COLORS ============================= */

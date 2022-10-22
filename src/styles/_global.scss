@@ -6,3 +6,28 @@
 /* ============================================
 GLOBAL
 ============================================ */
+:global {
+    html, body {
+        background-color: var(--clr-100);
+    }
+}
+
+svg.illustration {
+    display: block;
+
+    .stroke {
+        fill: none;
+        stroke: var(--clr-900);
+        stroke-miterlimit: 10;
+
+        &.default {
+            stroke-width: 1.5;
+        }
+    }
+
+    .fill {
+        &-100 {
+            fill: var(--clr-100); 
+        }
+    }
+}
