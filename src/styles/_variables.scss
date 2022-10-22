@@ -14,7 +14,9 @@ $breakpoint-mobile: 650px;
 
 :root {
     /* === CSS VARIABLES ====================== */
-    --max-width: 1400px;
+    --max-width: 1560px;
+
+    --pad-hrz: 80px;
 
     /* === COLORS ============================= */
 
@@ -22,5 +24,27 @@ $breakpoint-mobile: 650px;
     // parse $light into CSS variables
     @each $name, $value in $light {
         --clr-#{$name}: #{$value};
+    }
+}
+
+/* === BREAKPOINTS ======================== */
+@media only screen and (max-width: $breakpoint-smdesktop) {
+    :root {
+        /* === CSS VARIABLES ====================== */
+        --pad-hrz: 50px;
+    }
+}
+
+@media only screen and (max-width: $breakpoint-tablet) {
+    :root {
+        /* === CSS VARIABLES ====================== */
+        --pad-hrz: 25px;
+    }
+}
+
+@media only screen and (max-width: $breakpoint-mobile) {
+    :root {
+        /* === CSS VARIABLES ====================== */
+        --pad-hrz: 0;
     }
 }
