@@ -13,6 +13,9 @@ $breakpoint-tablet: 1250px;
 $breakpoint-mobile: 650px;
 
 :root {
+    /* === CSS VARIABLES ====================== */
+    --max-width: 1400px;
+
     /* === COLORS ============================= */
 
     /* light theme (default) */
