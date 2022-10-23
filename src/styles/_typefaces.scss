@@ -1,0 +1,210 @@
+// Partial SCSS file containing CSS typeface styles
+
+/* ============================================
+TYPEFACES
+============================================ */
+
+/* === GENERAL SANS ======================= */
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-Extralight.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-Extralight.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-Extralight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-ExtralightItalic.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-ExtralightItalic.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-ExtralightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-Light.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-Light.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-LightItalic.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-LightItalic.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-Regular.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-Regular.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-Regular.ttf') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+        font-style: normal;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-Italic.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-Italic.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-Medium.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-Medium.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-MediumItalic.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-MediumItalic.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-Semibold.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-Semibold.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-Semibold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-SemiboldItalic.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-SemiboldItalic.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-SemiboldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-Bold.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-Bold.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GeneralSans';
+    src: url('/typefaces/GeneralSans/GeneralSans-BoldItalic.woff2') format('woff2'),
+         url('/typefaces/GeneralSans/GeneralSans-BoldItalic.woff') format('woff'),
+         url('/typefaces/GeneralSans/GeneralSans-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+    font-style: italic;
+}
+
+/* === CLASH DISPLAY ====================== */
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('/typefaces/ClashDisplay/ClashDisplay-Extralight.woff2') format('woff2'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Extralight.woff') format('woff'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Extralight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+  
+  
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('/typefaces/ClashDisplay/ClashDisplay-Light.woff2') format('woff2'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Light.woff') format('woff'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+  
+  
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('/typefaces/ClashDisplay/ClashDisplay-Regular.woff2') format('woff2'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Regular.woff') format('woff'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+  
+  
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('/typefaces/ClashDisplay/ClashDisplay-Medium.woff2') format('woff2'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Medium.woff') format('woff'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+  
+  
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('/typefaces/ClashDisplay/ClashDisplay-Semibold.woff2') format('woff2'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Semibold.woff') format('woff'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Semibold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
+  
+  
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('/typefaces/ClashDisplay/ClashDisplay-Bold.woff2') format('woff2'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Bold.woff') format('woff'),
+         url('/typefaces/ClashDisplay/ClashDisplay-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    font-style: normal;
+}
