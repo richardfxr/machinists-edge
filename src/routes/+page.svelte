@@ -8,6 +8,8 @@
 </script>
 
 
+<h1>Feed Rate Calculator</h1>
+
 <form action="" class="feedCalc">
     <div class="inputs">
 
@@ -40,7 +42,6 @@
         position: relative;
 
         border: var(--border) var(--clr-300);
-        margin-top: 100px;
         margin-bottom: 100px;
         
         .inputs {

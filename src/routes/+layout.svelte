@@ -1,3 +1,11 @@
+<script lang="ts">
+    /* === IMPORTS ============================ */
+    import Header from "$lib/header.svelte";
+</script>
+
+
+<Header />
+
 <main id="main">
     <slot></slot>
 </main>
