@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     /* === PROPS ============================== */
     export let scaleX = 1;
     export let scaleY = 1;
