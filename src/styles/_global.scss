@@ -8,8 +8,22 @@ GLOBAL
 ============================================ */
 :global {
     html, body {
+        color: var(--clr-800);
+        font-family: "GeneralSans", sans-serif;
+        font-weight: 400;
         background-color: var(--clr-100);
     }
+}
+
+h1 {
+    color: var(--clr-900);
+    font-family: "ClashDisplay", sans-serif;
+    font-size: var(--font-2xl);
+    line-height: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    padding: var(--pad-3xl) 0;
 }
 
 svg.illustration {
@@ -26,8 +40,27 @@ svg.illustration {
     }
 
     .fill {
+        &-800 {
+            fill: var(--clr-800);
+        }
+
         &-100 {
             fill: var(--clr-100); 
         }
+    }
+}
+
+/* === BREAKPOINTS ======================== */
+@media only screen and (max-width: $breakpoint-smdtablet) {
+    h1 {
+        // internal variables
+        padding: var(--pad-3xl) var(--pad-md);
+    }
+}
+
+@media only screen and (max-width: $breakpoint-mobile) {
+    h1 {
+        // internal variables
+        padding: var(--pad-3xl) 0;
     }
 }
