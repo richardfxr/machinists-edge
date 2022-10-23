@@ -67,6 +67,7 @@
 <style lang="scss">
     .tool__illus {
         // internal varaibles
+        --_width: 180px;
         --_shoulder-height: 20px;
         --_flute-height: 240px;
 
@@ -74,7 +75,7 @@
         flex-direction: column;
         position: relative;
 
-        padding: 0 24%;
+        padding: 0 calc(50% - var(--_width) / 2);
 
         &::before {
             // gradient overlay for tool illustration
@@ -127,5 +128,20 @@
     @keyframes moveUp {
         from { transform: translateY(0%); }
         to { transform: translateY(calc(-50% / var(--flutes))); }
+    }
+
+    /* === BREAKPOINTS ======================== */
+    @media only screen and (max-width: $breakpoint-tablet) {
+        .tool__illus {
+            // internal variables
+            --_width: 160px;
+        }
+    }
+
+    @media only screen and (max-width: $breakpoint-smdtablet) {
+        .tool__illus {
+            // internal variables
+            --_width: 140px;
+        }
     }
 </style>

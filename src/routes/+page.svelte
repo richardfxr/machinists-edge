@@ -33,8 +33,6 @@
         --_results-width: 450px;
         --_alwaysVisible-height: 80px;
 
-        --diameter: 0.5;
-
         display: grid;
         grid-template-columns: var(--_results-width) auto;
         grid-template-areas: "results inputs";
@@ -88,14 +86,36 @@
     }
 
     /* === BREAKPOINTS ======================== */
+    @media only screen and (max-width: $breakpoint-tablet) {
+        .feedCalc {
+            // internal variables
+            --_results-width: 380px;
+        }
+    }
+
+    @media only screen and (max-width: $breakpoint-smdtablet) {
+        .feedCalc {
+            // internal variables
+            --_results-width: 310px;
+
+            border-right: none;
+            border-left: none;
+        }
+    }
+
     @media only screen and (max-width: $breakpoint-mobile) {
         .feedCalc {
             display: flex;
             flex-direction: column-reverse;
 
+            border: var(--border) var(--clr-300);
+
             .inputs {
                 grid-area: unset;
                 width: 100%; 
+
+                border-top: var(--border) var(--clr-300);
+                border-left: none;
             }
 
             .alwaysVisible {
