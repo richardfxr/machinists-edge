@@ -6,7 +6,7 @@
 
 <header id="header">
     <div id="header__inner">
-        <Logo />
+        <Logo animate />
         <nav>
             <ul>
                 <li><a href="#">Feed Rate</a></li>
