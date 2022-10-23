@@ -64,3 +64,22 @@ svg.illustration {
         padding: var(--pad-3xl) 0;
     }
 }
+
+/* === A11Y =============================== */
+@media (forced-colors: active) {
+    svg.illustration {
+        .stroke {
+            stroke: CanvasText;
+        }
+
+        .fill {
+            &-800 {
+                fill: CanvasText;
+            }
+
+            &-100 {
+                fill: Canvas;
+            }
+        }
+    }
+}

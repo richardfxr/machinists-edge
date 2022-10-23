@@ -136,4 +136,15 @@
             }
         }
     }
+
+    /* === A11Y =============================== */
+    @media (forced-colors: active) {
+        .feedCalc {
+            .alwaysVisible {
+                &__inner {
+                    background-color: CanvasText;
+                }
+            }
+        }
+    }
 </style>
