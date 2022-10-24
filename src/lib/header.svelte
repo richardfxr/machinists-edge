@@ -21,7 +21,7 @@
 <style lang="scss">
     #header {
         // internal variables
-        --_pad-vrt: var(--pad-md);
+        --_pad-vrt: var(--pad-xl);
         --_pad-hrz: var(--pad-hrz);
         --_logo-width: calc(60px * var(--scalor-main));
 
@@ -36,7 +36,7 @@
             display: flex;
             flex-flow: row nowrap;
             align-items: stretch;
-            gap: var(--pad-md);
+            gap: var(--pad-xl);
             min-width: 100%;
             width: max-content;
 
@@ -68,7 +68,7 @@
                         font-size: var(--font-md);
                         font-weight: 500;
                         white-space: nowrap;
-                        padding: 0 var(--pad-md);
+                        padding: 0 var(--pad-xl);
                     }
                 }
             }
@@ -79,7 +79,7 @@
     @media only screen and (max-width: $breakpoint-smdtablet) {
         #header {
             // internal variables
-            --_pad-hrz: var(--pad-md);
+            --_pad-hrz: var(--pad-xl);
         }
     }
 

@@ -23,7 +23,9 @@ h1 {
     font-weight: 600;
     text-transform: uppercase;
 
-    padding: var(--pad-3xl) 0;
+    padding: var(--pad-5xl) 0;
+
+    overflow-wrap: break-word;
 }
 
 svg.illustration {
@@ -54,14 +56,14 @@ svg.illustration {
 @media only screen and (max-width: $breakpoint-smdtablet) {
     h1 {
         // internal variables
-        padding: var(--pad-3xl) var(--pad-md);
+        padding: var(--pad-5xl) var(--pad-xl);
     }
 }
 
 @media only screen and (max-width: $breakpoint-mobile) {
     h1 {
         // internal variables
-        padding: var(--pad-3xl) 0;
+        padding: var(--pad-5xl) 0;
     }
 }
 

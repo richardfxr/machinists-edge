@@ -21,13 +21,23 @@ $breakpoint-mobile: 650px;
     --border-width: 1px;
     --border: solid var(--border-width);
 
+    --padRem-4xs: 0.15rem;
+
     --pad-hrz: 80px;
-    --pad-3xl: calc(80px * var(--scalor-main));
-    --pad-xl: calc(50px * var(--scalor-main));
-    --pad-md: calc(24px * var(--scalor-main));
+    --pad-5xl: calc(80px * var(--scalor-main));
+    --pad-3xl: calc(50px * var(--scalor-main));
+    --pad-xl: calc(24px * var(--scalor-main));
+    --pad-lg: calc(20px * var(--scalor-main));
+    --pad-md: calc(18px * var(--scalor-main));
+    --pad-sm: calc(15px * var(--scalor-main));
+    --pad-xs: calc(12px * var(--scalor-main));
+    --pad-2xs: calc(9px * var(--scalor-main));
+    --pad-3xs: calc(6px * var(--scalor-main));
 
     --font-2xl: 3.3rem;
+    --font-xl: 2rem;
     --font-md: 1.2rem;
+    --font-sm: 1.1rem;
 
     /* === COLORS ============================= */
 
@@ -47,6 +57,7 @@ $breakpoint-mobile: 650px;
         --pad-hrz: 60px;
 
         --font-2xl: 3.2rem;
+        --font-xl: 1.95rem;
         --font-md: 1.15rem;
     }
 }
@@ -59,6 +70,7 @@ $breakpoint-mobile: 650px;
         --pad-hrz: 25px;
 
         --font-2xl: 3.05rem;
+        --font-xl: 1.9rem;
         --font-md: 1.05rem;
     }
 }
@@ -71,6 +83,7 @@ $breakpoint-mobile: 650px;
         --pad-hrz: 0;
 
         --font-2xl: 2.8rem;
+        --font-xl: 1.9rem;
         --font-md: 1.05rem;
     }
 }
@@ -83,6 +96,7 @@ $breakpoint-mobile: 650px;
         --pad-hrz: 5.5%;
 
         --font-2xl: 2.6rem;
+        --font-xl: 1.9rem;
         --font-md: 1.05rem;
     }
 }
