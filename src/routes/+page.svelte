@@ -1,10 +1,15 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
     import ToolIllus from "$lib/toolIllus.svelte";
+    import Output from "$lib/output.svelte";
 
     /* === VARAIBLES ========================== */
     let scaleX = 1;
     let flutes = 2;
+
+    /* === REACTIVE DECLARATIONS ============== */
+    $: spindleSpeed = 4278;
+    $: feedRate = 17;
 </script>
 
 
@@ -17,7 +22,8 @@
 
     <div class="alwaysVisible">
         <div class="alwaysVisible__inner">
-
+            <Output label="spindle speed" value={spindleSpeed} units="rpm" highlighted />
+            <Output label="feed rate" value={feedRate} units="in/min" highlighted />
         </div>
     </div>
 
@@ -33,7 +39,7 @@
     .feedCalc {
         // internal variables
         --_results-width: 450px;
-        --_alwaysVisible-height: 80px;
+        --_alwaysVisible-height: calc(var(--font-xl) + var(--font-md) + var(--padRem-4xs) + 2 * var(--pad-2xs));
 
         display: grid;
         grid-template-columns: var(--_results-width) auto;
@@ -60,14 +66,23 @@
             bottom: 0;
 
             &__inner {
+                display: flex;
+                flex-flow: row wrap;
+                align-items: center;
+                gap: var(--pad-lg);
                 position: sticky;
                 top: 0;
                 left: 0;
                 z-index: 100;
                 width: var(--_results-width);
-                height: var(--_alwaysVisible-height);
+                min-height: var(--_alwaysVisible-height);
 
+                padding: var(--pad-3xs) var(--pad-lg);
                 background-color: var(--clr-900);
+            }
+
+            :global(output:nth-child(2)) {
+                margin-left: auto;
             }
         }
 
