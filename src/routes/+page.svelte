@@ -5,7 +5,6 @@
 	import NumInput from "$lib/numInput.svelte";
 
     /* === VARAIBLES ========================== */
-    let scaleX = 1;
     let flutes = 2;
 
     let cutterDiameter = { value: 0.5, error: false };
@@ -60,7 +59,7 @@
 
     <div class="results">
         <div class="results__inner">
-            <ToolIllus {scaleX} {flutes} />
+            <ToolIllus scaleX={cutterDiameter.value * 2} {flutes} />
         </div>
     </div>
 </form>
