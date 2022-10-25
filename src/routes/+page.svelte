@@ -19,7 +19,7 @@
 
 <h1>Feed Rate Calculator</h1>
 
-<form action="" class="feedCalc">
+<form action="" class="feedCalc" on:submit|preventDefault>
     <div class="inputs">
         <div
             class="cutterDiameter input__container"
