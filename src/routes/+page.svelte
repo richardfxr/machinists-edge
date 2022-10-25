@@ -150,6 +150,30 @@
         .feedCalc {
             // internal variables
             --_results-width: 380px;
+
+            .inputs {
+                .cutterDiameter {
+                    grid-template-columns: 1fr 1fr;
+
+                    :global(#cutterDiameter) {
+                        grid-column: 1 / 3;
+                        
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            right: var(--pad-xl);
+                            bottom: calc(0.5 * var(--border-width));
+                            left: var(--pad-xl);
+
+                            border-bottom: var(--border) var(--clr-300);
+                        }
+                    }
+
+                    :global(#halfEngagement::before) {
+                        display: none;
+                    }
+                }
+            }
         }
     }
 
@@ -176,6 +200,29 @@
 
                 border-top: var(--border) var(--clr-300);
                 border-left: none;
+
+                .cutterDiameter {
+                    grid-template-columns: 1fr;
+
+                    :global(#cutterDiameter) {
+                        grid-column: unset;
+                    }
+
+                    :global(#halfEngagement::before) {
+                        display: block;
+                        top: unset;
+                        right: var(--pad-xl);
+                        bottom: calc(0.5 * var(--border-width));
+                        left: var(--pad-xl);
+
+                        border-left: none;
+                        border-bottom: var(--border) var(--clr-300);
+                    }
+
+                    :global(#quaterEngagement::before) {
+                        display: none;
+                    }
+                }
             }
 
             .alwaysVisible {

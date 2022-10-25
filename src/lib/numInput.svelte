@@ -135,6 +135,7 @@
     .numInput {
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
         position: relative;
 
         padding: var(--pad-sm) var(--pad-xl);
