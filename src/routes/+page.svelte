@@ -2,14 +2,19 @@
     /* === IMPORTS ============================ */
     import ToolIllus from "$lib/toolIllus.svelte";
     import Output from "$lib/output.svelte";
+	import NumInput from "$lib/numInput.svelte";
 
     /* === VARAIBLES ========================== */
     let scaleX = 1;
     let flutes = 2;
 
+    let cutterDiameter = { value: 0.5, error: false };
+
     /* === REACTIVE DECLARATIONS ============== */
     $: spindleSpeed = 4278;
     $: feedRate = 17;
+    $: halfEngagement = cutterDiameter.value / 2;
+    $: quaterEngagement = cutterDiameter.value / 4;
 </script>
 
 
@@ -17,7 +22,33 @@
 
 <form action="" class="feedCalc">
     <div class="inputs">
-        
+        <div
+            class="cutterDiameter input__container"
+            class:error={cutterDiameter.error}>
+            <NumInput
+                label="cutter diameter"
+                name="cutterDiameter"
+                initValue={cutterDiameter.value}
+                units="in"
+                type="allowFractions"
+                on:update={e => cutterDiameter = e.detail}/>
+
+            <NumInput
+                label="1/2 engagement"
+                name="halfEngagement"
+                initValue={halfEngagement}
+                units="in"
+                type="readonly"
+                displayedValue={halfEngagement}/>
+
+            <NumInput
+                label="1/4 engagement"
+                name="quaterEngagement"
+                initValue={quaterEngagement}
+                units="in"
+                type="readonly"
+                displayedValue={quaterEngagement}/>
+        </div>
     </div>
 
     <div class="alwaysVisible">
@@ -52,11 +83,26 @@
         
         .inputs {
             grid-area: inputs;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
             height: 100%;
             
             border-left: var(--border) var(--clr-300);
+
+            .cutterDiameter {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+
+                border-bottom: var(--border) var(--clr-300);
+
+                :global(#halfEngagement::before), :global( #quaterEngagement::before) {
+                    content: "";
+                    position: absolute;
+                    top: var(--pad-sm);
+                    bottom: var(--pad-sm);
+                    left: calc(0.5 * var(--border-width));
+
+                    border-left: var(--border) var(--clr-300);
+                }
+            }
         }
 
         .alwaysVisible {
