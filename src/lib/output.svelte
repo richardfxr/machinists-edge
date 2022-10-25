@@ -24,18 +24,6 @@
         display: flex;
         flex-direction: column;
         gap: var(--padRem-4xs);
-        
-        .label {
-            color: var(--clr-800);
-            font-family: "GeneralSans", sans-serif;
-            font-size: var(--font-sm);
-            font-weight: 400;
-            line-height: 1em;
-
-            &::after {
-                content: ": ";
-            }
-        }
 
         .value {
             color: var(--clr-900);
