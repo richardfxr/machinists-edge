@@ -180,6 +180,17 @@
                 background-color: transparent;
 
                 transition: color var(--trans-fast);
+                
+                // remove number input spin buttons
+                &[type="number"]::-webkit-inner-spin-button,
+                &[type="number"]::-webkit-outer-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+
+                &[type=number] {
+                    -moz-appearance:textfield;
+                }
             }
 
             .units {
