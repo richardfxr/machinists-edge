@@ -17,7 +17,7 @@
 
 <form action="" class="feedCalc">
     <div class="inputs">
-
+        
     </div>
 
     <div class="alwaysVisible">
@@ -54,8 +54,8 @@
             grid-area: inputs;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            height: 300vh;
-
+            height: 100%;
+            
             border-left: var(--border) var(--clr-300);
         }
 
@@ -64,6 +64,7 @@
             top: 0;
             left: 0;
             bottom: 0;
+            z-index: 100;
 
             &__inner {
                 display: flex;
@@ -73,7 +74,6 @@
                 position: sticky;
                 top: 0;
                 left: 0;
-                z-index: 100;
                 width: var(--_results-width);
                 min-height: var(--_alwaysVisible-height);
 
@@ -90,13 +90,12 @@
             grid-area: results;
             position: sticky;
             top: var(--_alwaysVisible-height);
-            max-height: calc(100vh - var(--_alwaysVisible-height));
 
             margin-top: var(--_alwaysVisible-height);
             overflow-y: auto;
 
             &__inner {
-                height: 600px;
+                padding-bottom: var(--pad-5xl);
             }
         }
     }
@@ -128,16 +127,21 @@
 
             .inputs {
                 grid-area: unset;
-                width: 100%; 
+                width: 100%;
 
                 border-top: var(--border) var(--clr-300);
                 border-left: none;
             }
 
             .alwaysVisible {
-                right: 0;
+                order: 1;
+                position: sticky;
+                left: unset;
+                bottom: unset;
+                width: 100%;
 
                 &__inner {
+                    position: relative;
                     width: 100%;
                 }
             }
@@ -148,6 +152,8 @@
                 top: 0;
                 width: 100%;
                 max-height: unset;
+
+                margin-top: 0;
             }
         }
     }
