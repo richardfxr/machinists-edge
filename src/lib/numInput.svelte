@@ -43,7 +43,7 @@
      * dispatcher for type="text" input. Evaluates string if it is valid number or fraction
      */
     function dispatchValueFrac() {
-        let trueValue = 1;
+        let trueValue = initValue;
         // reset error
         error = false;
 
@@ -103,7 +103,7 @@
                 id={name + "__input"}
                 class:error={error}
                 {name}
-                bind:value={value}
+                bind:value
                 on:input={dispatchValueFrac}
                 type="text">
         {:else if type === "readonly"}
@@ -120,7 +120,7 @@
                 id={name + "__input"}
                 class:error={error}
                 {name}
-                bind:value={value}
+                bind:value
                 on:input={dispatchValue}
                 type="number"
                 {step}>
@@ -177,20 +177,8 @@
                 line-height: 1em;
 
                 border: none;
-                background-color: transparent;
 
                 transition: color var(--trans-fast);
-                
-                // remove number input spin buttons
-                &[type="number"]::-webkit-inner-spin-button,
-                &[type="number"]::-webkit-outer-spin-button {
-                    -webkit-appearance: none;
-                    margin: 0;
-                }
-
-                &[type=number] {
-                    -moz-appearance:textfield;
-                }
             }
 
             .units {
