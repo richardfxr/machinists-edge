@@ -4,10 +4,12 @@
     import Output from "$lib/output.svelte";
 	import NumInput from "$lib/numInput.svelte";
 	import RangeInput from "$lib/rangeInput.svelte";
+	import RadioInput from "$lib/radioInput.svelte";
 
     /* === VARAIBLES ========================== */
     let cutterDiameter = { value: 0.5, error: false };
     let numFlutes = { value: 2, error: false };
+    let opType:string;
 
     /* === REACTIVE DECLARATIONS ============== */
     $: spindleSpeed = 4278;
@@ -49,7 +51,7 @@
                 displayedValue={quaterEngagement}/>
         </div>
 
-        <div class="numFlutes">
+        <div class="flutesAndOp">
             <RangeInput
                 label="number of flutes"
                 name="numFlutes"
@@ -59,6 +61,16 @@
                 step={1}
                 selfContained
                 on:update={e => numFlutes = e.detail}/>
+
+            <RadioInput
+                label="operation type"
+                name="opType"
+                options={[
+                    { name: "drill", value: "drill" },
+                    { name: "mill", value: "mill" },
+                ]}
+                selfContained
+                bind:value={opType}/>
         </div>
     </div>
 
@@ -101,8 +113,17 @@
             .cutterDiameter {
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
+                position: relative;
 
-                border-bottom: var(--border) var(--clr-300);
+                &::before {
+                    content: "";
+                    position: absolute;
+                    right: 0;
+                    bottom: calc(0.5 * var(--border-width));
+                    left: 0;
+
+                    border-bottom: var(--border) var(--clr-300);
+                }
 
                 :global(#halfEngagement::before), :global( #quaterEngagement::before) {
                     content: "";
@@ -115,9 +136,21 @@
                 }
             }
 
-            .numFlutes {
+            .flutesAndOp {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
+
+                border-bottom: var(--border) var(--clr-300);
+
+                :global(#opType::before) {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: calc(0.5 * var(--border-width));
+
+                    border-left: var(--border) var(--clr-300);
+                }
             }
         }
 
@@ -152,7 +185,6 @@
             grid-area: results;
             position: sticky;
             top: var(--_alwaysVisible-height);
-            height: 400vh;
 
             margin-top: var(--_alwaysVisible-height);
             overflow-y: auto;
@@ -192,8 +224,22 @@
                     }
                 }
 
-                .numFlutes {
+                .flutesAndOp {
                     grid-template-columns: 1fr;
+
+                    :global(#numFlutes::before) {
+                        content: "";
+                        position: absolute;
+                        right: 0;
+                        bottom: calc(0.5 * var(--border-width));
+                        left: 0;
+
+                        border-bottom: var(--border) var(--clr-300);
+                    }
+
+                    :global(#opType::before) {
+                        display: none;
+                    }
                 }
             }
         }
