@@ -5,17 +5,52 @@
 	import NumInput from "$lib/numInput.svelte";
 	import RangeInput from "$lib/rangeInput.svelte";
 	import RadioInput from "$lib/radioInput.svelte";
+	import RadioTable from "$lib/radioTable.svelte";
 
     /* === VARAIBLES ========================== */
     let cutterDiameter = { value: 0.5, error: false };
     let numFlutes = { value: 2, error: false };
+
     let opType:string;
+    let material:string;
+
+    interface materialData {
+        [key: string]: any;
+        drill: number;
+        mill: number;
+        feed: number[];
+    }
+    let aluminum: materialData = {
+        drill: 300,
+        mill: 600,
+        feed: [0.002, 0.002, 0.005, 0.006, 0.007],
+    };
+    let brass: materialData = {
+        drill: 120,
+        mill: 175,
+        feed: [0.001, 0.002, 0.002, 0.004, 0.005],
+    };
+    let delrin: materialData = {
+        drill: 150,
+        mill: 400,
+        feed: [0.002, 0.002, 0.005, 0.006, 0.007],
+    };
+    let steel: materialData = {
+        drill: 90,
+        mill: 70,
+        feed: [0.0005, 0.0005, 0.001, 0.002, 0.003],
+    };
+
 
     /* === REACTIVE DECLARATIONS ============== */
     $: spindleSpeed = 4278;
     $: feedRate = 17;
     $: halfEngagement = cutterDiameter.value / 2;
     $: quaterEngagement = cutterDiameter.value / 4;
+    $: cutterDiameterIndex = cutterDiameter.value < 0.125 ? 0 :
+                            cutterDiameter.value < 0.25 ? 1 :
+                            cutterDiameter.value < 0.5 ? 3 :
+                            cutterDiameter.value < 1 ? 4 : 5;
 </script>
 
 
@@ -72,6 +107,19 @@
                 selfContained
                 bind:value={opType}/>
         </div>
+
+        <RadioTable
+            label="material presets"
+            name="materialSelect"
+            options={[
+                { name: "Aluminum", value: "aluminum", col1: aluminum[opType], col2: aluminum.feed[cutterDiameterIndex]},
+                { name: "Brass", value: "brass", col1: brass[opType], col2: brass.feed[cutterDiameterIndex]},
+                { name: "Delrin", value: "delrin", col1: delrin[opType], col2: delrin.feed[cutterDiameterIndex]},
+                { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex]},
+            ]}
+            tableHeadings={["material", "tool speed (sf/m)", "cutting feeds (in/r)"]}
+            selfContained
+            bind:value={material}/>
     </div>
 
     <div class="alwaysVisible">

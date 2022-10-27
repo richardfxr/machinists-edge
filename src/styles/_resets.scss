@@ -115,4 +115,14 @@ RESET
         margin: 0;
         padding: 0;
     }
+
+    caption {
+        text-align: start;
+    }
+
+    table {
+        th {
+            text-align: start;
+        }
+    }
 }

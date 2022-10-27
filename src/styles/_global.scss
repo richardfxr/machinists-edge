@@ -67,6 +67,10 @@ svg.illustration {
     }
 }
 
+input[type="radio"] ~ span {
+    cursor: pointer;
+}
+
 .input__container {
     outline: var(--border) transparent;
     transition: outline var(--trans-fast);
