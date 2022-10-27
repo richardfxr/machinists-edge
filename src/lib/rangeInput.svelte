@@ -114,9 +114,10 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        gap: var(--pad-4xs);
         position: relative;
 
-        padding: var(--pad-sm) var(--pad-xl);
+        padding: var(--pad-md) var(--pad-xl);
 
         label {
             display: flex;
@@ -149,6 +150,16 @@
             input[type="range"] {
                 width: 100%;
 
+                &:hover, &:focus {
+                    &::-webkit-slider-thumb {
+                        border-color: var(--clr-1000);
+                    }
+
+                    &::-moz-range-thumb {
+                        border-color: var(--clr-1000);
+                    }
+                }
+
                 &::-webkit-slider-thumb {
                     cursor: pointer;
                     width: var(--_range-thumb-size);
@@ -158,6 +169,8 @@
                     border: solid var(--border-xthick) var(--clr-900);
                     border-radius: var(--border-radius-round);
                     margin-top: calc(-0.5 * var(--_range-thumb-size));
+
+                    transition: border var(--trans-fast);
                 }
 
                 &::-moz-range-thumb {
@@ -168,6 +181,8 @@
                     background-color: var(--clr-100);
                     border: solid var(--border-xthick) var(--clr-900);
                     border-radius: var(--border-radius-round);
+
+                    transition: border var(--trans-fast);
                 }
 
                 &::-webkit-slider-runnable-track {
@@ -213,6 +228,14 @@
 
                     padding: 0;
                     border: var(--border) var(--clr-300);
+
+                    transition: color var(--trans-fast),
+                                border var(--trans-fast);
+
+                    &:hover, &:focus {
+                        color: var(--clr-1000);
+                        border-color: var(--clr-800);
+                    }
                 }
 
                 .decrementer {
@@ -222,6 +245,18 @@
                 .incrementer {
                     order: 2;
                 }
+
+                &:hover, &:focus-within {
+                    input[type="number"] {
+                        color: var(--clr-1000);
+                    }
+                }
+            }
+        }
+
+        &:hover, &:focus-within {
+            label .label {
+                color: var(--clr-900);
             }
         }
 

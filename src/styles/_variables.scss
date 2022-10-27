@@ -36,6 +36,7 @@ $breakpoint-mobile: 650px;
     --pad-xs: calc(12px * var(--scalor-main));
     --pad-2xs: calc(9px * var(--scalor-main));
     --pad-3xs: calc(6px * var(--scalor-main));
+    --pad-4xs: calc(3px * var(--scalor-main));
 
     --font-2xl: 3.3rem;
     --font-xl: 2rem;
@@ -70,7 +71,7 @@ $breakpoint-mobile: 650px;
 @media only screen and (max-width: $breakpoint-tablet) {
     :root {
         /* === CSS VARIABLES ====================== */
-        --scalor-main: 0.85;
+        --scalor-main: 0.9;
 
         --pad-hrz: 25px;
 
@@ -83,7 +84,7 @@ $breakpoint-mobile: 650px;
 @media only screen and (max-width: $breakpoint-smdtablet) {
     :root {
         /* === CSS VARIABLES ====================== */
-        --scalor-main: 0.8;
+        --scalor-main: 0.85;
 
         --pad-hrz: 0;
 
@@ -96,7 +97,7 @@ $breakpoint-mobile: 650px;
 @media only screen and (max-width: $breakpoint-mobile) {
     :root {
         /* === CSS VARIABLES ====================== */
-        --scalor-main: 0.8;
+        --scalor-main: 0.85;
 
         --pad-hrz: 5.5%;
 

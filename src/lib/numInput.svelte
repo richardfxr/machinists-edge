@@ -136,6 +136,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        gap: var(--pad-4xs);
         position: relative;
 
         padding: var(--pad-sm) var(--pad-xl);
