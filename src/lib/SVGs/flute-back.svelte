@@ -15,7 +15,7 @@
     style="
         --position: {position};
         --zIndex: {zIndex};
-        --top: {position === "relative" ? 0 : index * 25 + offsetY}%;
+        --top: {position === "relative" ? 0 : index * (100/6) + offsetY}%;
         --offsetY: {offsetY}%;"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 81.5 230">
@@ -32,5 +32,7 @@
         right: 0;
         left: 0;
         z-index: var(--zIndex);
+
+        transition: top var(--trans-fast);
     }
 </style>

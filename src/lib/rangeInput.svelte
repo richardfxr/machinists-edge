@@ -66,6 +66,7 @@
             id={name + "__input"}
             {name}
             bind:value
+            on:input={dispatchValue}
             type="range"
             {min}
             {max}

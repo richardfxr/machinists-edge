@@ -9,7 +9,7 @@
 
     /* === PROPS ============================== */
     export let scaleX: number;
-    export let flutes: number;
+    export let flutes: number;  
 
     /* === FUNCTIONS ========================== */
     function clamp(input: number, min: number, max: number): number {
@@ -29,31 +29,43 @@
         <div class="bit__bottom">
             <div class="flutes">
                 <div class="flutes__inner">
-                    {#each Array(displayedFlutes) as _, i}
+                    {#each Array(6) as _, i}
                         <FluteBack
                             scaleX={displayedScaleX}
                             position={i === 0 ? "relative" : "absolute"}
-                            zIndex={2 * i}
+                            zIndex={3 * i}
                             index={0}
-                            offsetY={(50 / displayedFlutes) * -i} />
+                            offsetY={(100 / 3 / displayedFlutes) * -i} />
                         <FluteFront
                             scaleX={displayedScaleX}
                             position={i === 0 ? "relative" : "absolute"}
-                            zIndex={2 * i + 100}
+                            zIndex={3 * i + 100}
                             index={1}
-                            offsetY={(50 / displayedFlutes) * -i} />
+                            offsetY={(100 / 3 / displayedFlutes) * -i} />
                         <FluteBack
                             scaleX={displayedScaleX}
                             position={i === 0 ? "relative" : "absolute"}
-                            zIndex={2 * i + 1}
+                            zIndex={3 * i + 1}
                             index={2}
-                            offsetY={(50 / displayedFlutes) * -i} />
+                            offsetY={(100 / 3 / displayedFlutes) * -i} />
                         <FluteFront
                             scaleX={displayedScaleX}
                             position={i === 0 ? "relative" : "absolute"}
-                            zIndex={2 * i + 101}
+                            zIndex={3 * i + 101}
                             index={3}
-                            offsetY={(50 / displayedFlutes) * -i} />
+                            offsetY={(100 / 3 / displayedFlutes) * -i} />
+                        <FluteBack
+                            scaleX={displayedScaleX}
+                            position={i === 0 ? "relative" : "absolute"}
+                            zIndex={3 * i + 2}
+                            index={4}
+                            offsetY={(100 / 3 / displayedFlutes) * -i} />
+                        <FluteFront
+                            scaleX={displayedScaleX}
+                            position={i === 0 ? "relative" : "absolute"}
+                            zIndex={3 * i + 102}
+                            index={5}
+                            offsetY={(100 / 3 / displayedFlutes) * -i} />
                     {/each}
                     <FluteCenter scaleX={displayedScaleX} zIndex={99} />
                 </div>
@@ -127,7 +139,7 @@
     /* === ANIMATIONS ========================= */
     @keyframes moveUp {
         from { transform: translateY(0%); }
-        to { transform: translateY(calc(-50% / var(--flutes))); }
+        to { transform: translateY(calc(-100% / 3)); }
     }
 
     /* === BREAKPOINTS ======================== */

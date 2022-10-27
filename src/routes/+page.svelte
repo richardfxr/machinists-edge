@@ -6,8 +6,6 @@
 	import RangeInput from "$lib/rangeInput.svelte";
 
     /* === VARAIBLES ========================== */
-    let flutes = 2;
-
     let cutterDiameter = { value: 0.5, error: false };
     let numFlutes = { value: 2, error: false };
 
@@ -57,9 +55,10 @@
                 name="numFlutes"
                 initValue={numFlutes.value}
                 min={1}
-                max={5}
+                max={9}
                 step={1}
-                selfContained/>
+                selfContained
+                on:update={e => numFlutes = e.detail}/>
         </div>
     </div>
 
@@ -72,7 +71,7 @@
 
     <div class="results">
         <div class="results__inner">
-            <ToolIllus scaleX={cutterDiameter.value * 2} {flutes} />
+            <ToolIllus scaleX={cutterDiameter.value * 2} flutes={numFlutes.value} />
         </div>
     </div>
 </form>
@@ -153,6 +152,7 @@
             grid-area: results;
             position: sticky;
             top: var(--_alwaysVisible-height);
+            height: 400vh;
 
             margin-top: var(--_alwaysVisible-height);
             overflow-y: auto;
