@@ -3,11 +3,13 @@
     import ToolIllus from "$lib/toolIllus.svelte";
     import Output from "$lib/output.svelte";
 	import NumInput from "$lib/numInput.svelte";
+	import RangeInput from "$lib/rangeInput.svelte";
 
     /* === VARAIBLES ========================== */
     let flutes = 2;
 
     let cutterDiameter = { value: 0.5, error: false };
+    let numFlutes = { value: 2, error: false };
 
     /* === REACTIVE DECLARATIONS ============== */
     $: spindleSpeed = 4278;
@@ -47,6 +49,17 @@
                 units="in"
                 type="readonly"
                 displayedValue={quaterEngagement}/>
+        </div>
+
+        <div class="numFlutes">
+            <RangeInput
+                label="number of flutes"
+                name="numFlutes"
+                initValue={numFlutes.value}
+                min={1}
+                max={5}
+                step={1}
+                selfContained/>
         </div>
     </div>
 
@@ -101,6 +114,11 @@
 
                     border-left: var(--border) var(--clr-300);
                 }
+            }
+
+            .numFlutes {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
             }
         }
 
@@ -172,6 +190,10 @@
                     :global(#halfEngagement::before) {
                         display: none;
                     }
+                }
+
+                .numFlutes {
+                    grid-template-columns: 1fr;
                 }
             }
         }
