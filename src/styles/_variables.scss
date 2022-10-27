@@ -20,12 +20,15 @@ $breakpoint-mobile: 650px;
 
     --border-width: 1px;
     --border: solid var(--border-width);
+    --border-xthick: 0.35rem;
+    --border-radius-round: 9e5px;
 
     --padRem-4xs: 0.15rem;
 
     --pad-hrz: 80px;
     --pad-5xl: calc(80px * var(--scalor-main));
     --pad-3xl: calc(50px * var(--scalor-main));
+    --pad-2xl: calc(32px * var(--scalor-main));
     --pad-xl: calc(24px * var(--scalor-main));
     --pad-lg: calc(20px * var(--scalor-main));
     --pad-md: calc(18px * var(--scalor-main));
