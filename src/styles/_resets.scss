@@ -88,6 +88,28 @@ RESET
         background-color: transparent;
     }
 
+    input {
+        -webkit-appearance: none;
+        background: transparent;
+
+
+        // remove number input spin buttons
+        &[type="number"]::-webkit-inner-spin-button,
+        &[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        &[type="number"] {
+            -moz-appearance:textfield;
+        }
+
+        // remove range thumb styling
+        &[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+        }
+    }
+
     ol, ul {
         list-style-type: none;
         margin: 0;
