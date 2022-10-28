@@ -49,8 +49,8 @@
     $: quaterEngagement = cutterDiameter.value / 4;
     $: cutterDiameterIndex = cutterDiameter.value < 0.125 ? 0 :
                             cutterDiameter.value < 0.25 ? 1 :
-                            cutterDiameter.value < 0.5 ? 3 :
-                            cutterDiameter.value < 1 ? 4 : 5;
+                            cutterDiameter.value < 0.5 ? 2 :
+                            cutterDiameter.value < 1 ? 3 : 4;
 </script>
 
 
@@ -112,20 +112,31 @@
             label="material presets"
             name="materialSelect"
             options={[
-                { name: "Aluminum", value: "aluminum", col1: aluminum[opType], col2: aluminum.feed[cutterDiameterIndex]},
-                { name: "Brass", value: "brass", col1: brass[opType], col2: brass.feed[cutterDiameterIndex]},
-                { name: "Delrin", value: "delrin", col1: delrin[opType], col2: delrin.feed[cutterDiameterIndex]},
-                { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex]},
+                { name: "Aluminum", value: "aluminum", col1: aluminum[opType], col2: aluminum.feed[cutterDiameterIndex] },
+                { name: "Brass", value: "brass", col1: brass[opType], col2: brass.feed[cutterDiameterIndex] },
+                { name: "Delrin", value: "delrin", col1: delrin[opType], col2: delrin.feed[cutterDiameterIndex] },
+                { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex] },
+                { name: "Custom (change with following inputs)", value: "custom", col1: steel[opType], col2: steel.feed[cutterDiameterIndex], hidden: true },
             ]}
-            tableHeadings={["material", "tool speed (sf/m)", "cutting feeds (in/r)"]}
+            tableHeadings={["material", "tool speed", "cutting feeds"]}
             selfContained
             bind:value={material}/>
     </div>
 
     <div class="alwaysVisible">
         <div class="alwaysVisible__inner">
-            <Output label="spindle speed" value={spindleSpeed} units="rpm" highlighted />
-            <Output label="feed rate" value={feedRate} units="in/min" highlighted />
+            <Output
+                label="spindle speed"
+                value={spindleSpeed}
+                units="RPM"
+                position="bottom-right"
+                highlighted />
+            <Output
+                label="feed rate"
+                value={feedRate}
+                units="IPM"
+                position="bottom-left"
+                highlighted />
         </div>
     </div>
 

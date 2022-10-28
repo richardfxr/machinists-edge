@@ -17,5 +17,10 @@
     .scrollContainer {
         width: 100%;
         overflow-y: auto;
+
+        &__inner {
+            display: inline-block;
+            min-width: 100%;
+        }
     }
 </style>

@@ -1,12 +1,13 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
     import { createEventDispatcher } from 'svelte';
+	import UnitAbbr from './unitAbbr.svelte';
     
     /* === PROPS ============================== */
     export let label:string;
     export let name:string;
     export let initValue:number | string;
-    export let units:string;
+    export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
     export let step = 0.001;
     export let type:"allowFractions" | "readonly";
     export let displayedValue = 1;
@@ -93,7 +94,6 @@
     id={name}>
     <label for={name + "__input"}>
         <span class="label">{label}</span>
-        <span class="visuallyHidden">(in {units})</span>
         <span class="error">error</span>
     </label>
 
@@ -126,7 +126,7 @@
                 {step}>
         {/if}
 
-        <span class="units">{units}</span>
+        <UnitAbbr {units} position="top-left" />
     </div>
 </div>
 
@@ -181,15 +181,6 @@
 
                 transition: color var(--trans-fast);
             }
-
-            .units {
-                color: var(--clr-800);
-                font-size: var(--font-sm);
-                font-weight: 400;
-                line-height: 1em;
-
-                transition: color var(--trans-fast);
-            }
         }
 
         &.readonly {
@@ -202,7 +193,7 @@
             }
 
             &:hover, &:focus-within {
-                label .label, .main .units, .main input {
+                label .label, .main, .main input {
                     color: var(--clr-800);
                 }
             }
@@ -219,7 +210,7 @@
         }
 
         &:hover, &:focus-within {
-            label .label, .main .units {
+            label .label, .main {
                 color: var(--clr-900);
             }
 

@@ -1,8 +1,12 @@
 <script lang="ts">
+    /* === IMPORTS ============================ */
+	import UnitAbbr from "$lib/unitAbbr.svelte";
+
     /* === PROPS ============================== */
-    export let label:string;
-    export let value:number;
-    export let units:string;
+    export let label: string;
+    export let value: number;
+    export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
+    export let position: "top-left" | "top-right" | "bottom-left" | "bottom-right" = "top-left";
     export let highlighted = false;
     export let error = false;
 </script>
@@ -15,7 +19,10 @@
     name="result"
     for="">
     <span class="label">{label}</span>
-    <span class="value" data-units={units}>{value}</span>
+    <span class="value">
+        {value}
+        <UnitAbbr {units} {position}/>
+    </span>
 </output>
 
 
@@ -32,15 +39,8 @@
             font-weight: 600;
             line-height: 1em;
 
-            &::after {
-                content: attr(data-units);
-                color: var(--clr-800);
-                font-family: "GeneralSans", sans-serif;
-                font-size: var(--font-sm);
+            :global(.unitAbbr) {
                 font-weight: 600;
-                line-height: 1em;
-
-                padding-left: 0.2em;
             }
         }
 
@@ -52,8 +52,9 @@
             .value {
                 color: var(--clr-0);
                 
-                &::after {
-                    color: var(--clr-300);
+                :global(.unitAbbr) {
+                    --_clr: var(--clr-300);
+                    --_clr-hover: var(--clr-100);
                 }
             }
         }
