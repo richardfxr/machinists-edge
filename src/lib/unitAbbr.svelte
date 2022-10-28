@@ -31,7 +31,7 @@
 
 <abbr class="unitAbbr">
     {units}
-    <tool-tip class="toolTip {position}">{fullName}</tool-tip>
+    <tool-tip class="toolTip {position}" role="tooltip">{fullName}</tool-tip>
 </abbr>
 
 
