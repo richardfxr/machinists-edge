@@ -4,17 +4,20 @@
 	import UnitAbbr from './unitAbbr.svelte';
     
     /* === PROPS ============================== */
-    export let label:string;
-    export let name:string;
-    export let initValue:number | string;
+    export let label: string;
+    export let name: string;
+    export let initValue: number | string = 1;
+    export let displayedValue = 1;
     export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
     export let step = 0.001;
-    export let type:"allowFractions" | "readonly";
-    export let displayedValue = 1;
+    export let type: "allowFractions" | "readonly" | "drivenNumber";
+    export let selfContained = false;
 
     /* === VARAIBLES ========================== */
     let value = initValue;
     let error = false;
+
+    /* === REACTIVE DECLARATIONS ============== */
 
     /* === FUNCTIONS ========================== */
     /**
@@ -31,12 +34,18 @@
      * dispatcher for type="number" input
      */
     function dispatchValue() {
+        let trueValue = displayedValue;
         // reset error
         error = false;
 
+        if (displayedValue == null) {
+            trueValue = 0;
+            error = true;
+        }
+
         dispatch('update', {
             error: error,
-			value: value
+			value: trueValue
 		});
     }
 
@@ -91,6 +100,7 @@
     class="numInput"
     class:readonly={type === "readonly"}
     class:error={error}
+    class:input__container={selfContained}
     id={name}>
     <label for={name + "__input"}>
         <span class="label">{label}</span>
@@ -120,7 +130,7 @@
                 id={name + "__input"}
                 class:error={error}
                 {name}
-                bind:value
+                bind:value={displayedValue}
                 on:input={dispatchValue}
                 type="number"
                 {step}>
@@ -138,6 +148,7 @@
         justify-content: space-between;
         gap: var(--pad-4xs);
         position: relative;
+        z-index: 1;
 
         padding: var(--pad-sm) var(--pad-xl);
 
