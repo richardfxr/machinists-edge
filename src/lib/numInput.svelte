@@ -11,6 +11,7 @@
     export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
     export let step = 0.001;
     export let type: "allowFractions" | "readonly" | "drivenNumber";
+    export let positiveOnly = true;
     export let selfContained = false;
 
     /* === VARAIBLES ========================== */
@@ -39,7 +40,11 @@
         error = false;
 
         if (displayedValue == null) {
-            trueValue = 0;
+            trueValue = 1;
+            error = true;
+        } else if (positiveOnly && trueValue <= 0) {
+            // disallow zero or negative values
+            trueValue = 1;
             error = true;
         }
 
@@ -85,7 +90,11 @@
             }
         }
 
-        console.log("trueValue:", trueValue)
+        if (positiveOnly && trueValue === 0) {
+            // disallow zero
+            error = true;
+            trueValue = 1;
+        }
 
         dispatch('update', {
             error: error,
@@ -133,6 +142,7 @@
                 bind:value={displayedValue}
                 on:input={dispatchValue}
                 type="number"
+                min={positiveOnly ? 0 : ""}
                 {step}>
         {/if}
 
