@@ -20,7 +20,7 @@
 
 
 
-<ScrollContainer {selfContained}>  
+<ScrollContainer {selfContained} contains="radioTable">  
     <table
         class="radioTable"
         aria-labelledby="{name}__label">
@@ -82,6 +82,7 @@
         display: table;
         table-layout: auto;
         position: relative;
+        z-index: 1;
         width: 100%;
 
         padding-right: var(--pad-xl);

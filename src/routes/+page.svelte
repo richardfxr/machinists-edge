@@ -8,11 +8,14 @@
 	import RadioTable from "$lib/radioTable.svelte";
 
     /* === VARAIBLES ========================== */
+    let error = false;
     let cutterDiameter = { value: 0.5, error: false };
     let numFlutes = { value: 2, error: false };
 
-    let opType:string;
-    let material:string;
+    let opType = "drill";
+    let material = "aluminum";
+    let customToolSpeed = 100;
+    let customCuttingFeed = 0.001;
 
     interface materialData {
         [key: string]: any;
@@ -41,16 +44,57 @@
         feed: [0.0005, 0.0005, 0.001, 0.002, 0.003],
     };
 
-
     /* === REACTIVE DECLARATIONS ============== */
     $: spindleSpeed = 4278;
     $: feedRate = 17;
     $: halfEngagement = cutterDiameter.value / 2;
     $: quaterEngagement = cutterDiameter.value / 4;
     $: cutterDiameterIndex = cutterDiameter.value < 0.125 ? 0 :
-                            cutterDiameter.value < 0.25 ? 1 :
-                            cutterDiameter.value < 0.5 ? 2 :
-                            cutterDiameter.value < 1 ? 3 : 4;
+                             cutterDiameter.value < 0.25 ? 1 :
+                             cutterDiameter.value < 0.5 ? 2 :
+                             cutterDiameter.value < 1 ? 3 : 4;
+
+    interface materialSpeeds {
+        [key: string]: any;
+        aluminum: number;
+        brass: number;
+        delrin: number;
+        steel: number;
+    }
+    $: toolSpeeds = {
+        aluminum: aluminum[opType],
+        brass: brass[opType],
+        delrin: delrin[opType],
+        steel: steel[opType],
+    } as materialSpeeds;
+    $: cuttingFeeds = {
+        aluminum: aluminum.feed[cutterDiameterIndex],
+        brass: brass.feed[cutterDiameterIndex],
+        delrin: delrin.feed[cutterDiameterIndex],
+        steel: steel.feed[cutterDiameterIndex],
+    } as materialSpeeds;
+
+    /* === FUNCTIONS ========================== */
+    function changeCustomMaterial(
+        name: "toolSpeed" | "cuttingFeed",
+        e: { error: boolean, value: number }
+    ) {
+        // reset error
+        error = false;
+        // change material to custom
+        material = "custom";
+
+        if (e.error) {
+            error = true;
+            return;
+        }
+
+        // set values
+        if (name === "toolSpeed") 
+            customToolSpeed = e.value;
+        else
+            customCuttingFeed = e.value;
+    }
 </script>
 
 
@@ -112,15 +156,35 @@
             label="material presets"
             name="materialSelect"
             options={[
-                { name: "Aluminum", value: "aluminum", col1: aluminum[opType], col2: aluminum.feed[cutterDiameterIndex] },
-                { name: "Brass", value: "brass", col1: brass[opType], col2: brass.feed[cutterDiameterIndex] },
-                { name: "Delrin", value: "delrin", col1: delrin[opType], col2: delrin.feed[cutterDiameterIndex] },
-                { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex] },
-                { name: "Custom (change with following inputs)", value: "custom", col1: steel[opType], col2: steel.feed[cutterDiameterIndex], hidden: true },
+                { name: "Aluminum", value: "aluminum", col1: toolSpeeds["aluminum"], col2: cuttingFeeds["aluminum"] },
+                { name: "Brass", value: "brass", col1: toolSpeeds["brass"], col2: cuttingFeeds["brass"] },
+                { name: "Delrin", value: "delrin", col1: toolSpeeds["delrin"], col2: cuttingFeeds["delrin"] },
+                { name: "Steel", value: "steel", col1: toolSpeeds["steel"], col2: cuttingFeeds["steel"] },
+                { name: "Custom (change with following inputs)", value: "custom", col1: customToolSpeed, col2: customCuttingFeed, hidden: true },
             ]}
             tableHeadings={["material", "tool speed", "cutting feeds"]}
             selfContained
             bind:value={material}/>
+
+        <div class="toolAndFeed">
+            <NumInput
+                label="tool speed"
+                name="toolSpeed"
+                displayedValue={material === "custom" ? customToolSpeed : toolSpeeds[material]}
+                units="SFPM"
+                type="drivenNumber"
+                selfContained
+                on:update={e => changeCustomMaterial("toolSpeed", e.detail)}/>
+            
+            <NumInput
+                label="cutting feed"
+                name="cuttingFeed"
+                displayedValue={material === "custom" ? customCuttingFeed : cuttingFeeds[material]}
+                units="IPR"
+                type="drivenNumber"
+                selfContained
+                on:update={e => changeCustomMaterial("cuttingFeed", e.detail)}/>
+        </div>
     </div>
 
     <div class="alwaysVisible">
@@ -173,13 +237,15 @@
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
                 position: relative;
+                z-index: 1;
 
                 &::before {
                     content: "";
                     position: absolute;
                     right: 0;
-                    bottom: calc(0.5 * var(--border-width));
+                    bottom: calc(-0.5 * var(--border-width));
                     left: 0;
+                    z-index: -1;
 
                     border-bottom: var(--border) var(--clr-300);
                 }
@@ -189,7 +255,8 @@
                     position: absolute;
                     top: var(--pad-sm);
                     bottom: var(--pad-sm);
-                    left: calc(0.5 * var(--border-width));
+                    left: calc(-0.5 * var(--border-width));
+                    z-index: -1;
 
                     border-left: var(--border) var(--clr-300);
                 }
@@ -198,6 +265,7 @@
             .flutesAndOp {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
+                z-index: 1;
 
                 border-bottom: var(--border) var(--clr-300);
 
@@ -206,7 +274,37 @@
                     position: absolute;
                     top: 0;
                     bottom: 0;
-                    left: calc(0.5 * var(--border-width));
+                    left: calc(-0.5 * var(--border-width));
+                    z-index: -1;
+
+                    border-left: var(--border) var(--clr-300);
+                }
+            }
+
+            .toolAndFeed {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                position: relative;
+                z-index: 1;
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: calc(-0.5 * var(--border-width));
+                    right: 0;
+                    left: 0;
+                    z-index: -1;
+
+                    border-top: var(--border) var(--clr-300);
+                }
+
+                :global(#cuttingFeed::before) {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: calc(-0.5 * var(--border-width));
+                    z-index: -1;
 
                     border-left: var(--border) var(--clr-300);
                 }
@@ -271,8 +369,9 @@
                             content: "";
                             position: absolute;
                             right: var(--pad-xl);
-                            bottom: calc(0.5 * var(--border-width));
+                            bottom: calc(-0.5 * var(--border-width));
                             left: var(--pad-xl);
+                            z-index: -1;
 
                             border-bottom: var(--border) var(--clr-300);
                         }
@@ -290,8 +389,9 @@
                         content: "";
                         position: absolute;
                         right: 0;
-                        bottom: calc(0.5 * var(--border-width));
+                        bottom: calc(-0.5 * var(--border-width));
                         left: 0;
+                        z-index: -1;
 
                         border-bottom: var(--border) var(--clr-300);
                     }
@@ -339,7 +439,7 @@
                         display: block;
                         top: unset;
                         right: var(--pad-xl);
-                        bottom: calc(0.5 * var(--border-width));
+                        bottom: calc(-0.5 * var(--border-width));
                         left: var(--pad-xl);
 
                         border-left: none;
@@ -348,6 +448,25 @@
 
                     :global(#quaterEngagement::before) {
                         display: none;
+                    }
+                }
+
+                .toolAndFeed {
+                    grid-template-columns: 1fr;
+
+                    :global(#cuttingFeed::before) {
+                        display: none;
+                    }
+
+                    :global(#toolSpeed::before) {
+                        content: "";
+                        position: absolute;
+                        right: 0;
+                        bottom: calc(-0.5 * var(--border-width));
+                        left: 0;
+                        z-index: -1;
+
+                        border-bottom: var(--border) var(--clr-300);
                     }
                 }
             }

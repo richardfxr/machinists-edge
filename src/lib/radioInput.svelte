@@ -39,6 +39,7 @@
         flex-direction: column;
         gap: var(--pad-4xs);
         position: relative;
+        z-index: 1;
 
         padding: var(--pad-sm) var(--pad-xl);
 
