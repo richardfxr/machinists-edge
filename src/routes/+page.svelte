@@ -6,16 +6,15 @@
 	import RangeInput from "$lib/rangeInput.svelte";
 	import RadioInput from "$lib/radioInput.svelte";
 	import RadioTable from "$lib/radioTable.svelte";
+	import ScrollContainer from "$lib/scrollContainer.svelte";
 
     /* === VARAIBLES ========================== */
-    let error = false;
     let cutterDiameter = { value: 0.5, error: false };
     let numFlutes = { value: 2, error: false };
-
     let opType = "drill";
     let material = "aluminum";
-    let customToolSpeed = 100;
-    let customCuttingFeed = 0.001;
+    let customToolSpeed = { value: 100, error: false };
+    let customCuttingFeed = { value: 0.001, error: false };
 
     interface materialData {
         [key: string]: any;
@@ -45,8 +44,7 @@
     };
 
     /* === REACTIVE DECLARATIONS ============== */
-    $: spindleSpeed = 4278;
-    $: feedRate = 17;
+    $: error = cutterDiameter.error || numFlutes.error || customToolSpeed.error || customCuttingFeed.error
     $: halfEngagement = cutterDiameter.value / 2;
     $: quaterEngagement = cutterDiameter.value / 4;
     $: cutterDiameterIndex = cutterDiameter.value < 0.125 ? 0 :
@@ -54,53 +52,38 @@
                              cutterDiameter.value < 0.5 ? 2 :
                              cutterDiameter.value < 1 ? 3 : 4;
 
-    interface materialSpeeds {
-        [key: string]: any;
-        aluminum: number;
-        brass: number;
-        delrin: number;
-        steel: number;
-    }
-    $: toolSpeeds = {
-        aluminum: aluminum[opType],
-        brass: brass[opType],
-        delrin: delrin[opType],
-        steel: steel[opType],
-    } as materialSpeeds;
-    $: cuttingFeeds = {
-        aluminum: aluminum.feed[cutterDiameterIndex],
-        brass: brass.feed[cutterDiameterIndex],
-        delrin: delrin.feed[cutterDiameterIndex],
-        steel: steel.feed[cutterDiameterIndex],
-    } as materialSpeeds;
+    $: toolSpeed = material === "aluminum" ? aluminum[opType] :
+                   material === "brass" ? brass[opType] :
+                   material === "delrin" ? delrin[opType] :
+                   material === "steel" ? steel[opType] : customToolSpeed.value;
+
+    $: cuttingFeed = material === "aluminum" ? aluminum.feed[cutterDiameterIndex] :
+                     material === "brass" ? brass.feed[cutterDiameterIndex] :
+                     material === "delrin" ? delrin.feed[cutterDiameterIndex] :
+                     material === "steel" ? steel.feed[cutterDiameterIndex] : customCuttingFeed.value;
+
+    $: spindleSpeed = Math.round(toolSpeed / (Math.PI / 12 * cutterDiameter.value));
+    $: feedRate = Math.round(spindleSpeed * cuttingFeed * numFlutes.value * 10) / 10;
 
     /* === FUNCTIONS ========================== */
     function changeCustomMaterial(
         name: "toolSpeed" | "cuttingFeed",
-        e: { error: boolean, value: number }
+        detail: { error: boolean, value: number }
     ) {
-        // reset error
-        error = false;
-        // change material to custom
         material = "custom";
-
-        if (e.error) {
-            error = true;
-            return;
-        }
 
         // set values
         if (name === "toolSpeed") 
-            customToolSpeed = e.value;
+            customToolSpeed = detail;
         else
-            customCuttingFeed = e.value;
+            customCuttingFeed = detail;
     }
 </script>
 
 
 <h1>Feed Rate Calculator</h1>
 
-<form action="" class="feedCalc" on:submit|preventDefault>
+<form action="" class="feedCalc" class:error on:submit|preventDefault>
     <div class="inputs">
         <div
             class="cutterDiameter input__container"
@@ -156,11 +139,11 @@
             label="material presets"
             name="materialSelect"
             options={[
-                { name: "Aluminum", value: "aluminum", col1: toolSpeeds["aluminum"], col2: cuttingFeeds["aluminum"] },
-                { name: "Brass", value: "brass", col1: toolSpeeds["brass"], col2: cuttingFeeds["brass"] },
-                { name: "Delrin", value: "delrin", col1: toolSpeeds["delrin"], col2: cuttingFeeds["delrin"] },
-                { name: "Steel", value: "steel", col1: toolSpeeds["steel"], col2: cuttingFeeds["steel"] },
-                { name: "Custom (change with following inputs)", value: "custom", col1: customToolSpeed, col2: customCuttingFeed, hidden: true },
+                { name: "Aluminum", value: "aluminum", col1: aluminum[opType], col2: aluminum.feed[cutterDiameterIndex] },
+                { name: "Brass", value: "brass", col1: brass[opType], col2: brass.feed[cutterDiameterIndex] },
+                { name: "Delrin", value: "delrin", col1: delrin[opType], col2: delrin.feed[cutterDiameterIndex] },
+                { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex] },
+                { name: "Custom (change with following inputs)", value: "custom", col1: customToolSpeed.value, col2: customCuttingFeed.value, hidden: true },
             ]}
             tableHeadings={["material", "tool speed", "cutting feeds"]}
             selfContained
@@ -170,38 +153,43 @@
             <NumInput
                 label="tool speed"
                 name="toolSpeed"
-                displayedValue={material === "custom" ? customToolSpeed : toolSpeeds[material]}
+                displayedValue={toolSpeed}
                 units="SFPM"
                 type="drivenNumber"
+                step={1}
                 selfContained
                 on:update={e => changeCustomMaterial("toolSpeed", e.detail)}/>
             
             <NumInput
                 label="cutting feed"
                 name="cuttingFeed"
-                displayedValue={material === "custom" ? customCuttingFeed : cuttingFeeds[material]}
+                displayedValue={cuttingFeed}
                 units="IPR"
                 type="drivenNumber"
+                allowZero
                 selfContained
                 on:update={e => changeCustomMaterial("cuttingFeed", e.detail)}/>
         </div>
     </div>
 
     <div class="alwaysVisible">
-        <div class="alwaysVisible__inner">
+        <ScrollContainer contains="results">
             <Output
                 label="spindle speed"
                 value={spindleSpeed}
                 units="RPM"
                 position="bottom-right"
-                highlighted />
+                highlighted
+                {error} />
+            
             <Output
                 label="feed rate"
                 value={feedRate}
                 units="IPM"
                 position="bottom-left"
-                highlighted />
-        </div>
+                highlighted
+                {error} />
+        </ScrollContainer>
     </div>
 
     <div class="results">
@@ -318,23 +306,41 @@
             bottom: 0;
             z-index: 100;
 
-            &__inner {
-                display: flex;
-                flex-flow: row wrap;
-                align-items: center;
-                gap: var(--pad-lg);
+            :global(.scrollContainer) {
                 position: sticky;
                 top: 0;
                 left: 0;
+                z-index: 1;
                 width: var(--_results-width);
                 min-height: var(--_alwaysVisible-height);
 
                 padding: var(--pad-3xs) var(--pad-lg);
                 background-color: var(--clr-900);
+
+                overflow-y: hidden;
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    z-index: -1;
+
+                    background-color: var(--clr-error-800);
+
+                    transform: translateY(-100%);
+                    transition: transform 0.1s cubic-bezier(0,.76,.77,1);
+                }
             }
 
-            :global(output:nth-child(2)) {
-                margin-left: auto;
+            :global(.scrollContainer__inner) {
+                display: inline-flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: var(--pad-lg);
             }
         }
 
@@ -348,6 +354,12 @@
 
             &__inner {
                 padding-bottom: var(--pad-5xl);
+            }
+        }
+
+        &.error {
+            :global(.alwaysVisible .scrollContainer::before) {
+                transform: translateY(0%);
             }
         }
     }
@@ -478,7 +490,7 @@
                 bottom: unset;
                 width: 100%;
 
-                &__inner {
+                :global(.scrollContainer) {
                     position: relative;
                     width: 100%;
                 }
