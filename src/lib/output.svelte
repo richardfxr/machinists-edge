@@ -14,13 +14,13 @@
 
 <output
     class="output"
-    class:highlighted={highlighted}
-    class:error={error}
+    class:highlighted
+    class:error
     name="result"
     for="">
     <span class="label">{label}</span>
     <span class="value">
-        {value}
+        <span>{error ? "error" : value}</span>
         <UnitAbbr {units} {position}/>
     </span>
 </output>
@@ -33,6 +33,11 @@
         gap: var(--padRem-4xs);
 
         .value {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: baseline;
+            gap: var(--pad-3xs);
+
             color: var(--clr-900);
             font-family: "ClashDisplay", sans-serif;
             font-size: var(--font-xl);
@@ -56,6 +61,24 @@
                     --_clr: var(--clr-300);
                     --_clr-hover: var(--clr-100);
                 }
+            }
+        }
+
+        &.error {
+            .value {
+                & > span {
+                    // error text
+                    text-transform: uppercase;
+                }
+
+                :global(.unitAbbr) {
+                    // hide unitAbbr
+                    display: none;
+                }
+            }
+
+            &.highlighted .label {
+                color: var(--clr-0);
             }
         }
     }
