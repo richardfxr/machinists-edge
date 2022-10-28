@@ -178,7 +178,7 @@
                 label="spindle speed"
                 value={spindleSpeed}
                 units="RPM"
-                position="bottom-right"
+                position="top-right"
                 highlighted
                 {error} />
             
@@ -186,7 +186,7 @@
                 label="feed rate"
                 value={feedRate}
                 units="IPM"
-                position="bottom-left"
+                position="top-left"
                 highlighted
                 {error} />
         </ScrollContainer>
