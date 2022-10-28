@@ -70,7 +70,7 @@
 
 
 <style lang="scss">
-    :global(.scrollContainer__inner) {
+    :global(.radioTable__container .scrollContainer__inner) {
         padding: 0 var(--pad-xl) var(--pad-sm) var(--pad-xl);
     }
 
