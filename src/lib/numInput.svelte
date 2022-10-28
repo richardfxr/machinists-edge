@@ -11,7 +11,7 @@
     export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
     export let step = 0.001;
     export let type: "allowFractions" | "readonly" | "drivenNumber";
-    export let positiveOnly = true;
+    export let allowZero = false;
     export let selfContained = false;
 
     /* === VARAIBLES ========================== */
@@ -42,8 +42,12 @@
         if (displayedValue == null) {
             trueValue = 1;
             error = true;
-        } else if (positiveOnly && trueValue <= 0) {
-            // disallow zero or negative values
+        } else if (allowZero && trueValue < 0) {
+            // disallow negative values
+            trueValue = 1;
+            error = true;
+        } else if (!allowZero && trueValue <= 0) {
+            // disallow zero
             trueValue = 1;
             error = true;
         }
@@ -65,12 +69,10 @@
         if (typeof value == 'number') {
             // set value as trueValue if it is a number
             trueValue = value;
-            console.log("value is number");
         } else {
             if (!isNaN(parseFloat(value)) && isOnlyNum(value)) {
                 // set parsed value as trueValue if string is a valid number
                 trueValue = parseFloat(value);
-                console.log("value is string that is valid number");
             } else if (value.split("/").length === 2) {
                 // calculate fraction
                 let values = value.split("/");
@@ -79,18 +81,15 @@
                 if (typeof fraction == 'number' && isOnlyNum(values[0]) && isOnlyNum(values[1])) {
                     // set fraction as trueValue if fraction is valid number
                     trueValue = fraction;
-                    console.log("value is valid fraction:", values);
                 } else {
                     error = true;
-                    console.log("value is invalid fraction:", values)
                 }
             } else {
                 error = true;
-                console.log("value is invalid")
             }
         }
 
-        if (positiveOnly && trueValue === 0) {
+        if (!allowZero && trueValue === 0) {
             // disallow zero
             error = true;
             trueValue = 1;
@@ -142,7 +141,7 @@
                 bind:value={displayedValue}
                 on:input={dispatchValue}
                 type="number"
-                min={positiveOnly ? 0 : ""}
+                min={allowZero ? "-0.001" : "0"}
                 {step}>
         {/if}
 
