@@ -9,7 +9,7 @@
 
     /* === PROPS ============================== */
     export let scaleX: number;
-    export let flutes: number;  
+    export let flutes: number;
 
     /* === FUNCTIONS ========================== */
     function clamp(input: number, min: number, max: number): number {
@@ -19,10 +19,11 @@
     /* === REACTIVE DECLARATIONS ============== */
     $: displayedFlutes = clamp(flutes, 1, 5);
     $: displayedScaleX = clamp(scaleX, 0.2, 1);
+    $: fluteArrayLength = 3;
 </script>
 
 
-<tool-illus class="tool__illus">
+<tool-illus class="tool__illus" style="--fluteArrayLength: {fluteArrayLength};">
     <ToolHolder />
     <div class="bit" style="--scaleX: {displayedScaleX}; --flutes: {displayedFlutes};">
         <BitTop scaleX={displayedScaleX} />
@@ -30,42 +31,22 @@
             <div class="flutes">
                 <div class="flutes__inner">
                     {#each Array(6) as _, i}
-                        <FluteBack
-                            scaleX={displayedScaleX}
-                            position={i === 0 ? "relative" : "absolute"}
-                            zIndex={3 * i}
-                            index={0}
-                            offsetY={(100 / 3 / displayedFlutes) * -i} />
-                        <FluteFront
-                            scaleX={displayedScaleX}
-                            position={i === 0 ? "relative" : "absolute"}
-                            zIndex={3 * i + 100}
-                            index={1}
-                            offsetY={(100 / 3 / displayedFlutes) * -i} />
-                        <FluteBack
-                            scaleX={displayedScaleX}
-                            position={i === 0 ? "relative" : "absolute"}
-                            zIndex={3 * i + 1}
-                            index={2}
-                            offsetY={(100 / 3 / displayedFlutes) * -i} />
-                        <FluteFront
-                            scaleX={displayedScaleX}
-                            position={i === 0 ? "relative" : "absolute"}
-                            zIndex={3 * i + 101}
-                            index={3}
-                            offsetY={(100 / 3 / displayedFlutes) * -i} />
-                        <FluteBack
-                            scaleX={displayedScaleX}
-                            position={i === 0 ? "relative" : "absolute"}
-                            zIndex={3 * i + 2}
-                            index={4}
-                            offsetY={(100 / 3 / displayedFlutes) * -i} />
-                        <FluteFront
-                            scaleX={displayedScaleX}
-                            position={i === 0 ? "relative" : "absolute"}
-                            zIndex={3 * i + 102}
-                            index={5}
-                            offsetY={(100 / 3 / displayedFlutes) * -i} />
+                        {#each Array(fluteArrayLength) as _, i2}
+                            <FluteBack
+                                scaleX={displayedScaleX}
+                                position={i === 0 ? "relative" : "absolute"}
+                                zIndex={fluteArrayLength * i + 2 * i2}
+                                {fluteArrayLength}
+                                index={0 + 2 * i2}
+                                offsetY={(200 / displayedFlutes) * -i} />
+                            <FluteFront
+                                scaleX={displayedScaleX}
+                                position={i === 0 ? "relative" : "absolute"}
+                                zIndex={fluteArrayLength * i + 100 + 2 * i2}
+                                {fluteArrayLength}
+                                index={1 + 2 * i2}
+                                offsetY={(200 / displayedFlutes) * -i} />
+                        {/each}
                     {/each}
                     <FluteCenter scaleX={displayedScaleX} zIndex={99} />
                 </div>
@@ -139,7 +120,7 @@
     /* === ANIMATIONS ========================= */
     @keyframes moveUp {
         from { transform: translateY(0%); }
-        to { transform: translateY(calc(-100% / 3)); }
+        to { transform: translateY(calc(-100% / var(--fluteArrayLength))); }
     }
 
     /* === BREAKPOINTS ======================== */

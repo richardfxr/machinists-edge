@@ -4,6 +4,7 @@
     export let scaleY = 1;
     export let position = "relative";
     export let zIndex = 1;
+    export let fluteArrayLength = 1;
     export let index = 0;
     export let offsetY = 0;
 </script>
@@ -15,7 +16,7 @@
     style="
         --position: {position};
         --zIndex: {zIndex};
-        --top: {position === "relative" ? 0 : index * (100/6) + offsetY}%;
+        --top: {position === "relative" ? 0 : index * (100 / fluteArrayLength / 2)}%;
         --offsetY: {offsetY}%;"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 81.5 230">
@@ -33,6 +34,7 @@
         left: 0;
         z-index: var(--zIndex);
 
-        transition: top var(--trans-fast);
+        transform: translateY(var(--offsetY));
+        transition: transform var(--trans-fast);
     }
 </style>
