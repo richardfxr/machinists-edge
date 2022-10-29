@@ -194,7 +194,11 @@
 
     <div class="results">
         <div class="results__inner">
-            <ToolIllus scaleX={cutterDiameter.value * 2} flutes={numFlutes.value} {spindleSpeed} />
+            <ToolIllus
+                scaleX={cutterDiameter.value * 2}
+                flutes={numFlutes.value}
+                {spindleSpeed}
+                {feedRate} />
         </div>
     </div>
 </form>

@@ -11,9 +11,11 @@
     export let scaleX: number;
     export let flutes: number;
     export let spindleSpeed: number;
+    export let feedRate: number;
 
     /* === VARAIBLES ========================== */
     const fluteArrayLength = 3;
+    const feedMarkNum = 20;
 
     /* === FUNCTIONS ========================== */
     function clamp(input: number, min: number, max: number): number {
@@ -24,6 +26,7 @@
     $: displayedFlutes = clamp(flutes, 1, 5);
     $: displayedScaleX = clamp(scaleX, 0.2, 1);
     $: displayedSpindleSpeed = clamp((5000 - spindleSpeed) / 1500, 0.1, 5);
+    $: displayedFeedRate = clamp((50 - feedRate) / 13, 0.8, 10);
 </script>
 
 
@@ -31,7 +34,9 @@
     class="tool__illus"
     style="
         --spindleSpeed: {displayedSpindleSpeed}s;
+        --feedRate: {displayedFeedRate}s;
         --fluteArrayLength: {fluteArrayLength};
+        --feedMarkNum: {feedMarkNum};
     ">
     <ToolHolder />
     <div class="bit" style="--scaleX: {displayedScaleX}; --flutes: {displayedFlutes};">
@@ -63,6 +68,12 @@
             <BitBoundingLines scaleX={displayedScaleX} />
         </div>
     </div>
+
+    <div class="feedMarks">
+        {#each Array(feedMarkNum) as _}
+            <div class="mark"></div>
+        {/each}
+    </div>
 </tool-illus>
 
 
@@ -72,12 +83,15 @@
         --_width: 180px;
         --_shoulder-height: 20px;
         --_flute-height: 240px;
+        --_feedMark-height: 40px;
 
         display: flex;
         flex-direction: column;
         position: relative;
 
-        padding: 0 calc(50% - var(--_width) / 2);
+        padding: 0 calc(50% - var(--_width) / 2) calc(var(--_feedMark-height) * 0.6) calc(50% - var(--_width) / 2);
+
+        overflow: hidden;
 
         &::before {
             // gradient overlay for tool illustration
@@ -95,11 +109,10 @@
 
         .bit {
             position: relative;
+            z-index: 2;
             width: 100%;
 
             padding: 0 32%;
-
-            // transform: translateX(calc(50% - (var(--scaleX) / 2) * 100%));
 
             :global(.illustration) {
                 transform: translateX(calc(50% - (var(--scaleX) / 2) * 100%));
@@ -124,12 +137,34 @@
                 }
             }
         }
+
+        .feedMarks {
+            display: grid;
+            grid-template-columns: repeat(var(--feedMarkNum), auto);
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            width: 200%;
+            height: var(--_feedMark-height);
+
+            animation: moveRight var(--feedRate) linear infinite;
+
+            .mark {
+                border-right: var(--border) var(--clr-300);
+            }
+        }
     }
 
     /* === ANIMATIONS ========================= */
     @keyframes moveUp {
         from { transform: translateY(0%); }
         to { transform: translateY(calc(-100% / var(--fluteArrayLength))); }
+    }
+
+    @keyframes moveRight {
+        from { transform: translateX(0%); }
+        to { transform: translateX(50%); }
     }
 
     /* === BREAKPOINTS ======================== */
