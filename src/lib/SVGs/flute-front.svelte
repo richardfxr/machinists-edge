@@ -35,7 +35,7 @@
         left: 0;
         z-index: var(--zIndex);
 
-        transform: translateY(var(--offsetY));
+        transform: translateX(calc(50% - var(--scaleX) / 2 * 100%)) translateY(var(--offsetY));
         transition: transform var(--trans-fast);
     }
 </style>
