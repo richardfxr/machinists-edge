@@ -10,6 +10,10 @@
     /* === PROPS ============================== */
     export let scaleX: number;
     export let flutes: number;
+    export let spindleSpeed: number;
+
+    /* === VARAIBLES ========================== */
+    const fluteArrayLength = 3;
 
     /* === FUNCTIONS ========================== */
     function clamp(input: number, min: number, max: number): number {
@@ -19,11 +23,16 @@
     /* === REACTIVE DECLARATIONS ============== */
     $: displayedFlutes = clamp(flutes, 1, 5);
     $: displayedScaleX = clamp(scaleX, 0.2, 1);
-    $: fluteArrayLength = 3;
+    $: displayedSpindleSpeed = clamp((5000 - spindleSpeed) / 1500, 0.1, 5);
 </script>
 
 
-<tool-illus class="tool__illus" style="--fluteArrayLength: {fluteArrayLength};">
+<tool-illus
+    class="tool__illus"
+    style="
+        --spindleSpeed: {displayedSpindleSpeed}s;
+        --fluteArrayLength: {fluteArrayLength};
+    ">
     <ToolHolder />
     <div class="bit" style="--scaleX: {displayedScaleX}; --flutes: {displayedFlutes};">
         <BitTop scaleX={displayedScaleX} />
@@ -111,7 +120,7 @@
 
                 &__inner {
                     position: relative;
-                    animation: moveUp 2s linear infinite;
+                    animation: moveUp var(--spindleSpeed) linear infinite;
                 }
             }
         }
