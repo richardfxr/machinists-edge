@@ -13,6 +13,10 @@ GLOBAL
         font-weight: 400;
         background-color: var(--clr-100);
     }
+
+    html {
+        scroll-behavior: smooth;
+    }
 }
 
 h1 {
@@ -26,6 +30,22 @@ h1 {
     padding: var(--pad-5xl) 0;
 
     overflow-wrap: break-word;
+}
+
+.text {
+    &--sm {
+        color: var(--clr-800);
+        font-size: var(--font-sm);
+
+        a {
+            text-decoration: underline;
+            transition: color var(--trans-fast);
+
+            &:hover, &:focus {
+                color: var(--clr-900);
+            }
+        }
+    }
 }
 
 svg.illustration {

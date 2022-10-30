@@ -1,6 +1,7 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
     import Header from "$lib/header.svelte";
+    import Footer from "$lib/footer.svelte";
 </script>
 
 
@@ -9,6 +10,8 @@
 <main id="main">
     <slot></slot>
 </main>
+
+<Footer />
 
 
 <style lang="scss">
