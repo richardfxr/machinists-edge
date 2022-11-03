@@ -1,6 +1,6 @@
 <script lang="ts">
     /* === PROPS ============================== */
-    export let type: "text" | "text--uppercase" = "text";
+    export let type: "text" | "text--uppercase" | "icon--md" | "icon--lg" = "text";
 </script>
 
 
@@ -11,7 +11,10 @@
 
 <style lang="scss">
     .button {
-        color: var(--clr-800);
+        // internal variable
+        --_color: var(--clr-800);
+
+        color: var(--_color);
         font-size: var(--font-lg);
         font-weight: 500;
         line-height: 1em;
@@ -23,8 +26,12 @@
                     border-color var(--trans-fast);
         
         &:hover, &:focus-visible {
-            color: var(--clr-900);
-            border-color: var(--clr-800);
+            --_color: var(--clr-900);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            --_color: var(--clr-700);
         }
 
         &.text--uppercase {
@@ -32,6 +39,38 @@
             text-transform: uppercase;
 
             padding: var(--pad-xs) var(--pad-xl);
+        }
+
+        &.icon--md, &.icon--lg {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            
+            color: var(--_color);
+            line-height: 1em;
+
+            padding: var(--pad-xs) 0;
+
+            transition: color var(--trans-fast);            
+
+            :global(.icon) {
+                display: block;
+                width: var(--_button-icon-size);
+                fill: var(--_color);
+
+                transition: fill var(--trans-fast);
+            }
+
+            span {
+                display: block;
+                white-space: nowrap;
+            }
+        }
+
+        &.icon--md {
+            gap: var(--pad-xs);
+            font-size: var(--font-lg);
+            font-weight: 500;
         }
     }
 </style>
