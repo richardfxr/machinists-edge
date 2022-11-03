@@ -8,12 +8,15 @@
 	import RadioTable from "$lib/radioTable.svelte";
 	import ScrollContainer from "$lib/scrollContainer.svelte";
 	import SaveLoader from "$lib/saveLoader.svelte";
+    import { feedRateSaves, loadedFeedRateSave } from "../store/store";
+    import type { feedRateSave } from "../store/store";
+	import Saves from "$lib/saves.svelte";
 
     /* === VARAIBLES ========================== */
     let cutterDiameter = { value: 0.5, error: false };
     let numFlutes = { value: 2, error: false };
-    let opType = "drill";
-    let material = "aluminum";
+    let opType: "drill" | "mill" = "drill";
+    let material: "aluminum" | "brass" | "delrin" | "steel" | "custom" = "aluminum";
     let customToolSpeed = { value: 100, error: false };
     let customCuttingFeed = { value: 0.001, error: false };
 
@@ -66,6 +69,20 @@
     $: spindleSpeed = Math.round(toolSpeed / (Math.PI / 12 * cutterDiameter.value));
     $: feedRate = Math.round(spindleSpeed * cuttingFeed * numFlutes.value * 10) / 10;
 
+    $: loadedSave = $loadedFeedRateSave !== -1 ? $feedRateSaves[$loadedFeedRateSave] : null;
+    $: cutterDiameterHasChange = loadedSave?.cutterDiameter !== cutterDiameter.value;
+    $: numFlutesHasChange = loadedSave?.numFlutes !== numFlutes.value;
+    $: opTypeHasChange = loadedSave?.opType !== opType;
+    $: materialHasChange = loadedSave?.material !== material;
+    $: customToolSpeedHasChange = loadedSave?.customToolSpeed !== customToolSpeed.value;
+    $: customCuttingFeedHasChange = loadedSave?.customCuttingFeed !== customCuttingFeed.value;
+    $: hasChanges = cutterDiameterHasChange ||
+                    numFlutesHasChange ||
+                    opTypeHasChange ||
+                    materialHasChange ||
+                    customToolSpeedHasChange ||
+                    customCuttingFeedHasChange;
+
     /* === FUNCTIONS ========================== */
     function changeCustomMaterial(
         name: "toolSpeed" | "cuttingFeed",
@@ -78,6 +95,77 @@
             customToolSpeed = detail;
         else
             customCuttingFeed = detail;
+    }
+
+    function createSave(name: string) {
+        // create save of interface feedRateSave
+        let save: feedRateSave = {
+            name,
+            spindleSpeed,
+            feedRate,
+            cutterDiameter: cutterDiameter.value,
+            numFlutes: numFlutes.value,
+            opType,
+            material,
+            customToolSpeed: customToolSpeed.value,
+            customCuttingFeed: customCuttingFeed.value,
+        };
+
+        return save;
+    }
+
+    function createNewSave(detail: {name: string}) {
+        // do not save if there is an error
+        if (error) return;
+
+        const newSave = createSave(detail.name);
+
+        // add new save to feedRateSaves array
+        feedRateSaves.update(oldSaves => [...oldSaves, newSave]);
+        loadedFeedRateSave.set($feedRateSaves.indexOf(newSave));
+
+        console.log("saved:", $feedRateSaves);
+    }
+
+    function updateSave(detail: {name: string}) {
+        // do not save if there is an error
+        if (error) return;
+
+        const updatedSave = createSave(detail.name);
+
+        // update feedRateSaves array with updated save
+        if ($loadedFeedRateSave !== -1) $feedRateSaves[$loadedFeedRateSave] = updatedSave;
+
+        console.log("updated:", $feedRateSaves);
+    }
+
+    function loadSave(index: number) {
+        // check index is valid
+        if (index < 0 || index > $feedRateSaves.length - 1) return;
+
+        loadedFeedRateSave.set(index);
+
+        const loadingSave = $feedRateSaves[index];
+
+        // update all values
+        cutterDiameter.value = loadingSave.cutterDiameter;
+        numFlutes.value = loadingSave.numFlutes;
+        opType = loadingSave.opType;
+        material = loadingSave.material;
+        customToolSpeed.value = loadingSave.customToolSpeed;
+        customCuttingFeed.value = loadingSave.customCuttingFeed;
+
+        // reset errors
+        cutterDiameter.error = false;
+        numFlutes.error = false;
+        customToolSpeed.error = false;
+        customCuttingFeed.error = false;
+    }
+
+    function deleteSave(index: number) {
+        const saveToBeDeleted = $feedRateSaves[index];
+        // remove save of index from feedRateSaves array
+        feedRateSaves.update(saves => saves.filter(save => save !== saveToBeDeleted));
     }
 </script>
 
@@ -204,7 +292,55 @@
     </div>
 </form>
 
-<SaveLoader />
+<SaveLoader
+    loadedSave={loadedSave ? loadedSave.name : null}
+    hasChanges={hasChanges}
+    loadedIndex={$loadedFeedRateSave + 1}
+    nextIndex={$feedRateSaves.length + 1}
+    on:save={e => createNewSave(e.detail)}
+    on:update={e => updateSave(e.detail)}
+    on:eject={() => loadedFeedRateSave.set(-1)}
+    on:delete={() => {
+        if ($loadedFeedRateSave !== -1) {
+            deleteSave($loadedFeedRateSave)
+            loadedFeedRateSave.set(-1);
+        }
+    }} />
+
+<Saves
+    saves={$feedRateSaves}
+    type="feedRate"
+    on:load={e => loadSave(e.detail.index)}
+    on:delete={e => deleteSave(e.detail.index)} />
+
+<div class="saves">
+    feedRateSaves:
+    {JSON.stringify($feedRateSaves)}
+    <br>
+    loadedSave:
+    {JSON.stringify(loadedSave)}
+    <br>
+    hasChanges:
+    {hasChanges}
+    <br>
+    cutterDiameterHasChange:
+    {cutterDiameterHasChange}
+    <br>
+    numFlutesHasChange:
+    {numFlutesHasChange}
+    <br>
+    opTypeHasChange:
+    {opTypeHasChange}
+    <br>
+    materialHasChange:
+    {materialHasChange}
+    <br>
+    customToolSpeedHasChange:
+    {customToolSpeedHasChange}
+    <br>
+    customCuttingFeedHasChange:
+    {customCuttingFeedHasChange}
+</div>
 
 
 <style lang="scss">
