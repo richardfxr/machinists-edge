@@ -1,6 +1,5 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-    import Button from "./button.svelte";
     import IconRadioInput from "./iconRadioInput.svelte";
     import Logo from "./SVGs/logo.svelte";
 
@@ -15,9 +14,12 @@
 
 
 <footer id="footer">
-    <Button
-        type="text--uppercase"
-        on:click={scrollToTop}>Back to top</Button>
+    <button
+        class="button text--uppercase outlined"
+        type="button"
+        on:click={scrollToTop}>
+        Back to top
+    </button>
 
     <div class="quickSettings">
         <IconRadioInput
