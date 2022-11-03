@@ -45,7 +45,8 @@ $breakpoint-mobile: 650px;
     --font-md: 1.2rem;
     --font-sm: 1.1rem;
 
-    --trans-fast: 0.18s ease;
+    --trans-duration-fast: 0.18s;
+    --trans-fast: var(--trans-duration-fast) ease;
 
     /* === COLORS ============================= */
 

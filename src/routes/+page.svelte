@@ -7,6 +7,7 @@
 	import RadioInput from "$lib/radioInput.svelte";
 	import RadioTable from "$lib/radioTable.svelte";
 	import ScrollContainer from "$lib/scrollContainer.svelte";
+	import SaveLoader from "$lib/saveLoader.svelte";
 
     /* === VARAIBLES ========================== */
     let cutterDiameter = { value: 0.5, error: false };
@@ -203,6 +204,8 @@
     </div>
 </form>
 
+<SaveLoader />
+
 
 <style lang="scss">
     .feedCalc {
@@ -217,7 +220,6 @@
         position: relative;
 
         border: var(--border) var(--clr-300);
-        margin-bottom: 100px;
         
         .inputs {
             grid-area: inputs;
