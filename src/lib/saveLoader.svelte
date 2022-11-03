@@ -1,6 +1,6 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-    import { createEventDispatcher, tick } from 'svelte';
+    import { createEventDispatcher, tick, onMount } from 'svelte';
     import NewSave from "$lib/SVGs/newSave.svelte";
     import Save from "$lib/SVGs/save.svelte";
 	import Eject from "$lib/SVGs/eject.svelte";
@@ -9,6 +9,7 @@
     /* === PROPS ============================== */
     export let loadedSave: string | null = null;
     export let hasChanges = false;
+    export let loadedIndex = 1;
     export let nextIndex = 1;
 
     /* === BINDINGS =========================== */
@@ -16,18 +17,22 @@
     let floppyDisk: any;
 
     /* === VARAIBLES ========================== */
-    let isOpen = false;
     let newSave = false;
     let isSaving = false;
+    console.log("hasChanges:", hasChanges);
 
     /* === REACTIVE DECLARATIONS ============== */
+    $: isOpen = loadedSave !== null;
+    $: loadedSave === null ? closeDialog() : showDialog();
     $: saveTitle = loadedSave === null ? "" : loadedSave;
+    $: canSave = hasChanges || saveTitle !== loadedSave;
 
     /* === FUNCTIONS ========================== */
     function showDialog() {
         // return if dialog binding does not exist or if show() is not supported
         if (!dialog || typeof dialog.show !== "function") return;
 
+        console.log("called showDialog()");
         dialog.show();
         isOpen = true;
     }
@@ -37,6 +42,7 @@
         if (!dialog || typeof dialog.close !== "function") return;
 
         dialog.close();
+        newSave = false;
         isOpen = false;
     }
 
@@ -53,14 +59,15 @@
         if (newSave) {
             dispatch('save', {
                 name: saveTitle,
-            })
+            });
         } else {
             dispatch('update', {
                 name: saveTitle
-            })
+            });
         }
         
-        hasChanges = false;
+        newSave = false;
+        canSave = false;
         // trigger save animation
         isSaving = true;
 
@@ -69,6 +76,14 @@
 
         isSaving = false;
     }
+
+    /* === LIFECYCLE FUNCS ==================== */
+    onMount(() => {
+		if (isOpen) {
+            // show dialog without shifting focus
+            dialog.setAttribute("open", true);
+        };
+	});
 </script>
 
 
@@ -88,7 +103,7 @@
             type="button"
             on:click={() => {
                 newSave = true;
-                hasChanges = true;
+                canSave = true;
                 showDialog();
             }}>
             <NewSave />
@@ -118,15 +133,15 @@
                             <span class="label">save title</span>
                             <span
                                 id="saved"
-                                class:hidden={hasChanges}
-                                aria-hidden={hasChanges}>
+                                class:hidden={canSave}
+                                aria-hidden={canSave}>
                                 saved
                             </span>
                         </label>
                         <input
                             id="savedTitle"
                             tabindex={isOpen ? 0 : -1}
-                            placeholder="save #{nextIndex}"
+                            placeholder={newSave ? "save #" + nextIndex : "save #" + loadedIndex}
                             autocomplete="off"
                             type="text"
                             bind:value={saveTitle} />
@@ -139,7 +154,7 @@
                     class="iconWithText"
                     value="confirm"
                     tabindex={isOpen ? 0 : -1}
-                    disabled={!hasChanges}
+                    disabled={!canSave}
                     on:click|preventDefault={save}>
                     <Save />
                     <span>save</span>
@@ -148,14 +163,14 @@
                     class="iconWithText"
                     value="cancel"
                     tabindex={isOpen ? 0 : -1}
-                    on:click|preventDefault={closeDialog}>
+                    on:click|preventDefault={() => dispatch('eject')}>
                     <Eject />
                     <span>eject</span>
                 </button>
                 <button
                     class="iconWithText"
                     tabindex={isOpen ? 0 : -1}
-                    on:click|preventDefault={closeDialog}>
+                    on:click|preventDefault={() => dispatch('delete')}>
                     <DeleteSave />
                     <span>delete</span>
                 </button>
@@ -185,9 +200,6 @@
 
         position: relative;
 
-        padding-bottom: var(--pad-3xl);
-        margin-bottom: calc(var(--_loader-offset) - var(--_disk-offset));
-
         &.open {
             .closedButtons {
                 opacity: 0;
@@ -213,47 +225,6 @@
                 var(--_pad-hrz);
             border-left: var(--border) var(--clr-300);
             border-right: var(--border) var(--clr-300);
-        }
-
-        .iconWithText {
-            // internal variable
-            --_color: var(--clr-800);
-
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: center;
-            gap: var(--pad-xs);
-            
-            color: var(--_color);
-            font-size: var(--font-lg);
-            font-weight: 500;
-            line-height: 1em;
-
-            padding: var(--pad-xs) 0;
-
-            transition: color var(--trans-fast);
-
-            &:hover, &:focus {
-                --_color: var(--clr-900);
-            }
-
-            &:disabled {
-                cursor: not-allowed;
-                --_color: var(--clr-700);
-            }
-
-            :global(.icon) {
-                display: block;
-                width: var(--_button-icon-size);
-                fill: var(--_color);
-
-                transition: fill var(--trans-fast);
-            }
-
-            span {
-                display: block;
-                white-space: nowrap;
-            }
         }
 
         .closedButtons {
@@ -322,7 +293,7 @@
                     padding: 0 calc(var(--_pad-hrz) + var(--pad-md));
 
                     // shift .loader up so it is centered with .actions
-                    transform: translateY(var(--_loader-offset));
+                    margin-top: var(--_loader-offset);
 
                     &::before {
                         // outline
