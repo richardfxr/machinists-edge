@@ -26,6 +26,8 @@ $breakpoint-mobile: 650px;
     --padRem-4xs: 0.15rem;
 
     --pad-hrz: 80px;
+    --pad-7xl: calc(130px * var(--scalor-main));
+    --pad-6xl: calc(100px * var(--scalor-main));
     --pad-5xl: calc(80px * var(--scalor-main));
     --pad-4xl: calc(65px * var(--scalor-main));
     --pad-3xl: calc(50px * var(--scalor-main));
@@ -40,8 +42,9 @@ $breakpoint-mobile: 650px;
     --pad-4xs: calc(3px * var(--scalor-main));
     --pad-5xs: calc(1.5px * var(--scalor-main));
 
-    --font-2xl: 3.3rem;
-    --font-xl: 1.9rem;
+    --font-4xl: 3.3rem;
+    --font-2xl: 1.8rem;
+    --font-xl: 1.65rem;
     --font-lg: 1.5rem;
     --font-md: 1.2rem;
     --font-sm: 1.1rem;
@@ -62,12 +65,13 @@ $breakpoint-mobile: 650px;
 @media only screen and (max-width: $breakpoint-smdesktop) {
     :root {
         /* === CSS VARIABLES ====================== */
-        --scalor-main: 0.95;
+        --scalor-main: 0.98;
 
         --pad-hrz: 60px;
 
-        --font-2xl: 3.2rem;
-        --font-xl: 1.85rem;
+        --font-4xl: 3.2rem;
+        --font-2xl: 1.75rem;
+        --font-xl: 1.6rem;
         --font-lg: 1.45rem;
         --font-md: 1.15rem;
     }
@@ -76,12 +80,13 @@ $breakpoint-mobile: 650px;
 @media only screen and (max-width: $breakpoint-tablet) {
     :root {
         /* === CSS VARIABLES ====================== */
-        --scalor-main: 0.9;
+        --scalor-main: 0.95;
 
         --pad-hrz: 25px;
 
-        --font-2xl: 3.05rem;
-        --font-xl: 1.85rem;
+        --font-4xl: 3.05rem;
+        --font-2xl: 1.75rem;
+        --font-xl: 1.6rem;
         --font-lg: 1.4rem;
         --font-md: 1.1rem;
     }
@@ -94,8 +99,9 @@ $breakpoint-mobile: 650px;
 
         --pad-hrz: 0;
 
-        --font-2xl: 2.8rem;
-        --font-xl: 1.85rem;
+        --font-4xl: 2.8rem;
+        --font-2xl: 1.75rem;
+        --font-xl: 1.6rem;
         --font-lg: 1.4rem;
         --font-md: 1.1rem;
     }
@@ -108,8 +114,9 @@ $breakpoint-mobile: 650px;
 
         --pad-hrz: 5.5%;
 
-        --font-2xl: 2.6rem;
-        --font-xl: 1.85rem;
+        --font-4xl: 2.6rem;
+        --font-2xl: 1.75rem;
+        --font-xl: 1.6rem;
         --font-lg: 1.4rem;
         --font-md: 1.1rem;
     }
