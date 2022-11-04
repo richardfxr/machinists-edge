@@ -27,7 +27,7 @@ export const loadedFeedRateSave = writable(loadedFeedRateSaveInedx);
 /* === LOCAL STORAGE ====================== */
 if (browser) {
     if (localStorage.feedRateSaves) feedRateSaves.set(JSON.parse(localStorage.feedRateSaves));
-    if (localStorage.loadedFeedRateSave < localStorage.feedRateSaves?.length) loadedFeedRateSave.set(localStorage.loadedFeedRateSave);
+    if (parseInt(localStorage.loadedFeedRateSave) < localStorage.feedRateSaves?.length) loadedFeedRateSave.set(parseInt(localStorage.loadedFeedRateSave));
 };
 
 /* === UPDATES ============================ */
