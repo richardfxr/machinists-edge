@@ -12,6 +12,9 @@
     import type { feedRateSave } from "../store/store";
 	import Saves from "$lib/saves.svelte";
 
+    /* === BINDINGS =========================== */
+    let calculator: any;
+
     /* === VARAIBLES ========================== */
     let cutterDiameter = { value: 0.5, error: false };
     let numFlutes = { value: 2, error: false };
@@ -160,6 +163,10 @@
         numFlutes.error = false;
         customToolSpeed.error = false;
         customCuttingFeed.error = false;
+
+        // scroll calculator into view and focus on it
+        calculator.scrollIntoView({ behavior: 'smooth' });
+        calculator.focus({ preventScroll: true });
     }
 
     function deleteSave(index: number) {
@@ -172,7 +179,12 @@
 
 <h1>Feed Rate Calculator</h1>
 
-<form action="" class="feedCalc" class:error on:submit|preventDefault>
+<form
+    class="feedCalc"
+    class:error
+    tabindex="-1"
+    bind:this={calculator}
+    on:submit|preventDefault>
     <div class="inputs">
         <div
             class="cutterDiameter input__container"
@@ -295,6 +307,7 @@
 <SaveLoader
     loadedSave={loadedSave ? loadedSave.name : null}
     hasChanges={hasChanges}
+    error={error}
     loadedIndex={$loadedFeedRateSave + 1}
     nextIndex={$feedRateSaves.length + 1}
     on:save={e => createNewSave(e.detail)}
@@ -310,44 +323,17 @@
 <Saves
     saves={$feedRateSaves}
     type="feedRate"
+    loadedIndex={$loadedFeedRateSave}
     on:load={e => loadSave(e.detail.index)}
+    on:eject={() => loadedFeedRateSave.set(-1)}
     on:delete={e => deleteSave(e.detail.index)} />
-
-<div class="saves">
-    feedRateSaves:
-    {JSON.stringify($feedRateSaves)}
-    <br>
-    loadedSave:
-    {JSON.stringify(loadedSave)}
-    <br>
-    hasChanges:
-    {hasChanges}
-    <br>
-    cutterDiameterHasChange:
-    {cutterDiameterHasChange}
-    <br>
-    numFlutesHasChange:
-    {numFlutesHasChange}
-    <br>
-    opTypeHasChange:
-    {opTypeHasChange}
-    <br>
-    materialHasChange:
-    {materialHasChange}
-    <br>
-    customToolSpeedHasChange:
-    {customToolSpeedHasChange}
-    <br>
-    customCuttingFeedHasChange:
-    {customCuttingFeedHasChange}
-</div>
 
 
 <style lang="scss">
     .feedCalc {
         // internal variables
         --_results-width: 450px;
-        --_alwaysVisible-height: calc(var(--font-xl) + var(--font-md) + var(--padRem-4xs) + 2 * var(--pad-2xs));
+        --_alwaysVisible-height: calc(var(--font-2xl) + var(--font-md) + var(--padRem-4xs) + 2 * var(--pad-2xs));
 
         display: grid;
         grid-template-columns: var(--_results-width) auto;
