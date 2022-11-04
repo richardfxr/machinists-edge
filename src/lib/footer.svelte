@@ -84,7 +84,7 @@
         gap: var(--pad-xl);
         max-width: var(--max-width);
 
-        padding: 0 var(--_pad-hrz) var(--pad-4xl) var(--_pad-hrz);
+        padding: var(--pad-7xl) var(--_pad-hrz) var(--pad-4xl) var(--_pad-hrz);
         margin: auto;
 
         :global(.button) {

@@ -40,7 +40,7 @@
 
             color: var(--clr-900);
             font-family: "ClashDisplay", sans-serif;
-            font-size: var(--font-xl);
+            font-size: var(--font-2xl);
             font-weight: 600;
             line-height: 1em;
 

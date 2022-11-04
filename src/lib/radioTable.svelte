@@ -71,7 +71,7 @@
 
 <style lang="scss">
     :global(.radioTable__container .scrollContainer__inner) {
-        padding: 0 var(--pad-xl) var(--pad-sm) var(--pad-xl);
+        padding: 0 var(--pad-xl) var(--pad-md) var(--pad-xl);
     }
 
     .radioTable {
@@ -91,7 +91,7 @@
 
         caption {
             position: relative;
-            padding: var(--pad-sm) 0 var(--pad-4xs) 0;
+            padding: var(--pad-md) 0 var(--pad-4xs) 0;
 
             span {
                 display: inline-block;
@@ -195,7 +195,7 @@
                     gap: var(--pad-sm);
 
                     color: var(--clr-800);
-                    font-size: var(--font-xl);
+                    font-size: var(--font-2xl);
                     font-weight: 600;
                     line-height: 1em;
 
@@ -221,7 +221,7 @@
 
             td {
                 color: var(--clr-800);
-                font-size: var(--font-xl);
+                font-size: var(--font-2xl);
                 font-family: "ClashDisplay", sans-serif;
                 font-weight: 400;
                 line-height: 1em;

@@ -114,7 +114,7 @@
 
         display: flex;
         flex-direction: column;
-        gap: var(--pad-4xs);
+        gap: var(--pad-2xs);
         position: relative;
         z-index: 1;
 
@@ -210,7 +210,7 @@
                     order: 1;
                     width: 3rem;
                     color: var(--clr-900);
-                    font-size: var(--font-xl);
+                    font-size: var(--font-2xl);
                     font-weight: 600;
                     line-height: 1em;
                     text-align: center;

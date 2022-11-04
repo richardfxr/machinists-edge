@@ -159,7 +159,7 @@
         position: relative;
         z-index: 1;
 
-        padding: var(--pad-sm) var(--pad-xl);
+        padding: var(--pad-md) var(--pad-xl);
 
         label {
             display: flex;
@@ -193,7 +193,7 @@
             input {
                 width: 100%;
                 color: var(--clr-900);
-                font-size: var(--font-xl);
+                font-size: var(--font-2xl);
                 font-weight: 600;
                 line-height: 1em;
 
