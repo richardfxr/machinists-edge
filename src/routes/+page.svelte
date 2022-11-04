@@ -100,6 +100,11 @@
             customCuttingFeed = detail;
     }
 
+    /* checks if index is valid for feedRateSaves array */
+    function isValid(index: number) {
+        return index >= 0 && index <= $feedRateSaves.length - 1;
+    }
+
     function createSave(name: string) {
         // create save of interface feedRateSave
         let save: feedRateSave = {
@@ -137,14 +142,14 @@
         const updatedSave = createSave(detail.name);
 
         // update feedRateSaves array with updated save
-        if ($loadedFeedRateSave !== -1) $feedRateSaves[$loadedFeedRateSave] = updatedSave;
+        if (isValid($loadedFeedRateSave)) $feedRateSaves[$loadedFeedRateSave] = updatedSave;
 
         console.log("updated:", $feedRateSaves);
     }
 
     function loadSave(index: number) {
         // check index is valid
-        if (index < 0 || index > $feedRateSaves.length - 1) return;
+        if (!isValid(index)) return;
 
         loadedFeedRateSave.set(index);
 
@@ -170,9 +175,14 @@
     }
 
     function deleteSave(index: number) {
+        // check index is valid
+        if (!isValid(index)) return;
+
         const saveToBeDeleted = $feedRateSaves[index];
-        // remove save of index from feedRateSaves array
+        // remove save from feedRateSaves array
         feedRateSaves.update(saves => saves.filter(save => save !== saveToBeDeleted));
+        // set loadedFeedRateSave to -1 (ejects)
+        loadedFeedRateSave.set(-1);
     }
 </script>
 
@@ -313,12 +323,7 @@
     on:save={e => createNewSave(e.detail)}
     on:update={e => updateSave(e.detail)}
     on:eject={() => loadedFeedRateSave.set(-1)}
-    on:delete={() => {
-        if ($loadedFeedRateSave !== -1) {
-            deleteSave($loadedFeedRateSave)
-            loadedFeedRateSave.set(-1);
-        }
-    }} />
+    on:delete={() => deleteSave($loadedFeedRateSave)} />
 
 <Saves
     saves={$feedRateSaves}

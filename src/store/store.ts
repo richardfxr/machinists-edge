@@ -40,10 +40,5 @@ feedRateSaves.subscribe(value => {
 loadedFeedRateSave.subscribe(value => {
     if (!browser) return;
 
-    console.log("loadedFeedRateSave:", value);
-
-    if (value === null)
-        localStorage.removeItem("loadedFeedRateSave");
-    else
-        localStorage.loadedFeedRateSave = value;
+    localStorage.loadedFeedRateSave = value;
 });
