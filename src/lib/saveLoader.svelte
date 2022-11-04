@@ -9,6 +9,7 @@
     /* === PROPS ============================== */
     export let loadedSave: string | null = null;
     export let hasChanges = false;
+    export let error = false;
     export let loadedIndex = 1;
     export let nextIndex = 1;
 
@@ -23,7 +24,7 @@
 
     /* === REACTIVE DECLARATIONS ============== */
     $: isOpen = loadedSave !== null;
-    $: loadedSave === null ? closeDialog() : showDialog();
+    $: loadedSave === null ? closeDialog() : showDialogWithoutFocus();
     $: saveTitle = loadedSave === null ? "" : loadedSave;
     $: canSave = hasChanges || saveTitle !== loadedSave;
 
@@ -32,8 +33,17 @@
         // return if dialog binding does not exist or if show() is not supported
         if (!dialog || typeof dialog.show !== "function") return;
 
-        console.log("called showDialog()");
         dialog.show();
+        newSave = false;
+        isOpen = true;
+    }
+
+    function showDialogWithoutFocus() {
+        // return if dialog binding does not exist
+        if (!dialog) return;
+
+        dialog.setAttribute("open", true);
+        newSave = false;
         isOpen = true;
     }
 
@@ -57,10 +67,16 @@
     async function save() {
         // dispatch appropriate event
         if (newSave) {
+            // replace empty save title
+            if (saveTitle === "") saveTitle = "save #" + nextIndex;
+
             dispatch('save', {
                 name: saveTitle,
             });
         } else {
+            // replace empty save title
+            if (saveTitle === "") saveTitle = "save #" + loadedIndex;
+
             dispatch('update', {
                 name: saveTitle
             });
@@ -79,10 +95,7 @@
 
     /* === LIFECYCLE FUNCS ==================== */
     onMount(() => {
-		if (isOpen) {
-            // show dialog without shifting focus
-            dialog.setAttribute("open", true);
-        };
+		if (isOpen) showDialogWithoutFocus();
 	});
 </script>
 
@@ -98,20 +111,20 @@
         aria-hidden={isOpen}>
         <button
             id="newSaveButton"
-            class="iconWithText"
+            class="button icon--lg"
             tabindex={isOpen ? -1 : 0}
-            type="button"
+            type="icon--lg"
             on:click={() => {
+                showDialog();
                 newSave = true;
                 canSave = true;
-                showDialog();
             }}>
             <NewSave />
             <span>new save</span>
         </button>
         <a
-            href="#"
-            class="iconWithText"
+            href="#saves"
+            class="button icon--lg"
             tabindex={isOpen ? -1 : 0}
             type="button">
             <Eject />
@@ -151,26 +164,32 @@
             <footer class="actions">
                 <button
                     id="save"
-                    class="iconWithText"
+                    class="button icon--lg"
                     value="confirm"
                     tabindex={isOpen ? 0 : -1}
-                    disabled={!canSave}
+                    disabled={!canSave || error}
                     on:click|preventDefault={save}>
                     <Save />
                     <span>save</span>
                 </button>
                 <button
-                    class="iconWithText"
+                    class="button icon--lg"
                     value="cancel"
                     tabindex={isOpen ? 0 : -1}
-                    on:click|preventDefault={() => dispatch('eject')}>
+                    on:click|preventDefault={() => {
+                        dispatch('eject');
+                        closeDialog();
+                    }}>
                     <Eject />
                     <span>eject</span>
                 </button>
                 <button
-                    class="iconWithText"
+                    class="button icon--lg"
                     tabindex={isOpen ? 0 : -1}
-                    on:click|preventDefault={() => dispatch('delete')}>
+                    on:click|preventDefault={() => {
+                        dispatch('delete');
+                        closeDialog();
+                    }}>
                     <DeleteSave />
                     <span>delete</span>
                 </button>
@@ -186,10 +205,9 @@
         // internal variables
         --_pad-hrz: var(--pad-xl);
         --_pad-vrt: var(--pad-md);
-        --_button-icon-size: var(--font-xl);
         --_loader-height: var(--pad-3xs);
         --_loader-seam-thickness: 3px;
-        --_loader-offset: calc(-1 * var(--pad-3xs) - var(--pad-xs) - (var(--_button-icon-size) / 2));
+        --_loader-offset: calc(-1 * var(--pad-3xs) - var(--pad-xs) - (var(--font-2xl) / 2));
         --_disk-width: 50%;
         --_disk-offset: 100px;
         --_disk-animation-duration: 0.3s;
@@ -218,6 +236,8 @@
         }
 
         h2 {
+            text-transform: none;
+
             padding:
                 var(--_pad-vrt)
                 var(--_pad-hrz)
@@ -273,7 +293,7 @@
                                     opacity var(--_disk-animation-duration) cubic-bezier(.27,0,1,.71);
                     }
 
-                    .actions > .iconWithText {
+                    .actions > .button {
                         opacity: 0;
                         transition: opacity var(--trans-fast);
                     }
@@ -425,7 +445,7 @@
                     input {
                         width: 100%;
                         color: var(--clr-900);
-                        font-size: var(--font-xl);
+                        font-size: var(--font-2xl);
                         font-weight: 600;
                         line-height: 1em;
                         
@@ -435,6 +455,12 @@
                             var(--pad-2xl)
                             var(--_disk-pad-hrz);
                         border: none;
+
+                        transition: color var(--trans-fast);
+
+                        &:hover, &:focus {
+                            color: var(--clr-1000);
+                        }
 
                         &::placeholder {
                             color: var(--clr-700);
@@ -456,9 +482,10 @@
                     border: var(--border) var(--clr-300);
                     border-top: none;
 
-                    opacity: 1;
-
-                    transition: opacity var(--trans-fast);
+                    .button {
+                        opacity: 1;
+                        transition: opacity var(--trans-fast);
+                    }
 
                     #save {
                         --_color: var(--clr-900);
@@ -513,7 +540,7 @@
 
             .saveDialog form {
                 .loader {
-                    transform: translateY(calc(-1 * var(--pad-2xl)));
+                    margin-top: calc(-1 * var(--pad-2xl));
                 }
 
                 .actions {
@@ -550,7 +577,7 @@
             .saveDialog form {
                 .loader {
                     padding: 0 calc(var(--_pad-hrz) + var(--pad-2xs));
-                    transform: translateY(calc(-1 * var(--pad-2xl)));
+                    margin-top: calc(-1 * var(--pad-2xl));
 
                     &::before {
                         right: calc(var(--_pad-hrz) - var(--pad-2xs));
