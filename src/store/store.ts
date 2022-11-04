@@ -14,31 +14,36 @@ export interface feedRateSave {
     material: "aluminum" | "brass" | "delrin" | "steel" | "custom";
     customToolSpeed: number;
     customCuttingFeed: number;
+    saveCount: number;
 }
 
 /* === INIT VARIABLES ===================== */
 let feedRateSavesArray: feedRateSave[] = [];
-let loadedFeedRateSaveInedx: number = -1;
 
 /* === STORES ============================= */
 export const feedRateSaves = writable(feedRateSavesArray);
-export const loadedFeedRateSave = writable(loadedFeedRateSaveInedx);
+export const loadedFeedRateSave = writable(-1);
+export const feedRateSaveCount = writable(1);
 
 /* === LOCAL STORAGE ====================== */
 if (browser) {
     if (localStorage.feedRateSaves) feedRateSaves.set(JSON.parse(localStorage.feedRateSaves));
     if (parseInt(localStorage.loadedFeedRateSave) < localStorage.feedRateSaves?.length) loadedFeedRateSave.set(parseInt(localStorage.loadedFeedRateSave));
+    if (localStorage.feedRateSaves) feedRateSaveCount.set(parseInt(localStorage.feedRateSaveCount));
 };
 
 /* === UPDATES ============================ */
 feedRateSaves.subscribe(value => {
     if (!browser) return;
-    console.log("feedRateSaves:", value);
     localStorage.feedRateSaves = JSON.stringify(value);
 });
 
 loadedFeedRateSave.subscribe(value => {
     if (!browser) return;
-
     localStorage.loadedFeedRateSave = value;
+});
+
+feedRateSaveCount.subscribe(value => {
+    if (!browser) return;
+    localStorage.feedRateSaveCount = value;
 });

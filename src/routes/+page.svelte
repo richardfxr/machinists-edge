@@ -8,7 +8,7 @@
 	import RadioTable from "$lib/radioTable.svelte";
 	import ScrollContainer from "$lib/scrollContainer.svelte";
 	import SaveLoader from "$lib/saveLoader.svelte";
-    import { feedRateSaves, loadedFeedRateSave } from "../store/store";
+    import { feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
     import type { feedRateSave } from "../store/store";
 	import Saves from "$lib/saves.svelte";
 
@@ -106,6 +106,10 @@
     }
 
     function createSave(name: string) {
+        // determine save count
+        let saveCount;
+        loadedSave ? saveCount = loadedSave.saveCount : saveCount = $feedRateSaveCount;
+
         // create save of interface feedRateSave
         let save: feedRateSave = {
             name,
@@ -117,6 +121,7 @@
             material,
             customToolSpeed: customToolSpeed.value,
             customCuttingFeed: customCuttingFeed.value,
+            saveCount,
         };
 
         return save;
@@ -128,9 +133,10 @@
 
         const newSave = createSave(detail.name);
 
-        // add new save to feedRateSaves array
+        // add new save to feedRateSaves array, load it, and increment save count
         feedRateSaves.update(oldSaves => [...oldSaves, newSave]);
         loadedFeedRateSave.set($feedRateSaves.indexOf(newSave));
+        feedRateSaveCount.update(count => count + 1);
 
         console.log("saved:", $feedRateSaves);
     }
@@ -315,11 +321,10 @@
 </form>
 
 <SaveLoader
-    loadedSave={loadedSave ? loadedSave.name : null}
+    loadedSaveName={loadedSave ? loadedSave.name : null}
     hasChanges={hasChanges}
     error={error}
-    loadedIndex={$loadedFeedRateSave + 1}
-    nextIndex={$feedRateSaves.length + 1}
+    currentSaveCount={loadedSave ? loadedSave.saveCount : $feedRateSaveCount}
     on:save={e => createNewSave(e.detail)}
     on:update={e => updateSave(e.detail)}
     on:eject={() => loadedFeedRateSave.set(-1)}

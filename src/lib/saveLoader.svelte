@@ -7,11 +7,10 @@
 	import DeleteSave from "$lib/SVGs/deleteSave.svelte";
 
     /* === PROPS ============================== */
-    export let loadedSave: string | null = null;
+    export let loadedSaveName: string | null = null;
     export let hasChanges = false;
     export let error = false;
-    export let loadedIndex = 1;
-    export let nextIndex = 1;
+    export let currentSaveCount = 1;
 
     /* === BINDINGS =========================== */
     let dialog: any;
@@ -23,10 +22,10 @@
     console.log("hasChanges:", hasChanges);
 
     /* === REACTIVE DECLARATIONS ============== */
-    $: isOpen = loadedSave !== null;
-    $: loadedSave === null ? closeDialog() : showDialogWithoutFocus();
-    $: saveTitle = loadedSave === null ? "" : loadedSave;
-    $: canSave = hasChanges || saveTitle !== loadedSave;
+    $: isOpen = loadedSaveName !== null;
+    $: loadedSaveName === null ? closeDialog() : showDialogWithoutFocus();
+    $: saveTitle = loadedSaveName === null ? "" : loadedSaveName;
+    $: canSave = hasChanges || saveTitle !== loadedSaveName;
 
     /* === FUNCTIONS ========================== */
     function showDialog() {
@@ -65,31 +64,28 @@
     const dispatch = createEventDispatcher();
 
     async function save() {
+        // replace empty save title
+        if (saveTitle === "") saveTitle = "save #" + currentSaveCount;
+
         // dispatch appropriate event
         if (newSave) {
-            // replace empty save title
-            if (saveTitle === "") saveTitle = "save #" + nextIndex;
-
             dispatch('save', {
                 name: saveTitle,
             });
         } else {
-            // replace empty save title
-            if (saveTitle === "") saveTitle = "save #" + loadedIndex;
-
             dispatch('update', {
                 name: saveTitle
             });
         }
         
+        // reset internal variables
         newSave = false;
         canSave = false;
-        // trigger save animation
-        isSaving = true;
 
+        // trigger and await save animation
+        isSaving = true;
         await tick();
         await animationsComplete(floppyDisk);
-
         isSaving = false;
     }
 
@@ -154,7 +150,7 @@
                         <input
                             id="savedTitle"
                             tabindex={isOpen ? 0 : -1}
-                            placeholder={newSave ? "save #" + nextIndex : "save #" + loadedIndex}
+                            placeholder={"save #" + currentSaveCount}
                             autocomplete="off"
                             type="text"
                             bind:value={saveTitle} />
