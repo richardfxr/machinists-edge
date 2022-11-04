@@ -20,8 +20,8 @@
     let numFlutes = { value: 2, error: false };
     let opType: "drill" | "mill" = "drill";
     let material: "aluminum" | "brass" | "delrin" | "steel" | "custom" = "aluminum";
-    let customToolSpeed = { value: 100, error: false };
-    let customCuttingFeed = { value: 0.001, error: false };
+    let toolSpeed = { value: 1, error: false };
+    let cuttingFeed = { value: 0.001, error: false };
 
     interface materialData {
         [key: string]: any;
@@ -51,7 +51,7 @@
     };
 
     /* === REACTIVE DECLARATIONS ============== */
-    $: error = cutterDiameter.error || numFlutes.error || customToolSpeed.error || customCuttingFeed.error
+    $: error = cutterDiameter.error || numFlutes.error || toolSpeed.error || cuttingFeed.error
     $: halfEngagement = cutterDiameter.value / 2;
     $: quaterEngagement = cutterDiameter.value / 4;
     $: cutterDiameterIndex = cutterDiameter.value < 0.125 ? 0 :
@@ -59,26 +59,42 @@
                              cutterDiameter.value < 0.5 ? 2 :
                              cutterDiameter.value < 1 ? 3 : 4;
 
-    $: toolSpeed = material === "aluminum" ? aluminum[opType] :
-                   material === "brass" ? brass[opType] :
-                   material === "delrin" ? delrin[opType] :
-                   material === "steel" ? steel[opType] : customToolSpeed.value;
+    $: {
+        switch (material) {
+            case "aluminum":
+                toolSpeed = { value: aluminum[opType], error: false };
+                cuttingFeed = { value: aluminum.feed[cutterDiameterIndex], error: false };
+                break;
+            
+            case "brass":
+                toolSpeed = { value: brass[opType], error: false };
+                cuttingFeed = { value: brass.feed[cutterDiameterIndex], error: false };
+                break;
 
-    $: cuttingFeed = material === "aluminum" ? aluminum.feed[cutterDiameterIndex] :
-                     material === "brass" ? brass.feed[cutterDiameterIndex] :
-                     material === "delrin" ? delrin.feed[cutterDiameterIndex] :
-                     material === "steel" ? steel.feed[cutterDiameterIndex] : customCuttingFeed.value;
+            case "delrin":
+                toolSpeed = { value: delrin[opType], error: false };
+                cuttingFeed = { value: delrin.feed[cutterDiameterIndex], error: false };
+                break;
 
-    $: spindleSpeed = Math.round(toolSpeed / (Math.PI / 12 * cutterDiameter.value));
-    $: feedRate = Math.round(spindleSpeed * cuttingFeed * numFlutes.value * 10) / 10;
+            case "steel":
+                toolSpeed = { value: steel[opType], error: false };
+                cuttingFeed = { value: steel.feed[cutterDiameterIndex], error: false };
+                break;
+        }
+    };
 
+    $: spindleSpeed = Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value));
+    $: feedRate = Math.round(spindleSpeed * cuttingFeed.value * numFlutes.value * 10) / 10;
+
+    // call loadSave() every time $loadedFeedRateSave changes
+    $: $loadedFeedRateSave !== -1 && loadSave();
     $: loadedSave = $loadedFeedRateSave !== -1 ? $feedRateSaves[$loadedFeedRateSave] : null;
     $: cutterDiameterHasChange = loadedSave?.cutterDiameter !== cutterDiameter.value;
     $: numFlutesHasChange = loadedSave?.numFlutes !== numFlutes.value;
     $: opTypeHasChange = loadedSave?.opType !== opType;
     $: materialHasChange = loadedSave?.material !== material;
-    $: customToolSpeedHasChange = loadedSave?.customToolSpeed !== customToolSpeed.value;
-    $: customCuttingFeedHasChange = loadedSave?.customCuttingFeed !== customCuttingFeed.value;
+    $: customToolSpeedHasChange = loadedSave?.toolSpeed !== toolSpeed.value;
+    $: customCuttingFeedHasChange = loadedSave?.cuttingFeed !== cuttingFeed.value;
     $: hasChanges = cutterDiameterHasChange ||
                     numFlutesHasChange ||
                     opTypeHasChange ||
@@ -87,18 +103,6 @@
                     customCuttingFeedHasChange;
 
     /* === FUNCTIONS ========================== */
-    function changeCustomMaterial(
-        name: "toolSpeed" | "cuttingFeed",
-        detail: { error: boolean, value: number }
-    ) {
-        material = "custom";
-
-        // set values
-        if (name === "toolSpeed") 
-            customToolSpeed = detail;
-        else
-            customCuttingFeed = detail;
-    }
 
     /* checks if index is valid for feedRateSaves array */
     function isValid(index: number) {
@@ -119,8 +123,8 @@
             numFlutes: numFlutes.value,
             opType,
             material,
-            customToolSpeed: customToolSpeed.value,
-            customCuttingFeed: customCuttingFeed.value,
+            toolSpeed: toolSpeed.value,
+            cuttingFeed: cuttingFeed.value,
             saveCount,
         };
 
@@ -153,31 +157,27 @@
         console.log("updated:", $feedRateSaves);
     }
 
-    function loadSave(index: number) {
+    function loadSave() {
         // check index is valid
-        if (!isValid(index)) return;
+        if (!isValid($loadedFeedRateSave)) return;
 
-        loadedFeedRateSave.set(index);
+        loadedFeedRateSave.set($loadedFeedRateSave);
 
-        const loadingSave = $feedRateSaves[index];
+        const loadingSave = $feedRateSaves[$loadedFeedRateSave];
 
         // update all values
         cutterDiameter.value = loadingSave.cutterDiameter;
         numFlutes.value = loadingSave.numFlutes;
         opType = loadingSave.opType;
         material = loadingSave.material;
-        customToolSpeed.value = loadingSave.customToolSpeed;
-        customCuttingFeed.value = loadingSave.customCuttingFeed;
+        toolSpeed.value = loadingSave.toolSpeed;
+        cuttingFeed.value = loadingSave.cuttingFeed;
 
         // reset errors
         cutterDiameter.error = false;
         numFlutes.error = false;
-        customToolSpeed.error = false;
-        customCuttingFeed.error = false;
-
-        // scroll calculator into view and focus on it
-        calculator.scrollIntoView({ behavior: 'smooth' });
-        calculator.focus({ preventScroll: true });
+        toolSpeed.error = false;
+        cuttingFeed.error = false;
     }
 
     function deleteSave(index: number) {
@@ -208,7 +208,8 @@
             <NumInput
                 label="cutter diameter"
                 name="cutterDiameter"
-                initValue={cutterDiameter.value}
+                bind:value={cutterDiameter.value}
+                bind:error={cutterDiameter.error}
                 units="in"
                 type="allowFractions"
                 on:update={e => cutterDiameter = e.detail}/>
@@ -216,18 +217,16 @@
             <NumInput
                 label="1/2 engagement"
                 name="halfEngagement"
-                initValue={halfEngagement}
+                value={halfEngagement}
                 units="in"
-                type="readonly"
-                displayedValue={halfEngagement}/>
+                type="readonly" />
 
             <NumInput
                 label="1/4 engagement"
                 name="quaterEngagement"
-                initValue={quaterEngagement}
+                value={quaterEngagement}
                 units="in"
-                type="readonly"
-                displayedValue={quaterEngagement}/>
+                type="readonly" />
         </div>
 
         <div class="flutesAndOp">
@@ -260,7 +259,7 @@
                 { name: "Brass", value: "brass", col1: brass[opType], col2: brass.feed[cutterDiameterIndex] },
                 { name: "Delrin", value: "delrin", col1: delrin[opType], col2: delrin.feed[cutterDiameterIndex] },
                 { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex] },
-                { name: "Custom (change with following inputs)", value: "custom", col1: customToolSpeed.value, col2: customCuttingFeed.value, hidden: true },
+                { name: "Custom (change with following inputs)", value: "custom", col1: toolSpeed.value, col2: cuttingFeed.value, hidden: true },
             ]}
             tableHeadings={["material", "tool speed", "cutting feeds"]}
             selfContained
@@ -270,22 +269,24 @@
             <NumInput
                 label="tool speed"
                 name="toolSpeed"
-                displayedValue={toolSpeed}
+                bind:value={toolSpeed.value}
+                bind:error={toolSpeed.error}
                 units="SFPM"
-                type="drivenNumber"
+                type="number"
                 step={1}
                 selfContained
-                on:update={e => changeCustomMaterial("toolSpeed", e.detail)}/>
+                on:input={() => material = "custom"}/>
             
             <NumInput
                 label="cutting feed"
                 name="cuttingFeed"
-                displayedValue={cuttingFeed}
+                bind:value={cuttingFeed.value}
+                bind:error={cuttingFeed.error}
                 units="IPR"
-                type="drivenNumber"
+                type="number"
                 allowZero
                 selfContained
-                on:update={e => changeCustomMaterial("cuttingFeed", e.detail)}/>
+                on:input={() => material = "custom"}/>
         </div>
     </div>
 
@@ -334,7 +335,12 @@
     saves={$feedRateSaves}
     type="feedRate"
     loadedIndex={$loadedFeedRateSave}
-    on:load={e => loadSave(e.detail.index)}
+    on:load={e => {
+        loadedFeedRateSave.set(e.detail.index)
+        // scroll calculator into view and focus on it
+        calculator.scrollIntoView({ behavior: 'smooth' });
+        calculator.focus({ preventScroll: true });
+    }}
     on:eject={() => loadedFeedRateSave.set(-1)}
     on:delete={e => deleteSave(e.detail.index)} />
 

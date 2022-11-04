@@ -12,8 +12,8 @@ export interface feedRateSave {
     numFlutes: number;
     opType: "drill" | "mill";
     material: "aluminum" | "brass" | "delrin" | "steel" | "custom";
-    customToolSpeed: number;
-    customCuttingFeed: number;
+    toolSpeed: number;
+    cuttingFeed: number;
     saveCount: number;
 }
 

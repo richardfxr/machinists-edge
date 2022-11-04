@@ -1,24 +1,24 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-    import { createEventDispatcher } from 'svelte';
 	import UnitAbbr from './unitAbbr.svelte';
     
     /* === PROPS ============================== */
     export let label: string;
     export let name: string;
-    export let initValue: number | string = 1;
-    export let displayedValue = 1;
+    export let value: number;
+    export let error = false;
     export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
     export let step = 0.001;
-    export let type: "allowFractions" | "readonly" | "drivenNumber";
+    export let type: "allowFractions" | "readonly" | "number";
     export let allowZero = false;
     export let selfContained = false;
 
-    /* === VARAIBLES ========================== */
-    let value = initValue;
-    let error = false;
-
     /* === REACTIVE DECLARATIONS ============== */
+    $: fracValue = value as number | string;
+    // run checkFracError() when fracValue changes for allowFractions numInput
+    $: type === "allowFractions" && fracValue && checkFracError();
+    // run checkNumError() when value changes for number numInput
+    $: type === "number" && value && checkNumError();
 
     /* === FUNCTIONS ========================== */
     /**
@@ -28,59 +28,31 @@
         return /^(\d+\.?\d*|\.\d+)$/.test(testString);
     }
 
-    /* === EVENTS ============================= */
-    const dispatch = createEventDispatcher();
-
     /**
-     * dispatcher for type="number" input
+     * error checker for allowFractions type numInput
+     * 
+     * updates value if fracValue can be evaluated into a valid number
+     * sets error to true otherwise
      */
-    function dispatchValue() {
-        let trueValue = displayedValue;
+    function checkFracError() {
         // reset error
         error = false;
 
-        if (displayedValue == null) {
-            trueValue = 1;
-            error = true;
-        } else if (allowZero && trueValue < 0) {
-            // disallow negative values
-            trueValue = 1;
-            error = true;
-        } else if (!allowZero && trueValue <= 0) {
-            // disallow zero
-            trueValue = 1;
-            error = true;
-        }
-
-        dispatch('update', {
-            error: error,
-			value: trueValue
-		});
-    }
-
-    /**
-     * dispatcher for type="text" input. Evaluates string if it is valid number or fraction
-     */
-    function dispatchValueFrac() {
-        let trueValue = initValue;
-        // reset error
-        error = false;
-
-        if (typeof value == 'number') {
-            // set value as trueValue if it is a number
-            trueValue = value;
+        if (typeof fracValue == 'number') {
+            // set value as fracValue if it is a number
+            value = fracValue;
         } else {
-            if (!isNaN(parseFloat(value)) && isOnlyNum(value)) {
-                // set parsed value as trueValue if string is a valid number
-                trueValue = parseFloat(value);
-            } else if (value.split("/").length === 2) {
+            if (!isNaN(parseFloat(fracValue)) && isOnlyNum(fracValue)) {
+                // set parsed value as value if string is a valid number
+                value = parseFloat(fracValue);
+            } else if (fracValue.split("/").length === 2) {
                 // calculate fraction
-                let values = value.split("/");
+                let values = fracValue.split("/");
                 let fraction = parseFloat(values[0]) / parseFloat(values[1]);
 
                 if (typeof fraction == 'number' && isOnlyNum(values[0]) && isOnlyNum(values[1])) {
-                    // set fraction as trueValue if fraction is valid number
-                    trueValue = fraction;
+                    // set fraction as value if fraction is valid number
+                    value = fraction;
                 } else {
                     error = true;
                 }
@@ -89,18 +61,36 @@
             }
         }
 
-        if (!allowZero && trueValue === 0) {
+        if (!allowZero && value === 0) {
             // disallow zero
             error = true;
-            trueValue = 1;
+            value = 1;
         }
-
-        dispatch('update', {
-            error: error,
-			value: trueValue
-		});
     }
 
+    /**
+     * error checker for number type numInput
+     * 
+     * sets error to true and resets value to 1 if value is not
+     * a valid number
+     */
+     function checkNumError() {
+        // reset error
+        error = false;
+
+        if (value == null) {
+            value = 1;
+            error = true;
+        } else if (allowZero && value < 0) {
+            // disallow negative values
+            value = 1;
+            error = true;
+        } else if (!allowZero && value <= 0) {
+            // disallow zero
+            value = 1;
+            error = true;
+        }
+    }
 </script>
 
 
@@ -119,30 +109,29 @@
         {#if type === "allowFractions"}
             <input
                 id={name + "__input"}
-                class:error={error}
+                class:error
                 {name}
-                bind:value
-                on:input={dispatchValueFrac}
+                bind:value={fracValue}
                 type="text">
         {:else if type === "readonly"}
             <input
                 id={name + "__input"}
-                class:error={error}
+                class:error
                 {name}
-                bind:value={displayedValue}
+                bind:value
                 type="number"
                 readonly
                 step="any">
         {:else}
             <input
                 id={name + "__input"}
-                class:error={error}
+                class:error
                 {name}
-                bind:value={displayedValue}
-                on:input={dispatchValue}
+                bind:value
                 type="number"
                 min={allowZero ? "-0.001" : "0"}
-                {step}>
+                {step}
+                on:input>
         {/if}
 
         <UnitAbbr {units} position="top-left" />
