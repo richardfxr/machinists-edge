@@ -3,57 +3,44 @@
     import { createEventDispatcher } from 'svelte';
 
     /* === PROPS ============================== */
-    export let label:string;
-    export let name:string;
-    export let initValue:number;
+    export let label: string;
+    export let name: string;
+    export let value: number;
+    export let error = false;
     export let min = 0;
     export let max = 10;
     export let step = 1;
     export let selfContained = false;
 
-    /* === VARAIBLES ========================== */
-    let value = initValue;
-    let error = false;
+    /* === REACTIVE DECLARATIONS ============== */
+    $: numValue = value;
+    // run checkNumError() when numValue changes
+    $: numValue && checkNumError();
 
     /* === FUNCTIONS ========================== */
-    function updateValue(type:"decrement" | "increment") {
-        if (type === "decrement" && value > min)
-            value = value - step;
-        else if (type === "increment" && value < max)
-            value = value + step;
-
-        dispatchValue();
-    }
-
-    /* === EVENTS ============================= */
-    const dispatch = createEventDispatcher();
-
     /**
-     * dispatcher that valids value
+     * error checker for numInput
+     * 
+     * updates value if numValue is between min & max and is on a valid step
+     * sets error to true otherwise
      */
-    function dispatchValue() {
-        let trueValue = initValue;
+    function checkNumError() {
         // reset error
         error = false;
 
-        if (value < min || value > max || (value - min) % step !== 0) {
+        if (numValue < min || numValue > max || (numValue - min) % step !== 0) {
             // set error if value is not within range or a multiple of step
             error = true
         } else {
-            trueValue = value;
+            value = numValue;
         }
-
-        dispatch('update', {
-            error: error,
-			value: value
-		});
     }
 </script>
 
 
 <div
     class="rangeInput"
-    class:error={error}
+    class:error
     class:input__container={selfContained}
     id={name}>
     <label for={name + "__input"}>
@@ -66,7 +53,6 @@
             id={name + "__input"}
             {name}
             bind:value
-            on:input={dispatchValue}
             type="range"
             {min}
             {max}
@@ -79,8 +65,7 @@
             <input
                 id={name + "__numInput"}
                 {name}
-                bind:value
-                on:input={dispatchValue}
+                bind:value={numValue}
                 type="number"
                 {min}
                 {max}
@@ -89,7 +74,7 @@
                 class="decrementer"
                 aria-label="decrement value"
                 disabled={value <= min || error}
-                on:click={() => updateValue("decrement")}
+                on:click={() => numValue = numValue - step}
                 type="button">
                 -
             </button>
@@ -97,7 +82,7 @@
                 class="incrementer"
                 aria-label="increment value"
                 disabled={value >= max || error}
-                on:click={() => updateValue("increment")}
+                on:click={() => numValue = numValue + step}
                 type="button">
                 +
             </button>
@@ -220,7 +205,7 @@
                     transition: color var(--trans-fast);
                 }
 
-                .decrementer, .incrementer {
+                button {
                     color: var(--clr-800);
                     font-size: var(--font-sm);
                     line-height: 1em;
@@ -236,6 +221,12 @@
                     &:hover, &:focus {
                         color: var(--clr-1000);
                         border-color: var(--clr-800);
+                    }
+
+                    &:disabled {
+                        cursor: not-allowed;
+                        color: var(--clr-700);
+                        border-color: var(--clr-250);
                     }
                 }
 

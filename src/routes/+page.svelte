@@ -233,7 +233,8 @@
             <RangeInput
                 label="number of flutes"
                 name="numFlutes"
-                initValue={numFlutes.value}
+                bind:value={numFlutes.value}
+                bind:error={numFlutes.error}
                 min={1}
                 max={9}
                 step={1}
