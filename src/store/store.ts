@@ -36,6 +36,9 @@ if (browser) {
 feedRateSaves.subscribe(value => {
     if (!browser) return;
     localStorage.feedRateSaves = JSON.stringify(value);
+
+    // reset feedRateSaveCount to 1 if all saves are deleted
+    if (value.length === 0) feedRateSaveCount.set(1);
 });
 
 loadedFeedRateSave.subscribe(value => {
