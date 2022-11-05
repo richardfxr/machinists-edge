@@ -187,8 +187,9 @@
         const saveToBeDeleted = $feedRateSaves[index];
         // remove save from feedRateSaves array
         feedRateSaves.update(saves => saves.filter(save => save !== saveToBeDeleted));
-        // set loadedFeedRateSave to -1 (ejects)
-        loadedFeedRateSave.set(-1);
+
+        // eject save if it was loaded
+        if (index === $loadedFeedRateSave) loadedFeedRateSave.set(-1);        
     }
 </script>
 
