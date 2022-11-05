@@ -65,20 +65,26 @@
         }
 
         input {
-            &:checked ~ span {
+            &:hover ~ span, &:focus ~ span {
                 color: var(--clr-900);
-                border-color: var(--clr-900);
+            }
+
+            &:checked {
+                &:hover ~ span, &:focus ~ span {
+                    color: var(--clr-1000);
+                    border-color: var(--clr-1000);
+                }
+
+                & ~ span {
+                    color: var(--clr-900);
+                    border-color: var(--clr-900);
+                }
             }
         }
 
-        &:hover, &:focus {
-            label span {
-                color: var(--clr-850);
-            }
-
-            input:checked ~ span {
-                color: var(--clr-1000);
-                border-color: var(--clr-1000);
+        &:hover, &:focus-within {
+            .label {
+                color: var(--clr-900);
             }
         }
     }

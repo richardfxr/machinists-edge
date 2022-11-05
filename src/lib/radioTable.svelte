@@ -70,8 +70,18 @@
 
 
 <style lang="scss">
-    :global(.radioTable__container .scrollContainer__inner) {
-        padding: 0 var(--pad-xl) var(--pad-md) var(--pad-xl);
+    :global {
+        .radioTable__container .scrollContainer__inner {
+            padding: 0 var(--pad-xl) var(--pad-md) var(--pad-xl);
+        }
+        
+        .radioTable__container {
+            &:hover, &:focus {
+                caption .label {
+                    color: var(--clr-900);
+                }
+            }
+        }
     }
 
     .radioTable {

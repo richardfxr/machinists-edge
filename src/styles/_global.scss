@@ -138,10 +138,12 @@ input[type="radio"] ~ span {
     font-weight: 500;
     line-height: 1em;
 
+    outline: var(--border) transparent;
+
     transition: color var(--trans-fast),
-                border-color var(--trans-fast);
+                outline var(--trans-fast);
     
-    &:hover, &:focus-visible {
+    &:hover, &:focus {
         --_color: var(--clr-900);
     }
 
@@ -200,6 +202,10 @@ input[type="radio"] ~ span {
 
     &.outlined {
         border: var(--border) var(--clr-300);
+
+        &:hover, &:focus {
+            outline-color: var(--clr-900);
+        }
     }
 }
 
