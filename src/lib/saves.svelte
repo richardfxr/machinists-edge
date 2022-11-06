@@ -132,12 +132,12 @@
                 }
 
                 &::before {
-                    --_inset: var(--pad-3xs);
+                    --_inset: var(--pad-4xs);
                     --_border-clr: var(--clr-600);
                 }
 
                 &::after {
-                    --_inset: calc(2 *var(--pad-3xs));
+                    --_inset: calc(2 *var(--pad-4xs));
                     --_border-clr: var(--clr-500);
                 }
 
