@@ -83,9 +83,6 @@
         }
     };
 
-    $: spindleSpeed = Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value));
-    $: feedRate = Math.round(spindleSpeed * cuttingFeed.value * numFlutes.value * 10) / 10;
-
     // call loadSave() every time $loadedFeedRateSave changes
     $: $loadedFeedRateSave !== -1 && loadSave();
     $: loadedSave = $loadedFeedRateSave !== -1 ? $feedRateSaves[$loadedFeedRateSave] : null;
@@ -117,8 +114,8 @@
         // create save of interface feedRateSave
         let save: feedRateSave = {
             name,
-            spindleSpeed,
-            feedRate,
+            spindleSpeed: Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value)),
+            feedRate: Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value) * cuttingFeed.value * numFlutes.value * 10) / 10,
             cutterDiameter: cutterDiameter.value,
             numFlutes: numFlutes.value,
             opType,
@@ -165,19 +162,15 @@
 
         const loadingSave = $feedRateSaves[$loadedFeedRateSave];
 
+        console.log("loadingSave:" + JSON.stringify(loadingSave));
+
         // update all values
-        cutterDiameter.value = loadingSave.cutterDiameter;
-        numFlutes.value = loadingSave.numFlutes;
+        cutterDiameter = { value: loadingSave.cutterDiameter, error: false };
+        numFlutes = { value: loadingSave.numFlutes, error: false };
         opType = loadingSave.opType;
         material = loadingSave.material;
-        toolSpeed.value = loadingSave.toolSpeed;
-        cuttingFeed.value = loadingSave.cuttingFeed;
-
-        // reset errors
-        cutterDiameter.error = false;
-        numFlutes.error = false;
-        toolSpeed.error = false;
-        cuttingFeed.error = false;
+        toolSpeed = { value: loadingSave.toolSpeed, error: false };
+        cuttingFeed = { value: loadingSave.cuttingFeed, error: false };
     }
 
     function deleteSave(index: number) {
@@ -296,7 +289,7 @@
         <ScrollContainer contains="results">
             <Output
                 label="spindle speed"
-                value={spindleSpeed}
+                value={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value))}
                 units="RPM"
                 position="top-right"
                 highlighted
@@ -304,7 +297,7 @@
             
             <Output
                 label="feed rate"
-                value={feedRate}
+                value={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value) * cuttingFeed.value * numFlutes.value * 10) / 10}
                 units="IPM"
                 position="top-left"
                 highlighted
@@ -317,8 +310,8 @@
             <ToolIllus
                 scaleX={cutterDiameter.value * 2}
                 flutes={numFlutes.value}
-                {spindleSpeed}
-                {feedRate} />
+                spindleSpeed={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value))}
+                feedRate={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value) * cuttingFeed.value * numFlutes.value * 10) / 10} />
         </div>
     </div>
 </form>
