@@ -33,15 +33,21 @@
 
 <div class="saves" id="saves">
     <h2><Save />Saves</h2>
-
-    <ul>
-        {#if type === "feedRate"}
+    
+    {#if saves.length === 0}
+        <div class="empty" transition:slide>
+            <div class="box" role="presentation"></div>
+            <p class="highlighted">No saves found</p>
+            <p class="text--sm">Create new saves in the <a href="#saveLoader">loaded save section</a> above.</p>
+        </div>
+    {:else if type === "feedRate"}
+        <ul>
             {#each saves as save, i}
                 <li
                     class="input__container"
                     class:loaded={loadedIndex === i}
                     aria-current={loadedIndex === i}
-                    transition:slide|local>
+                    transition:slide >
                     <div class="main">
                         <h3>{save.name}</h3>
                         <p class="details">
@@ -75,8 +81,8 @@
                     </div>
                 </li>
             {/each}
-        {/if}
-    </ul>
+        </ul>
+    {/if}
 </div>
 
 
@@ -93,6 +99,63 @@
                 display: inline-block;
                 height: var(--font-2xl);
                 fill: var(--clr-900);   
+            }
+        }
+
+        .highlighted {
+            color: var(--clr-0);
+            font-weight: 500;
+            text-transform: uppercase;
+            padding: 0 var(--pad-2xs);
+            background-color: var(--clr-800);
+
+            transition: background-color var(--trans-fast);
+        }
+
+        .empty {
+            // internal variables
+            --_box-size: 80px;
+
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+            width: 100%;
+
+            padding: var(--pad-xl) var(--pad-xl) var(--pad-4xl) var(--pad-xl);
+            border: var(--border) var(--clr-300);
+
+            .box {
+                position: relative;
+                width: var(--_box-size);
+                height: var(--_box-size);
+
+                margin-bottom: var(--pad-xl);
+                border: var(--border) var(--clr-300);
+
+                overflow: hidden;
+
+                &::before, &::after {
+                    // two borders that form the cross
+                    content: "";
+                    position: absolute;
+                    top: calc(-1 * var(--_box-size));
+                    right: calc(50% - var(--border-width) / 2);
+                    bottom: calc(-1 * var(--_box-size));
+
+                    border-left: var(--border) var(--clr-300);
+                }
+
+                &::before {
+                    transform: rotate(45deg);
+                }
+
+                &::after {
+                    transform: rotate(-45deg);
+                }
+            }
+
+            p.text--sm {
+                padding-top: var(--pad-2xs);
             }
         }
 
@@ -209,13 +272,6 @@
 
                         .highlighted {
                             display: inline-block;
-
-                            color: var(--clr-0);
-                            font-weight: 500;
-                            padding: 0 var(--pad-2xs);
-                            background-color: var(--clr-800);
-
-                            transition: background-color var(--trans-fast);
                         }
                     }
                 }
@@ -256,6 +312,11 @@
                 padding: 0 var(--pad-xl);
             }
 
+            .empty {
+                border-right: none;
+                border-left: none;
+            }
+
             ul {
                 grid-template-columns: 1fr;
 
@@ -274,6 +335,11 @@
 
             h2 {
                 padding: 0;
+            }
+
+            .empty {
+                border-right: var(--border) var(--clr-300);
+                border-left: var(--border) var(--clr-300);
             }
 
             ul {

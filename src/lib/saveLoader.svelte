@@ -98,6 +98,7 @@
 
 <div
     class="saveLoader"
+    id="saveLoader"
     class:open={isOpen}
     class:saving={isSaving}>
     <h2 class="label">loaded save</h2>
