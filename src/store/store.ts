@@ -76,7 +76,7 @@ feedRateSaveCount.subscribe(value => {
 /* === CLIENT SIDE INITIALIZATION ========= */
 if (browser) {
     // initial theme
-    if (window.matchMedia("(prefers-color-scheme: dark)") && !get(hasColorTheme)) {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches && !get(hasColorTheme)) {
         colorTheme.set("dark");
     }
 
