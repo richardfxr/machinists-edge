@@ -51,14 +51,14 @@
 
         &.highlighted {
             .label {
-                color: var(--clr-300);
+                color: var(--clr-200);
             }
 
             .value {
                 color: var(--clr-0);
                 
                 :global(.unitAbbr) {
-                    --_clr: var(--clr-300);
+                    --_clr: var(--clr-200);
                     --_clr-hover: var(--clr-100);
                 }
             }

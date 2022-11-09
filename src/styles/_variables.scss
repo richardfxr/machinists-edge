@@ -59,6 +59,36 @@ $breakpoint-mobile: 650px;
     @each $name, $value in $light {
         --clr-#{$name}: #{$value};
     }
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* dark theme */
+        // parse $dark into CSS variables
+        @each $name, $value in $dark {
+            --clr-#{$name}: #{$value};
+        }
+        color-scheme: dark;
+    }
+}
+
+:global([data-theme="light"]) {
+    /* light theme */
+    // parse $light into CSS variables
+    @each $name, $value in $light {
+        --clr-#{$name}: #{$value};
+    }
+    color-scheme: light;
+}
+
+:global([data-theme="dark"]) {
+    /* dark theme */
+    // parse $dark into CSS variables
+    @each $name, $value in $dark {
+        --clr-#{$name}: #{$value};
+    }
+    color-scheme: dark;
 }
 
 /* === BREAKPOINTS ======================== */

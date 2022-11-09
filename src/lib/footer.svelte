@@ -1,5 +1,6 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
+    import { colorTheme, hasColorTheme } from "../store/store";
     import IconRadioInput from "./iconRadioInput.svelte";
     import Logo from "./SVGs/logo.svelte";
 
@@ -25,12 +26,14 @@
         <IconRadioInput
             label="theme"
             name="theme"
+            bind:value={$colorTheme}
             options={[
                 { name: "light theme", icon: "theme-light", value: "light" },
                 { name: "dark theme", icon: "theme-dark", value: "dark" },
             ]}
             position="top-right"
-            selfContained />
+            selfContained
+            on:change={() => hasColorTheme.set(true)} />
 
         <IconRadioInput
             label="motion"

@@ -1,8 +1,14 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
+    import { colorTheme } from "../store/store";
     import Header from "$lib/header.svelte";
     import Footer from "$lib/footer.svelte";
 </script>
+
+
+<svelte:head>
+    <meta name="theme-color" content={$colorTheme === "light" ? "#fdf6ef" : "#0d0d0d"} />
+</svelte:head>
 
 
 <Header />

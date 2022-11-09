@@ -36,7 +36,8 @@
                     type="radio"
                     bind:group={value}
                     {name}
-                    value={option.value} />
+                    value={option.value}
+                    on:change />
                 <ToolTip {position}>{option.name}</ToolTip>
                 {#if option.icon === "theme-light"}
                     <ThemeLight />
