@@ -1,6 +1,6 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-    import { colorTheme, hasColorTheme } from "../store/store";
+    import { colorTheme, hasColorTheme, motionPref, hasMotionPref } from "../store/store";
     import IconRadioInput from "./iconRadioInput.svelte";
     import Logo from "./SVGs/logo.svelte";
 
@@ -38,12 +38,14 @@
         <IconRadioInput
             label="motion"
             name="motion"
+            bind:value={$motionPref}
             options={[
                 { name: "full motion", icon: "motion-full", value: "full" },
-                { name: "low motion", icon: "motion-low", value: "low" },
+                { name: "reduced motion", icon: "motion-low", value: "reduced" },
             ]}
             position="top-left"
-            selfContained />
+            selfContained
+            on:change={() => hasMotionPref.set(true)} />
     </div>
 
     <div class="siteMap">
