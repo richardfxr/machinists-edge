@@ -1,9 +1,12 @@
 <script lang="ts">
+	import Indicator from "./indicator.svelte";
+
     /* === PROPS ============================== */
     export let label:string;
     export let name:string;
     export let options:{ "name": string, "value": string }[];
     export let value = options[0].value;
+    export let change = false;
     export let selfContained = false;
 </script>
 
@@ -11,11 +14,15 @@
 <div
     id={name}
     class="radioInput"
+    class:change
     class:input__container={selfContained}
     role="radiogroup"
     aria-labelledby="{name}__label">
 
-    <p id="{name}__label" class="label">{label}</p>
+    <p id="{name}__label">
+        <span class="label">{label}</span>
+        <Indicator type="change" shown={change} />
+    </p>
 
     <div class="radioInput__inner">
         {#each options as option}
@@ -47,6 +54,13 @@
             display: flex;
             flex-flow: row nowrap;
             gap: var(--pad-lg);
+        }
+
+        p {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between;
+            gap: var(--pad-xs);
         }
 
         label span {

@@ -1,6 +1,7 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-	import ScrollContainer from "./scrollContainer.svelte";
+	import Indicator from "./indicator.svelte";
+    import ScrollContainer from "./scrollContainer.svelte";
 	import UnitAbbr from "./unitAbbr.svelte";
 
     /* === PROPS ============================== */
@@ -14,6 +15,7 @@
         hidden?: boolean
     }[];
     export let value = options[0].value;
+    export let change = false;
     export let tableHeadings: [string, string, string];
     export let selfContained = false;
 </script>
@@ -23,8 +25,14 @@
 <ScrollContainer {selfContained} contains="radioTable">  
     <table
         class="radioTable"
+        class:change
         aria-labelledby="{name}__label">
-        <caption><span class="label">{label}</span></caption>
+        <caption>
+            <div class="sticky">
+                <span class="label">{label}</span>
+                <Indicator type="change" shown={change} />
+            </div>
+        </caption>
 
         <thead>
             <tr>
@@ -103,8 +111,10 @@
             position: relative;
             padding: var(--pad-md) 0 var(--pad-4xs) 0;
 
-            span {
-                display: inline-block;
+            .sticky {
+                display: inline-flex;
+                flex-flow: row wrap;
+                gap: var(--pad-xs);
                 position: sticky;
                 left: var(--pad-xl);
             }

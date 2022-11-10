@@ -1,12 +1,14 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-	import UnitAbbr from './unitAbbr.svelte';
+	import Indicator from './indicator.svelte';
+    import UnitAbbr from './unitAbbr.svelte';
     
     /* === PROPS ============================== */
     export let label: string;
     export let name: string;
     export let value: number;
     export let error = false;
+    export let change = false;
     export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
     export let step = 0.001;
     export let type: "allowFractions" | "readonly" | "number";
@@ -97,12 +99,16 @@
 <div
     class="numInput"
     class:readonly={type === "readonly"}
-    class:error={error}
+    class:change={change && !error}
+    class:error
     class:input__container={selfContained}
     id={name}>
     <label for={name + "__input"}>
         <span class="label">{label}</span>
-        <span class="error">error</span>
+        <div class="indicators">
+            <Indicator type="change" shown={change && !error} positionAbsolute />
+            <Indicator type="error" shown={error} />
+        </div>
     </label>
 
     <div class="main">
@@ -152,25 +158,18 @@
 
         label {
             display: flex;
-            flex-direction: row;
+            flex-flow: row wrap;
             align-items: center;
             justify-content: space-between;
+            gap: var(--pad-xs);
+            position: relative;
 
             font-size: var(--font-sm);
             line-height: 1em;
 
-            .error {
-                display: block;
-                color: var(--clr-0);
-                font-weight: 500;
-
-                padding: 0 var(--pad-3xs);
-                background-color: var(--clr-error-800);
-
-                opacity: 0;
-                transition: opacity var(--trans-fast);
-            }
-            
+            .indicators {
+                position: relative;
+            }            
         }
 
         .main {
@@ -209,10 +208,6 @@
         }
 
         &.error {
-            label .error {
-                opacity: 1;
-            }
-
             .main input {
                 color: var(--clr-error-900);
             }

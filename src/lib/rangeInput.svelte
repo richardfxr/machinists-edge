@@ -1,11 +1,12 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-    import { createEventDispatcher } from 'svelte';
+	import Indicator from './indicator.svelte';
 
     /* === PROPS ============================== */
     export let label: string;
     export let name: string;
     export let value: number;
+    export let change = false;
     export let error = false;
     export let min = 0;
     export let max = 10;
@@ -45,7 +46,8 @@
     id={name}>
     <label for={name + "__input"}>
         <span class="label">{label}</span>
-        <span class="error">error</span>
+        <Indicator type="change" shown={change && !error} positionAbsolute />
+        <Indicator type="error" shown={error} />
     </label>
 
     <div class="main">
@@ -110,21 +112,10 @@
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
+            position: relative;
 
             font-size: var(--font-sm);
             line-height: 1em;
-
-            .error {
-                display: block;
-                color: var(--clr-0);
-                font-weight: 500;
-
-                padding: 0 var(--pad-3xs);
-                background-color: var(--clr-error-800);
-
-                opacity: 0;
-                transition: opacity var(--trans-fast);
-            }
         }
 
         .main {
@@ -253,10 +244,6 @@
         }
 
         &.error {
-            label .error {
-                opacity: 1;
-            }
-
             .main .numInput input[type="number"] {
                 color: var(--clr-error-900);
             }

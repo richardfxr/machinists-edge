@@ -86,18 +86,18 @@
     // call loadSave() every time $loadedFeedRateSave changes
     $: $loadedFeedRateSave !== -1 && loadSave();
     $: loadedSave = $loadedFeedRateSave !== -1 ? $feedRateSaves[$loadedFeedRateSave] : null;
-    $: cutterDiameterHasChange = loadedSave?.cutterDiameter !== cutterDiameter.value;
-    $: numFlutesHasChange = loadedSave?.numFlutes !== numFlutes.value;
-    $: opTypeHasChange = loadedSave?.opType !== opType;
-    $: materialHasChange = loadedSave?.material !== material;
-    $: customToolSpeedHasChange = loadedSave?.toolSpeed !== toolSpeed.value;
-    $: customCuttingFeedHasChange = loadedSave?.cuttingFeed !== cuttingFeed.value;
+    $: cutterDiameterHasChange = loadedSave ? loadedSave.cutterDiameter !== cutterDiameter.value : false;
+    $: numFlutesHasChange = loadedSave ? loadedSave.numFlutes !== numFlutes.value : false;
+    $: opTypeHasChange = loadedSave ? loadedSave.opType !== opType : false;
+    $: materialHasChange = loadedSave ? loadedSave.material !== material : false;
+    $: toolSpeedHasChange = loadedSave ? loadedSave.toolSpeed !== toolSpeed.value : false;
+    $: cuttingFeedHasChange = loadedSave ? loadedSave.cuttingFeed !== cuttingFeed.value : false;
     $: hasChanges = cutterDiameterHasChange ||
                     numFlutesHasChange ||
                     opTypeHasChange ||
                     materialHasChange ||
-                    customToolSpeedHasChange ||
-                    customCuttingFeedHasChange;
+                    toolSpeedHasChange ||
+                    cuttingFeedHasChange;
 
     /* === FUNCTIONS ========================== */
 
@@ -203,6 +203,7 @@
                 label="cutter diameter"
                 name="cutterDiameter"
                 bind:value={cutterDiameter.value}
+                change={cutterDiameterHasChange}
                 bind:error={cutterDiameter.error}
                 units="in"
                 type="allowFractions"
@@ -228,6 +229,7 @@
                 label="number of flutes"
                 name="numFlutes"
                 bind:value={numFlutes.value}
+                change={numFlutesHasChange}
                 bind:error={numFlutes.error}
                 min={1}
                 max={9}
@@ -242,6 +244,7 @@
                     { name: "drill", value: "drill" },
                     { name: "mill", value: "mill" },
                 ]}
+                change={opTypeHasChange}
                 selfContained
                 bind:value={opType}/>
         </div>
@@ -256,6 +259,7 @@
                 { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex] },
                 { name: "Custom (change with following inputs)", value: "custom", col1: toolSpeed.value, col2: cuttingFeed.value, hidden: true },
             ]}
+            change={materialHasChange}
             tableHeadings={["material", "tool speed", "cutting feeds"]}
             selfContained
             bind:value={material}/>
@@ -265,6 +269,7 @@
                 label="tool speed"
                 name="toolSpeed"
                 bind:value={toolSpeed.value}
+                change={toolSpeedHasChange}
                 bind:error={toolSpeed.error}
                 units="SFPM"
                 type="number"
@@ -276,6 +281,7 @@
                 label="cutting feed"
                 name="cuttingFeed"
                 bind:value={cuttingFeed.value}
+                change={cuttingFeedHasChange}
                 bind:error={cuttingFeed.error}
                 units="IPR"
                 type="number"
