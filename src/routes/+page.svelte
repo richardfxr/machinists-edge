@@ -340,7 +340,9 @@
     on:load={e => {
         loadedFeedRateSave.set(e.detail.index)
         // scroll calculator into view and focus on it
-        calculator.scrollIntoView({ behavior: 'smooth' });
+        let scrollBehavior;
+        $motionPref === "reduced" ? scrollBehavior = "auto" : scrollBehavior = "smooth";
+        calculator.scrollIntoView({ behavior: "auto" });
         calculator.focus({ preventScroll: true });
     }}
     on:eject={() => loadedFeedRateSave.set(-1)}

@@ -256,3 +256,7 @@ input[type="radio"] ~ span {
         }
     }
 }
+
+:global([data-motion="reduced"]) {
+    scroll-behavior: auto;
+}
