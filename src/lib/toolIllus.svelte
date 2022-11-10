@@ -6,6 +6,7 @@
     import FluteFront from "$lib/SVGs/flute-front.svelte";
     import FluteBack from "$lib/SVGs/flute-back.svelte";
     import FluteCenter from "$lib/SVGs/bit-center.svelte";
+    import { motionPref } from "../store/store";
 
     /* === PROPS ============================== */
     export let scaleX: number;
@@ -32,6 +33,7 @@
 
 <tool-illus
     class="tool__illus"
+    class:motionRedcued={$motionPref === "reduced"}
     style="
         --spindleSpeed: {displayedSpindleSpeed}s;
         --feedRate: {displayedFeedRate}s;
@@ -179,6 +181,17 @@
         .tool__illus {
             // internal variables
             --_width: 140px;
+        }
+    }
+
+    /* === A11Y =============================== */
+    .motionRedcued.tool__illus {
+        .bit .flutes__inner {
+            animation: none;
+        }
+
+        .feedMarks {
+            animation: none;
         }
     }
 </style>

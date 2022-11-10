@@ -1,4 +1,7 @@
 <script lang="ts">
+    /* === IMPORTS ============================ */
+    import { motionPref } from "../../store/store";
+
     /* === PROPS ============================== */
     export let scaleX = 1;
     export let scaleY = 1;
@@ -13,6 +16,7 @@
 <svg
     id="flute--front"
     class="illustration flute"
+    class:motionRedcued={$motionPref === "reduced"}
     style="
         --position: {position};
         --zIndex: {zIndex};
@@ -37,5 +41,10 @@
 
         transform: translateX(calc(50% - var(--scaleX) / 2 * 100%)) translateY(var(--offsetY));
         transition: transform var(--trans-fast);
+    }
+
+    /* === A11Y =============================== */
+    .motionRedcued#flute--front {
+        transition: none;
     }
 </style>

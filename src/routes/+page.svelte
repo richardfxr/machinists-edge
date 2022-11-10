@@ -8,7 +8,7 @@
 	import RadioTable from "$lib/radioTable.svelte";
 	import ScrollContainer from "$lib/scrollContainer.svelte";
 	import SaveLoader from "$lib/saveLoader.svelte";
-    import { feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
+    import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
     import type { feedRateSave } from "../store/store";
 	import Saves from "$lib/saves.svelte";
 
@@ -191,6 +191,7 @@
 
 <form
     class="feedCalc"
+    class:motionRedcued={$motionPref === "reduced"}
     class:error
     tabindex="-1"
     bind:this={calculator}
@@ -660,6 +661,24 @@
                 &__inner {
                     background-color: CanvasText;
                 }
+            }
+        }
+    }
+
+    .motionRedcued.feedCalc {
+        .alwaysVisible {
+            :global(.scrollContainer::before) {
+                transform: none;
+                opacity: 0;
+
+                transition: opacity var(--trans-fast);
+            }
+        }
+
+        &.error .alwaysVisible {
+            :global(.scrollContainer::before) {
+                transform: none;
+                opacity: 1;
             }
         }
     }

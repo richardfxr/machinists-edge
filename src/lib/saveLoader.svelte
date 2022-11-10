@@ -5,6 +5,7 @@
     import Save from "$lib/SVGs/save.svelte";
 	import Eject from "$lib/SVGs/eject.svelte";
 	import DeleteSave from "$lib/SVGs/deleteSave.svelte";
+    import { motionPref } from "../store/store";
 
     /* === PROPS ============================== */
     export let loadedSaveName: string | null = null;
@@ -98,6 +99,7 @@
 
 <div
     class="saveLoader"
+    class:motionRedcued={$motionPref === "reduced"}
     id="saveLoader"
     class:open={isOpen}
     class:saving={isSaving}>
@@ -601,5 +603,23 @@
         from { transform: translateY(calc(-1 * var(--_disk-offset))); }
         50% { transform: translateY(calc(-1 * var(--_disk-offset) - 2 * var(--pad-2xs) - var(--font-sm))); }
         to { transform: translateY(calc(-1 * var(--_disk-offset))); }
+    }
+
+    /* === A11Y =============================== */
+    .motionRedcued.saveLoader {
+        &.saving .saveDialog form .floppyDisk {
+            animation: none;
+        }
+
+        .saveDialog {
+            &:not([open]) form .floppyDisk {
+                transition: opacity var(--_disk-animation-duration) cubic-bezier(.27,0,1,.71);
+            }
+
+            form .floppyDisk {
+                transform: translateY(calc(-1 * var(--_disk-offset)));
+                transition: opacity var(--_disk-animation-duration) cubic-bezier(0,.23,.17,1);
+            }
+        }
     }
 </style>

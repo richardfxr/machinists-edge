@@ -1,18 +1,24 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
     import { createEventDispatcher } from 'svelte';
-    import { slide } from 'svelte/transition';
+    import { slide, fade } from 'svelte/transition';
     import Save from "$lib/SVGs/save.svelte";
     import Eject from "$lib/SVGs/eject.svelte";
 	import DeleteSave from "$lib/SVGs/deleteSave.svelte";
-    import type { feedRateSave } from "../store/store";
+    import { motionPref, type feedRateSave } from "../store/store";
 
     /* === PROPS ============================== */
     export let saves: feedRateSave[];
     export let type: "feedRate";
     export let loadedIndex = 0;
 
-    console.log("loadedIndex:", loadedIndex);
+    /* === FUNCTIONS ========================== */
+    function animate(node: HTMLElement, options: { animation: Function, duration: number }) {
+        if ($motionPref === "reduced")
+            return fade(node, { duration: 200 });
+        else
+            return options.animation(node, options);
+    }
 
     /* === EVENTS ============================= */
     const dispatch = createEventDispatcher();
@@ -35,7 +41,7 @@
     <h2><Save />Saves</h2>
     
     {#if saves.length === 0}
-        <div class="empty" transition:slide>
+        <div class="empty" transition:animate={{ animation: slide, duration: 300 }}>
             <div class="box" role="presentation"></div>
             <p class="highlighted">No saves found</p>
             <p class="text--sm">Create new saves in the <a href="#saveLoader">loaded save section</a> above.</p>
@@ -47,7 +53,7 @@
                     class="input__container"
                     class:loaded={loadedIndex === i}
                     aria-current={loadedIndex === i}
-                    transition:slide >
+                    transition:animate={{ animation: slide, duration: 300 }} >
                     <div class="main">
                         <h3>{save.name}</h3>
                         <p class="details">

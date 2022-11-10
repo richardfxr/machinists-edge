@@ -1,4 +1,7 @@
 <script lang="ts">
+    /* === IMPORTS ============================ */
+    import { motionPref } from "../../store/store";
+
     /* === PROPS ============================== */
     export let animate = false;
 </script>
@@ -7,6 +10,7 @@
 <svg
     class:animated={animate}
     class="illustration logo"
+    class:motionRedcued={$motionPref === "reduced"}
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 103 61">
     <polygon class="fill-800" id="e--top" points="46.36 0 54 15 103 15 103 0 46.36 0"/>
@@ -85,40 +89,69 @@
         to { transform: translateX(0%); }
     }
 
+    // motion reduced
+    @keyframes mRightFade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes mMiddleFade {
+        from { opacity: 0; }
+        15% { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes mLeftFade {
+        from { opacity: 0; }
+        30% { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes eTopFade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes eMiddleFade {
+        from { opacity: 0; }
+        15% { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes eBottomFade {
+        from { opacity: 0; }
+        30% { opacity: 0; }
+        to { opacity: 1; }
+    }
+
     /* === A11Y =============================== */
-    @media (prefers-reduced-motion) {
-        @keyframes mRightSwipe {
-            from { opacity: 0; }
-            to { opacity: 1; }
+    .motionRedcued.animated.logo {
+        #m {
+            &--right {
+                animation-name: mRightFade;
+            }
+
+            &--middle {
+                animation-name: mMiddleFade;
+            }
+
+            &--left {
+                animation-name: mLeftFade;
+            }
         }
 
-        @keyframes mMiddleSwipe {
-            from { opacity: 0; }
-            15% { opacity: 0; }
-            to { opacity: 1; }
-        }
+        #e {
+            &--top {
+                animation-name: eTopFade;
+            }
 
-        @keyframes mLeftSwipe {
-            from { opacity: 0; }
-            30% { opacity: 0; }
-            to { opacity: 1; }
-        }
+            &--middle {
+                animation-name: eMiddleFade;
+            }
 
-        @keyframes eTopSwipe {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes eMiddleSwipe {
-            from { opacity: 0; }
-            15% { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes eBottomSwipe {
-            from { opacity: 0; }
-            30% { opacity: 0; }
-            to { opacity: 1; }
+            &--bottom {
+                animation-name: eBottomFade;
+            }
         }
     }
 </style>

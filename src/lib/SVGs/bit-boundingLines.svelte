@@ -16,5 +16,8 @@
 
 
 <style lang="scss">
-
+    #bit--boundingLines {
+        position: relative;
+        z-index: 800;
+    }
 </style>
