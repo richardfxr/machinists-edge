@@ -225,10 +225,6 @@
         &.saving {
             .saveDialog form .floppyDisk {
                 animation: saveNudge 0.3s cubic-bezier(.42,0,.58,1) 1;
-
-                label #saved {
-                    transition: opacity var(--trans-fast);
-                }
             }
         }
 
@@ -431,7 +427,7 @@
                             background-color: var(--clr-800);
                             
                             opacity: 1;
-                            transition: opacity 0s linear 0.15s;
+                            transition: opacity var(--trans-fast);
 
                             &.hidden {
                                 opacity: 0;
