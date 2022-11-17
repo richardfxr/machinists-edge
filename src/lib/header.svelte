@@ -70,6 +70,7 @@
         margin: auto;
 
         overflow-x: auto;
+        overflow-y: hidden;
 
         &__inner {
             display: flex;
@@ -80,6 +81,8 @@
             width: max-content;
 
             border-bottom: var(--border) var(--clr-300);
+
+            animation: moveDown 0.25s cubic-bezier(.06,.35,.49,1) 1;
         }
 
         :global(.logo) {
@@ -117,6 +120,7 @@
 
                         transition: color var(--trans-fast),
                                     border-color var(--trans-fast);
+                        animation: fade 0.35s ease-in 1;
 
                         &:hover, &:focus {
                             color: var(--clr-900);
@@ -164,6 +168,17 @@
                 }
             }
         }
+    }
+
+    /* === ANIMATIONS ========================= */
+    @keyframes moveDown {
+        from { transform: translateY(-50%); }
+        to { transform: translateY(0%); }
+    }
+
+    @keyframes fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     /* === BREAKPOINTS ======================== */

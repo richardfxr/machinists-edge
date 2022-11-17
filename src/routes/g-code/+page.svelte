@@ -1,4 +1,10 @@
-<h1>G-code Chart</h1>
+<script lang="ts">
+    /* === IMPORTS ============================ */
+    import Heading from "$lib/heading.svelte";
+</script>
+
+
+<Heading>G-code Chart</Heading>
 
 
 <style lang="scss">

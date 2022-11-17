@@ -6,11 +6,7 @@
 
 <Heading>Tool Length Calculator</Heading>
 
-<div class="placeholder"></div>
-
 
 <style lang="scss">
-    .placeholder {
-        height: 200vh;
-    }
+    
 </style>

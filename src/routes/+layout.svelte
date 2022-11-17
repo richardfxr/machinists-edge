@@ -1,21 +1,43 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-    import { page } from '$app/stores';
-    import { fade } from 'svelte/transition';
+    import type { LayoutData } from './$types';
+    import { cubicInOut } from 'svelte/easing';
+    import { fade, fly } from 'svelte/transition';
     import { colorTheme } from "../store/store";
     import Header from "$lib/header.svelte";
     import Footer from "$lib/footer.svelte";
     import { motionPref } from "../store/store";
 
+    /* === PROPS ============================== */
+    export let data: LayoutData;
+
+    /* === VARIABLES ========================== */
+    const pageTransDuration = 250;
+    const pageTransMaxY = 50;
+
     /* === TYPES ============================== */
     interface animationOptions {
         animation: Function;
         duration: number;
-        y?: number;
-        delay?: number;
+        y: number;
     }
 
     /* === FUNCTIONS ========================== */
+    function flyOut(node: HTMLElement, options: animationOptions) {
+		return {
+			duration: options.duration,
+			css: (t: number) => {
+                const eased = cubicInOut(t);
+				const easedInv = 1 - eased;
+
+				return `
+					transform: translateY(${easedInv * options.y}px);
+                    opacity: ${eased * 1};
+					`
+			}
+		};
+	}
+
     function animate(node: HTMLElement, options: animationOptions) {
         if ($motionPref === "reduced")
             return fade(node, { duration: 200 });
@@ -32,36 +54,40 @@
 
 <Header />
 
-<!-- page transition -->
-<div class="pageTransition__container">
-    {#key $page.url.pathname}
-        <main
-            id="main"
-            in:animate={{ animation: fade, duration: 300, delay: 1000 }}
-            out:animate={{ animation: fade, duration: 300 }}>
-            <slot></slot>
-        </main>
-    {/key}
-</div>
+<!-- main page with page transition -->
+{#key data.url.href}
+    <main
+        id="main"
+        style="
+            --pageTransDuration: {pageTransDuration}ms;
+            --pageTransMaxY: {pageTransMaxY}px;
+        "
+        in:fade={{ duration: 0, delay: pageTransDuration}}
+        out:animate={{ animation: flyOut, y: pageTransMaxY, duration: pageTransDuration }}>
+        <slot></slot>
+    </main>
+{/key}
 
 <Footer />
 
 
-<style lang="scss">
-    .pageTransition__container {
-        // wrapper grid to prevent scrollbar from appearing during page transitions
-        display: grid;
-        grid-template: 1fr / 1fr;
-    }
-    
+<style lang="scss">    
     #main {
-        // forces #main into wrapper grid to prevent scrollbar
-        grid-row: 1;
-        grid-column: 1;
         width: 100%;
         max-width: var(--max-width);
 
         padding: 0 var(--pad-hrz);
         margin: auto;
+
+        :global(.page) {
+            animation: moveUp calc(0.25s + var(--pageTransDuration)) cubic-bezier(0,.39,.15,1) 1;
+        }
+    }
+
+    /* === ANIMATIONS ========================= */
+    @keyframes moveUp {
+        from { transform: translateY(var(--pageTransMaxY)); opacity: 0; }
+        50% { transform: translateY(var(--pageTransMaxY)); opacity: 0; }
+        to { transform: translateY(0px); opacity: 1; }
     }
 </style>

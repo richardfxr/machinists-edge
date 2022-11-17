@@ -195,164 +195,166 @@
 
 <Heading>Feed Rate Calculator</Heading>
 
-<form
-    class="feedCalc"
-    class:motionRedcued={$motionPref === "reduced"}
-    class:error
-    tabindex="-1"
-    bind:this={calculator}
-    on:submit|preventDefault>
-    <div class="inputs">
-        <div
-            class="cutterDiameter input__container"
-            class:error={cutterDiameter.error}>
-            <NumInput
-                label="cutter diameter"
-                name="cutterDiameter"
-                bind:value={cutterDiameter.value}
-                change={cutterDiameterHasChange}
-                bind:error={cutterDiameter.error}
-                units="in"
-                type="allowFractions"
-                on:update={e => cutterDiameter = e.detail}/>
+<div class="page">
+    <form
+        class="feedCalc"
+        class:motionRedcued={$motionPref === "reduced"}
+        class:error
+        tabindex="-1"
+        bind:this={calculator}
+        on:submit|preventDefault>
+        <div class="inputs">
+            <div
+                class="cutterDiameter input__container"
+                class:error={cutterDiameter.error}>
+                <NumInput
+                    label="cutter diameter"
+                    name="cutterDiameter"
+                    bind:value={cutterDiameter.value}
+                    change={cutterDiameterHasChange}
+                    bind:error={cutterDiameter.error}
+                    units="in"
+                    type="allowFractions"
+                    on:update={e => cutterDiameter = e.detail}/>
 
-            <NumInput
-                label="1/2 engagement"
-                name="halfEngagement"
-                value={halfEngagement}
-                units="in"
-                type="readonly" />
+                <NumInput
+                    label="1/2 engagement"
+                    name="halfEngagement"
+                    value={halfEngagement}
+                    units="in"
+                    type="readonly" />
 
-            <NumInput
-                label="1/4 engagement"
-                name="quaterEngagement"
-                value={quaterEngagement}
-                units="in"
-                type="readonly" />
-        </div>
+                <NumInput
+                    label="1/4 engagement"
+                    name="quaterEngagement"
+                    value={quaterEngagement}
+                    units="in"
+                    type="readonly" />
+            </div>
 
-        <div class="flutesAndOp">
-            <RangeInput
-                label="number of flutes"
-                name="numFlutes"
-                bind:value={numFlutes.value}
-                change={numFlutesHasChange}
-                bind:error={numFlutes.error}
-                min={1}
-                max={9}
-                step={1}
-                selfContained
-                on:update={e => numFlutes = e.detail}/>
+            <div class="flutesAndOp">
+                <RangeInput
+                    label="number of flutes"
+                    name="numFlutes"
+                    bind:value={numFlutes.value}
+                    change={numFlutesHasChange}
+                    bind:error={numFlutes.error}
+                    min={1}
+                    max={9}
+                    step={1}
+                    selfContained
+                    on:update={e => numFlutes = e.detail}/>
 
-            <RadioInput
-                label="operation type"
-                name="opType"
+                <RadioInput
+                    label="operation type"
+                    name="opType"
+                    options={[
+                        { name: "drill", value: "drill" },
+                        { name: "mill", value: "mill" },
+                    ]}
+                    change={opTypeHasChange}
+                    selfContained
+                    bind:value={opType}/>
+            </div>
+
+            <RadioTable
+                label="material presets"
+                name="materialSelect"
                 options={[
-                    { name: "drill", value: "drill" },
-                    { name: "mill", value: "mill" },
+                    { name: "Aluminum", value: "aluminum", col1: aluminum[opType], col2: aluminum.feed[cutterDiameterIndex] },
+                    { name: "Brass", value: "brass", col1: brass[opType], col2: brass.feed[cutterDiameterIndex] },
+                    { name: "Delrin", value: "delrin", col1: delrin[opType], col2: delrin.feed[cutterDiameterIndex] },
+                    { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex] },
+                    { name: "Custom (change with following inputs)", value: "custom", col1: toolSpeed.value, col2: cuttingFeed.value, hidden: true },
                 ]}
-                change={opTypeHasChange}
+                change={materialHasChange}
+                tableHeadings={["material", "tool speed", "cutting feeds"]}
                 selfContained
-                bind:value={opType}/>
+                bind:value={material}/>
+
+            <div class="toolAndFeed">
+                <NumInput
+                    label="tool speed"
+                    name="toolSpeed"
+                    bind:value={toolSpeed.value}
+                    change={toolSpeedHasChange}
+                    bind:error={toolSpeed.error}
+                    units="SFPM"
+                    type="number"
+                    step={1}
+                    selfContained
+                    on:input={() => material = "custom"}/>
+                
+                <NumInput
+                    label="cutting feed"
+                    name="cuttingFeed"
+                    bind:value={cuttingFeed.value}
+                    change={cuttingFeedHasChange}
+                    bind:error={cuttingFeed.error}
+                    units="IPR"
+                    type="number"
+                    allowZero
+                    selfContained
+                    on:input={() => material = "custom"}/>
+            </div>
         </div>
 
-        <RadioTable
-            label="material presets"
-            name="materialSelect"
-            options={[
-                { name: "Aluminum", value: "aluminum", col1: aluminum[opType], col2: aluminum.feed[cutterDiameterIndex] },
-                { name: "Brass", value: "brass", col1: brass[opType], col2: brass.feed[cutterDiameterIndex] },
-                { name: "Delrin", value: "delrin", col1: delrin[opType], col2: delrin.feed[cutterDiameterIndex] },
-                { name: "Steel", value: "steel", col1: steel[opType], col2: steel.feed[cutterDiameterIndex] },
-                { name: "Custom (change with following inputs)", value: "custom", col1: toolSpeed.value, col2: cuttingFeed.value, hidden: true },
-            ]}
-            change={materialHasChange}
-            tableHeadings={["material", "tool speed", "cutting feeds"]}
-            selfContained
-            bind:value={material}/>
-
-        <div class="toolAndFeed">
-            <NumInput
-                label="tool speed"
-                name="toolSpeed"
-                bind:value={toolSpeed.value}
-                change={toolSpeedHasChange}
-                bind:error={toolSpeed.error}
-                units="SFPM"
-                type="number"
-                step={1}
-                selfContained
-                on:input={() => material = "custom"}/>
-            
-            <NumInput
-                label="cutting feed"
-                name="cuttingFeed"
-                bind:value={cuttingFeed.value}
-                change={cuttingFeedHasChange}
-                bind:error={cuttingFeed.error}
-                units="IPR"
-                type="number"
-                allowZero
-                selfContained
-                on:input={() => material = "custom"}/>
+        <div class="alwaysVisible">
+            <ScrollContainer contains="results">
+                <Output
+                    label="spindle speed"
+                    value={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value))}
+                    units="RPM"
+                    position="top-right"
+                    highlighted
+                    {error} />
+                
+                <Output
+                    label="feed rate"
+                    value={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value) * cuttingFeed.value * numFlutes.value * 10) / 10}
+                    units="IPM"
+                    position="top-left"
+                    highlighted
+                    {error} />
+            </ScrollContainer>
         </div>
-    </div>
 
-    <div class="alwaysVisible">
-        <ScrollContainer contains="results">
-            <Output
-                label="spindle speed"
-                value={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value))}
-                units="RPM"
-                position="top-right"
-                highlighted
-                {error} />
-            
-            <Output
-                label="feed rate"
-                value={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value) * cuttingFeed.value * numFlutes.value * 10) / 10}
-                units="IPM"
-                position="top-left"
-                highlighted
-                {error} />
-        </ScrollContainer>
-    </div>
-
-    <div class="results">
-        <div class="results__inner">
-            <ToolIllus
-                scaleX={cutterDiameter.value * 2}
-                flutes={numFlutes.value}
-                spindleSpeed={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value))}
-                feedRate={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value) * cuttingFeed.value * numFlutes.value * 10) / 10} />
+        <div class="results">
+            <div class="results__inner">
+                <ToolIllus
+                    scaleX={cutterDiameter.value * 2}
+                    flutes={numFlutes.value}
+                    spindleSpeed={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value))}
+                    feedRate={Math.round(toolSpeed.value / (Math.PI / 12 * cutterDiameter.value) * cuttingFeed.value * numFlutes.value * 10) / 10} />
+            </div>
         </div>
-    </div>
-</form>
+    </form>
 
-<SaveLoader
-    loadedSaveName={loadedSave ? loadedSave.name : null}
-    hasChanges={hasChanges}
-    error={error}
-    currentSaveCount={loadedSave ? loadedSave.saveCount : $feedRateSaveCount}
-    on:save={e => createNewSave(e.detail)}
-    on:update={e => updateSave(e.detail)}
-    on:eject={() => loadedFeedRateSave.set(-1)}
-    on:delete={() => deleteSave($loadedFeedRateSave)} />
+    <SaveLoader
+        loadedSaveName={loadedSave ? loadedSave.name : null}
+        hasChanges={hasChanges}
+        error={error}
+        currentSaveCount={loadedSave ? loadedSave.saveCount : $feedRateSaveCount}
+        on:save={e => createNewSave(e.detail)}
+        on:update={e => updateSave(e.detail)}
+        on:eject={() => loadedFeedRateSave.set(-1)}
+        on:delete={() => deleteSave($loadedFeedRateSave)} />
 
-<Saves
-    saves={$feedRateSaves}
-    type="feedRate"
-    loadedIndex={$loadedFeedRateSave}
-    on:load={e => {
-        loadedFeedRateSave.set(e.detail.index)
-        // scroll calculator into view and focus on it
-        let scrollBehavior;
-        $motionPref === "reduced" ? scrollBehavior = "auto" : scrollBehavior = "smooth";
-        calculator.scrollIntoView({ behavior: "auto" });
-        calculator.focus({ preventScroll: true });
-    }}
-    on:eject={() => loadedFeedRateSave.set(-1)}
-    on:delete={e => deleteSave(e.detail.index)} />
+    <Saves
+        saves={$feedRateSaves}
+        type="feedRate"
+        loadedIndex={$loadedFeedRateSave}
+        on:load={e => {
+            loadedFeedRateSave.set(e.detail.index)
+            // scroll calculator into view and focus on it
+            let scrollBehavior;
+            $motionPref === "reduced" ? scrollBehavior = "auto" : scrollBehavior = "smooth";
+            calculator.scrollIntoView({ behavior: "auto" });
+            calculator.focus({ preventScroll: true });
+        }}
+        on:eject={() => loadedFeedRateSave.set(-1)}
+        on:delete={e => deleteSave(e.detail.index)} />
+</div>
 
 
 <style lang="scss">

@@ -1,4 +1,10 @@
-<h1>Tap & Clearance Chart</h1>
+<script lang="ts">
+    /* === IMPORTS ============================ */
+    import Heading from "$lib/heading.svelte";
+</script>
+
+
+<Heading>Tap & Clearance Chart</Heading>
 
 
 <style lang="scss">

@@ -221,18 +221,7 @@ input[type="radio"] ~ span {
     position: absolute;
 }
 
-/* === BREAKPOINTS ======================== */
-@media only screen and (max-width: $breakpoint-smdtablet) {
-    h1 {
-        margin: var(--pad-5xl) var(--pad-xl);
-    }
-}
 
-@media only screen and (max-width: $breakpoint-mobile) {
-    h1 {
-        margin: var(--pad-5xl) 0;
-    }
-}
 
 /* === A11Y =============================== */
 @media (forced-colors: active) {
