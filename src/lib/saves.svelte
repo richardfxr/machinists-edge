@@ -41,7 +41,7 @@
     <h2><Save />Saves</h2>
     
     {#if saves.length === 0}
-        <div class="empty" transition:animate={{ animation: slide, duration: 300 }}>
+        <div class="empty" transition:animate|local={{ animation: slide, duration: 300 }}>
             <div class="box" role="presentation"></div>
             <p class="highlighted">No saves found</p>
             <p class="text--sm">Create new saves in the <a href="#saveLoader">loaded save section</a> above.</p>
@@ -53,7 +53,7 @@
                     class="input__container"
                     class:loaded={loadedIndex === i}
                     aria-current={loadedIndex === i}
-                    transition:animate={{ animation: slide, duration: 300 }} >
+                    transition:animate|local={{ animation: slide, duration: 300 }} >
                     <div class="main">
                         <h3>{save.name}</h3>
                         <p class="details">
