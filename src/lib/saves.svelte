@@ -113,7 +113,7 @@
             font-weight: 500;
             text-transform: uppercase;
             padding: 0 var(--pad-2xs);
-            background-color: var(--clr-800);
+            background-color: var(--clr-900);
 
             transition: background-color var(--trans-fast);
         }
