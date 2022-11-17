@@ -11,6 +11,7 @@
     import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
     import type { feedRateSave } from "../store/store";
 	import Saves from "$lib/saves.svelte";
+	import Heading from "$lib/heading.svelte";
 
     /* === BINDINGS =========================== */
     let calculator: any;
@@ -192,7 +193,7 @@
 </svelte:head>
 
 
-<h1>Feed Rate Calculator</h1>
+<Heading>Feed Rate Calculator</Heading>
 
 <form
     class="feedCalc"

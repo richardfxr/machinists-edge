@@ -27,9 +27,7 @@ h1 {
     font-weight: 600;
     text-transform: uppercase;
 
-    padding: var(--pad-5xl) 0;
-
-    overflow-wrap: break-word;
+    overflow-wrap: break-word; 
 }
 
 h2 {
@@ -226,15 +224,13 @@ input[type="radio"] ~ span {
 /* === BREAKPOINTS ======================== */
 @media only screen and (max-width: $breakpoint-smdtablet) {
     h1 {
-        // internal variables
-        padding: var(--pad-5xl) var(--pad-xl);
+        margin: var(--pad-5xl) var(--pad-xl);
     }
 }
 
 @media only screen and (max-width: $breakpoint-mobile) {
     h1 {
-        // internal variables
-        padding: var(--pad-5xl) 0;
+        margin: var(--pad-5xl) 0;
     }
 }
 
