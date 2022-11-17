@@ -187,6 +187,11 @@
 </script>
 
 
+<svelte:head>
+    <meta name="keywords" content="calculator, feed rate, machinist"/>
+</svelte:head>
+
+
 <h1>Feed Rate Calculator</h1>
 
 <form
