@@ -1,5 +1,6 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
+    import { page } from '$app/stores';
     import { colorTheme, hasColorTheme, motionPref, hasMotionPref } from "../store/store";
     import IconRadioInput from "./iconRadioInput.svelte";
     import Logo from "./SVGs/logo.svelte";
@@ -50,13 +51,50 @@
 
     <div class="siteMap">
         <h2 id="siteMap__label">site map</h2>
-        <ul aria-labelledby="siteMap__label">
-            <li><a href="#">Feed Rate Calculator</a></li>
-            <li><a href="#">Tool Length Calculator</a></li>
-            <li><a href="#">G-code Chart</a></li>
-            <li><a href="#">Tap & Clearance Chart</a></li>
-            <li><a href="#">Settings</a></li>
-        </ul>
+        <nav>
+            <ul aria-labelledby="siteMap__label">
+                <li>
+                    <a
+                        href="/"
+                        class:active={$page.url.pathname === "/"}
+                        aria-current={$page.url.pathname === "/"}>
+                        Feed Rate Calculator
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="/tool-length"
+                        class:active={$page.url.pathname === "/tool-length"}
+                        aria-current={$page.url.pathname === "/tool-length"}>
+                        Tool Length Calculator
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="/g-code"
+                        class:active={$page.url.pathname === "/g-code"}
+                        aria-current={$page.url.pathname === "/g-code"}>
+                        G-code Chart
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="/tap-and-clearance"
+                        class:active={$page.url.pathname === "/tap-and-clearance"}
+                        aria-current={$page.url.pathname === "/tap-and-clearance"}>
+                        Tap & Clearance Chart
+                    </a>
+                </li>
+                <li>
+                    <a href="/settings"
+                        class:active={$page.url.pathname === "/settings"}
+                        aria-current={$page.url.pathname === "/settings"}>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
     </div>
 
     <div class="info">
@@ -156,6 +194,14 @@
 
                     &:hover, &:focus {
                         color: var(--clr-900);
+                    }
+
+                    &.active {
+                        color: var(--clr-900);
+
+                        &:hover, &:focus {
+                            color: var(--clr-1000);
+                        }
                     }
                 }
             }
