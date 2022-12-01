@@ -10,7 +10,7 @@
 <svg
     class:animated={animate}
     class="illustration logo"
-    class:motionRedcued={$motionPref === "reduced"}
+    class:motionReduced={$motionPref === "reduced"}
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 103 61">
     <polygon class="fill-800" id="e--top" points="46.36 0 54 15 103 15 103 0 46.36 0"/>
@@ -125,7 +125,7 @@
     }
 
     /* === A11Y =============================== */
-    .motionRedcued.animated.logo {
+    .motionReduced.animated.logo {
         #m {
             &--right {
                 animation-name: mRightFade;
