@@ -2,7 +2,7 @@
     /* === IMPORTS ============================ */
     import type { LayoutData } from './$types';
     import { cubicInOut } from 'svelte/easing';
-    import { fade, fly } from 'svelte/transition';
+    import { fade } from 'svelte/transition';
     import { colorTheme } from "../store/store";
     import Header from "$lib/header.svelte";
     import Footer from "$lib/footer.svelte";
@@ -58,6 +58,7 @@
 {#key data.url.href}
     <main
         id="main"
+        class:motionReduced={$motionPref === "reduced"}
         style="
             --pageTransDuration: {pageTransDuration}ms;
             --pageTransMaxY: {pageTransMaxY}px;
@@ -89,5 +90,18 @@
         from { transform: translateY(var(--pageTransMaxY)); opacity: 0; }
         50% { transform: translateY(var(--pageTransMaxY)); opacity: 0; }
         to { transform: translateY(0px); opacity: 1; }
+    }
+
+    @keyframes fade {
+        from { opacity: 0; }
+        50% { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* === A11Y =============================== */
+    .motionReduced#main {
+        :global(.page) {
+            animation-name: fade;
+        }
     }
 </style>

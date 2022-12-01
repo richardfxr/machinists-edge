@@ -1,10 +1,13 @@
 <script lang="ts">
-
+    /* === IMPORTS ============================ */
+    import { motionPref } from "../store/store";
 </script>
 
 
 <div class="heading__container">
-    <h1 class="heading">
+    <h1
+        class="heading"
+        class:motionReduced={$motionPref === "reduced"}>
         <slot></slot>
     </h1>
 </div>
@@ -28,6 +31,12 @@
         to { transform: translateY(0%); }
     }
 
+    @keyframes fade {
+        from { opacity: 0; }
+        50% { opacity: 0; }
+        to { opacity: 1; }
+    }
+
     /* === BREAKPOINTS ======================== */
     @media only screen and (max-width: $breakpoint-smdtablet) {
         .heading__container {
@@ -39,5 +48,10 @@
         .heading__container {
             margin: var(--pad-5xl) 0;
         }
+    }
+
+    /* === A11Y =============================== */
+    .motionReduced.heading {
+        animation-name: fade;
     }
 </style>
