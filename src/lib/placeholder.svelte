@@ -1,7 +1,7 @@
 <div class="placeholder">
     <div class="box" role="presentation"></div>
     <p class="highlighted">Page under development</p>
-    <p class="text--sm">You can view the progress of this project through its <a href="https://github.com/richardfxr/machinists-edge/commits/main" target="_blank" rel="noreferrer noopener">GitHub commits</a>. You can also find more projects on <a href="https://www.richardfxr.com/" target="_blank" rel="noreferrer noopener">my personal website</a>.</p>
+    <p class="text--sm">You can view the progress of this project through its <a href="https://github.com/richardfxr/machinists-edge/commits/dev" target="_blank" rel="noreferrer noopener">GitHub commits</a>. You can also find more projects on <a href="https://www.richardfxr.com/" target="_blank" rel="noreferrer noopener">my personal website</a>.</p>
 </div>
 
 
