@@ -14,7 +14,7 @@ Machinist’s Edge is built using [SvelteKit](https://kit.svelte.dev/), mostly w
 
 ### View in Browser
 
-If you just want to take a look at the code in your browser, press the <kbd>.</kbd> key to open up Visual Studio Code for the Web. Please take a look at the architecture section below to gain a better understanding of how the code is organized.
+If you just want to take a look at the code in your browser, press the <kbd>.</kbd> key to open up Visual Studio Code for the Web. Please take a look at the [architecture](#architecture) section below to gain a better understanding of how the code is organized.
 
 ### Run Locally
 
