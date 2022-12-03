@@ -5,6 +5,15 @@
 </script>
 
 
+<svelte:head>
+    <title>Settings | Machinist's Edge</title>
+    <meta
+        name="description"
+        content="Site settings such as color theme, reduced motion, input behavior, and user data import/export."
+    />
+</svelte:head>
+
+
 <Heading>Settings</Heading>
 
 <div class="page">

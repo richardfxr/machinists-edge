@@ -5,6 +5,15 @@
 </script>
 
 
+<svelte:head>
+    <title>Tap &amp; Clearance Chart | Machinist's Edge</title>
+    <meta
+        name="description"
+        content="Tap and clearance drill charts."
+    />
+</svelte:head>
+
+
 <Heading>Tap & Clearance Chart</Heading>
 
 <div class="page">

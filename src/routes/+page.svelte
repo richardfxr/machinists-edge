@@ -189,7 +189,11 @@
 
 
 <svelte:head>
-    <meta name="keywords" content="calculator, feed rate, machinist"/>
+    <title>Feed Rate Calculator | Machinist's Edge</title>
+    <meta
+        name="description"
+        content="Calculate spindle speed and feed rate based on cutter diameter, material, and operation type. For milling or drilling aluminum, brass, Delrin, or steel."
+    />
 </svelte:head>
 
 

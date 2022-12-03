@@ -5,6 +5,15 @@
 </script>
 
 
+<svelte:head>
+    <title>G-code Chart | Machinist's Edge</title>
+    <meta
+        name="description"
+        content="A list of common G- and M-codes for reference."
+    />
+</svelte:head>
+
+
 <Heading>G-code Chart</Heading>
 
 <div class="page">
