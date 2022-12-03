@@ -42,6 +42,7 @@ npm run dev -- --open
 - 🐛FIX: bug fix
 - 🟠SVLT: Svelte and SvelteKit
 - 🚧WIP: work in progress (broken/partial code)
+- 🎉RLS: new release (main branch merge)
 
 ## Architecture
 
