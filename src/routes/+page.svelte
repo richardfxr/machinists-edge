@@ -2,6 +2,9 @@
     /* === IMPORTS ============================ */
     import { writable, derived } from 'svelte/store';
     import type { Writable } from 'svelte/store';
+    import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
+    import type { feedRateSave } from "../store/store";
+
     import ToolIllus from "$lib/toolIllus.svelte";
     import Output from "$lib/output.svelte";
 	import NumInput from "$lib/numInput.svelte";
@@ -10,8 +13,6 @@
 	import RadioTable from "$lib/radioTable.svelte";
 	import ScrollContainer from "$lib/scrollContainer.svelte";
 	import SaveLoader from "$lib/saveLoader.svelte";
-    import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
-    import type { feedRateSave } from "../store/store";
 	import Saves from "$lib/saves.svelte";
 	import Heading from "$lib/heading.svelte";
 
