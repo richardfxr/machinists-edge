@@ -47,12 +47,39 @@
     };
 
     /* === WRITABLE STORES ==================== */
-    const cutterDiameter = writable({ value: 0.5, error: false });
-    const numFlutes = writable({ value: 2, error: false });
-    const opType: Writable<"drill" | "mill"> = writable("drill");
-    const material: Writable<"aluminum" | "brass" | "delrin" | "steel" | "custom"> = writable("aluminum");
-    const toolSpeed = writable({ value: 1, error: false });
-    const cuttingFeed = writable({ value: 0.001, error: false });
+    const cutterDiameter = writable({
+        value: 0.5,
+        error: false,
+        hasChanged: false
+    });
+
+    const numFlutes = writable({
+        value: 2,
+        error: false,
+        hasChanged: false
+    });
+
+    const opType: Writable<{ value: "drill" | "mill", hasChanged: boolean }> = writable({
+        value: "drill",
+        hasChanged: false
+    });
+
+    const material: Writable<{ value: "aluminum" | "brass" | "delrin" | "steel" | "custom", hasChanged: boolean }> = writable({
+        value: "aluminum",
+        hasChanged: false
+    });
+
+    const toolSpeed = writable({
+        value: 1,
+        error: false,
+        hasChanged: false
+    });
+    
+    const cuttingFeed = writable({
+        value: 0.001,
+        error: false,
+        hasChanged: false
+    });
 
     /* === REACTIVE DECLARATIONS ============== */
     // $: error = $cutterDiameter.error || $numFlutes.error || $toolSpeed.error || $cuttingFeed.error
@@ -80,49 +107,6 @@
         }
     );
 
-    /* change checking for saves */
-    const cutterDiameterHasChange = derived(
-        [cutterDiameter, loadedSave],
-        ([$cutterDiameter, $loadedSave]) => $loadedSave ? $loadedSave.cutterDiameter !== $cutterDiameter.value : false
-    );
-
-    const numFlutesHasChange = derived(
-        [numFlutes, loadedSave],
-        ([$numFlutes, $loadedSave]) => $loadedSave ? $loadedSave.numFlutes !== $numFlutes.value : false
-    );
-
-    const opTypeHasChange = derived(
-        [opType, loadedSave],
-        ([$opType, $loadedSave]) => $loadedSave ? $loadedSave.opType !== $opType : false
-    );
-
-    const materialHasChange = derived(
-        [material, loadedSave],
-        ([$material, $loadedSave]) => $loadedSave ? $loadedSave.material !== $material : false
-    );
-
-    const toolSpeedHasChange = derived(
-        [toolSpeed, loadedSave],
-        ([$toolSpeed, $loadedSave]) => $loadedSave ? $loadedSave.toolSpeed !== $toolSpeed.value : false
-    );
-
-    const cuttingFeedHasChange = derived(
-        [cuttingFeed, loadedSave],
-        ([$cuttingFeed, $loadedSave]) => $loadedSave ? $loadedSave.cuttingFeed !== $cuttingFeed.value : false
-    );
-
-    const hasChanges = derived(
-        [cutterDiameterHasChange, numFlutesHasChange, opTypeHasChange, materialHasChange, toolSpeedHasChange, cuttingFeedHasChange],
-        ([$cutterDiameterHasChange, $numFlutesHasChange, $opTypeHasChange, $materialHasChange, $toolSpeedHasChange, $cuttingFeedHasChange]) => {
-            return $cutterDiameterHasChange ||
-                   $numFlutesHasChange ||
-                   $opTypeHasChange ||
-                   $materialHasChange ||
-                   $toolSpeedHasChange ||
-                   $cuttingFeedHasChange;
-        }
-    );
-
     const error = derived(
         [cutterDiameter, numFlutes, toolSpeed, cuttingFeed],
         ([$cutterDiameter, $numFlutes, $toolSpeed, $cuttingFeed]) => {
@@ -131,37 +115,77 @@
     )
     
     /* === REACTIVE DECLARATIONS ============== */
+    // call loadSave() every time $loadedFeedRateSave changes
+    $: $loadedFeedRateSave !== -1 && loadSave();
+
     // switch material toolSpeed and cuttingFeed
     $: {
-        switch ($material) {
+        switch ($material.value) {
             case "aluminum":
-                $toolSpeed = { value: aluminum[$opType], error: false };
-                $cuttingFeed = { value: aluminum.feed[$cutterDiameterIndex], error: false };
-                console.log("aluminum: " + aluminum[$opType] + ", " + aluminum.feed[$cutterDiameterIndex]);
+                $toolSpeed.value = aluminum[$opType.value];
+                $toolSpeed.error = false;
+                $cuttingFeed.value = aluminum.feed[$cutterDiameterIndex];
+                $cuttingFeed.error = false;
+                console.log("aluminum: " + aluminum[$opType.value] + ", " + aluminum.feed[$cutterDiameterIndex]);
                 break;
             
             case "brass":
-                $toolSpeed = { value: brass[$opType], error: false };
-                $cuttingFeed = { value: brass.feed[$cutterDiameterIndex], error: false };
-                console.log("brass: " + brass[$opType] + ", " + brass.feed[$cutterDiameterIndex]);
+                $toolSpeed.value = brass[$opType.value];
+                $toolSpeed.error = false;
+                $cuttingFeed.value = brass.feed[$cutterDiameterIndex];
+                $cuttingFeed.error = false;
+                console.log("brass: " + brass[$opType.value] + ", " + brass.feed[$cutterDiameterIndex]);
                 break;
 
             case "delrin":
-                $toolSpeed = { value: delrin[$opType], error: false };
-                $cuttingFeed = { value: delrin.feed[$cutterDiameterIndex], error: false };
-                console.log("delrin: " + delrin[$opType] + ", " + delrin.feed[$cutterDiameterIndex]);
+                $toolSpeed.value = delrin[$opType.value];
+                $toolSpeed.error = false;
+                $cuttingFeed.value = delrin.feed[$cutterDiameterIndex];
+                $cuttingFeed.error = false;
+                console.log("delrin: " + delrin[$opType.value] + ", " + delrin.feed[$cutterDiameterIndex]);
                 break;
 
             case "steel":
-                $toolSpeed = { value: steel[$opType], error: false };
-                $cuttingFeed = { value: steel.feed[$cutterDiameterIndex], error: false };
-                console.log("steel: " + steel[$opType] + ", " + steel.feed[$cutterDiameterIndex]);
+                $toolSpeed.value = steel[$opType.value];
+                $toolSpeed.error = false;
+                $cuttingFeed.value = steel.feed[$cutterDiameterIndex];
+                $cuttingFeed.error = false;
+                console.log("steel: " + steel[$opType.value] + ", " + steel.feed[$cutterDiameterIndex]);
                 break;
         }
     };
 
-    // call loadSave() every time $loadedFeedRateSave changes
-    $: $loadedFeedRateSave !== -1 && loadSave();
+    // change tracking for saves
+    $: $loadedSave && $loadedSave.cutterDiameter !== $cutterDiameter.value ?
+        $cutterDiameter.hasChanged = true :
+        $cutterDiameter.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.numFlutes !== $numFlutes.value ?
+        $numFlutes.hasChanged = true :
+        $numFlutes.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.opType !== $opType.value ?
+        $opType.hasChanged = true :
+        $opType.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.material !== $material.value ?
+        $material.hasChanged = true :
+        $material.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.toolSpeed !== $toolSpeed.value ?
+        $toolSpeed.hasChanged = true :
+        $toolSpeed.hasChanged = false;
+    
+    $: $loadedSave && $loadedSave.cuttingFeed !== $cuttingFeed.value ?
+        $cuttingFeed.hasChanged = true :
+        $cuttingFeed.hasChanged = false;
+
+    $: hasChanged = $cutterDiameter.hasChanged ||
+                    $numFlutes.hasChanged ||
+                    $opType.hasChanged ||
+                    $material.hasChanged ||
+                    $toolSpeed.hasChanged ||
+                    $cuttingFeed.hasChanged;
 
     /* === FUNCTIONS ========================== */
     /* checks if index is valid for feedRateSaves array */
@@ -174,6 +198,8 @@
         let saveCount;
         $loadedSave ? saveCount = $loadedSave.saveCount : saveCount = $feedRateSaveCount;
 
+        console.log("saving");
+
         // create save of interface feedRateSave
         let save: feedRateSave = {
             name,
@@ -181,8 +207,8 @@
             feedRate: Math.round($toolSpeed.value / (Math.PI / 12 * $cutterDiameter.value) * $cuttingFeed.value * $numFlutes.value * 10) / 10,
             cutterDiameter: $cutterDiameter.value,
             numFlutes: $numFlutes.value,
-            opType: $opType,
-            material: $material,
+            opType: $opType.value,
+            material: $material.value,
             toolSpeed: $toolSpeed.value,
             cuttingFeed: $cuttingFeed.value,
             saveCount,
@@ -193,7 +219,9 @@
 
     function createNewSave(detail: {name: string}) {
         // do not save if there is an error
-        if (error) return;
+        if ($error) return;
+
+        console.log("creating new save");
 
         const newSave = createSave(detail.name);
 
@@ -207,7 +235,7 @@
 
     function updateSave(detail: {name: string}) {
         // do not save if there is an error
-        if (error) return;
+        if ($error) return;
 
         const updatedSave = createSave(detail.name);
 
@@ -230,16 +258,12 @@
         console.log("loadingSave:" + JSON.stringify(loadingSave));
 
         // update all values
-        $cutterDiameter = { value: loadingSave.cutterDiameter, error: false };
-        $numFlutes = { value: loadingSave.numFlutes, error: false };
-        $opType = loadingSave.opType;
-        $material = loadingSave.material;
-        $toolSpeed = { value: loadingSave.toolSpeed, error: false };
-        $cuttingFeed = { value: loadingSave.cuttingFeed, error: false };
-
-        // trigger reactivity through reassignment
-        // cutterDiameter = cutterDiameter;
-        console.log("cutterDiameter: {" + $cutterDiameter.value + ", " + $cutterDiameter.error + "}");
+        $cutterDiameter = { value: loadingSave.cutterDiameter, error: false, hasChanged: false };
+        $numFlutes = { value: loadingSave.numFlutes, error: false, hasChanged: false };
+        $opType = { value: loadingSave.opType, hasChanged: false };
+        $material = { value: loadingSave.material, hasChanged: false };
+        $toolSpeed = { value: loadingSave.toolSpeed, error: false, hasChanged: false };
+        $cuttingFeed = { value: loadingSave.cuttingFeed, error: false, hasChanged: false };
     }
 
     function deleteSave(index: number) {
@@ -283,7 +307,7 @@
                     label="cutter diameter"
                     name="cutterDiameter"
                     bind:value={$cutterDiameter.value}
-                    change={$cutterDiameterHasChange}
+                    change={$cutterDiameter.hasChanged}
                     bind:error={$cutterDiameter.error}
                     units="in"
                     type="allowFractions"
@@ -309,7 +333,7 @@
                     label="number of flutes"
                     name="numFlutes"
                     bind:value={$numFlutes.value}
-                    change={$numFlutesHasChange}
+                    change={$numFlutes.hasChanged}
                     bind:error={$numFlutes.error}
                     min={1}
                     max={9}
@@ -324,50 +348,50 @@
                         { name: "drill", value: "drill" },
                         { name: "mill", value: "mill" },
                     ]}
-                    change={$opTypeHasChange}
+                    change={$opType.hasChanged}
                     selfContained
-                    bind:value={$opType}/>
+                    bind:value={$opType.value}/>
             </div>
 
             <RadioTable
                 label="material presets"
                 name="materialSelect"
                 options={[
-                    { name: "Aluminum", value: "aluminum", col1: aluminum[$opType], col2: aluminum.feed[$cutterDiameterIndex] },
-                    { name: "Brass", value: "brass", col1: brass[$opType], col2: brass.feed[$cutterDiameterIndex] },
-                    { name: "Delrin", value: "delrin", col1: delrin[$opType], col2: delrin.feed[$cutterDiameterIndex] },
-                    { name: "Steel", value: "steel", col1: steel[$opType], col2: steel.feed[$cutterDiameterIndex] },
+                    { name: "Aluminum", value: "aluminum", col1: aluminum[$opType.value], col2: aluminum.feed[$cutterDiameterIndex] },
+                    { name: "Brass", value: "brass", col1: brass[$opType.value], col2: brass.feed[$cutterDiameterIndex] },
+                    { name: "Delrin", value: "delrin", col1: delrin[$opType.value], col2: delrin.feed[$cutterDiameterIndex] },
+                    { name: "Steel", value: "steel", col1: steel[$opType.value], col2: steel.feed[$cutterDiameterIndex] },
                     { name: "Custom (change with following inputs)", value: "custom", col1: $toolSpeed.value, col2: $cuttingFeed.value, hidden: true },
                 ]}
-                change={$materialHasChange}
+                change={$material.hasChanged}
                 tableHeadings={["material", "tool speed", "cutting feeds"]}
                 selfContained
-                bind:value={$material}/>
+                bind:value={$material.value}/>
 
             <div class="toolAndFeed">
                 <NumInput
                     label="tool speed"
                     name="toolSpeed"
                     bind:value={$toolSpeed.value}
-                    change={$toolSpeedHasChange}
+                    change={$toolSpeed.hasChanged}
                     bind:error={$toolSpeed.error}
                     units="SFPM"
                     type="number"
                     step={1}
                     selfContained
-                    on:input={() => $material = "custom"}/>
+                    on:input={() => $material.value = "custom"}/>
                 
                 <NumInput
                     label="cutting feed"
                     name="cuttingFeed"
                     bind:value={$cuttingFeed.value}
-                    change={$cuttingFeedHasChange}
+                    change={$cuttingFeed.hasChanged}
                     bind:error={$cuttingFeed.error}
                     units="IPR"
                     type="number"
                     allowZero
                     selfContained
-                    on:input={() => $material = "custom"}/>
+                    on:input={() => $material.value = "custom"}/>
             </div>
         </div>
 
@@ -402,11 +426,9 @@
         </div>
     </form>
 
-    {$error}
-
     <SaveLoader
         loadedSaveName={$loadedSave ? $loadedSave.name : null}
-        hasChanges={$hasChanges}
+        hasChanges={hasChanged}
         error={$error}
         currentSaveCount={$loadedSave ? $loadedSave.saveCount : $feedRateSaveCount}
         on:save={e => createNewSave(e.detail)}
