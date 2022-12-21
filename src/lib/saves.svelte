@@ -318,18 +318,11 @@
                 padding: 0 var(--pad-xl);
             }
 
-            .empty {
-                border-right: none;
-                border-left: none;
-            }
-
             ul {
                 grid-template-columns: 1fr;
 
                 li {
                     flex-flow: row nowrap;
-                    border-right: none;
-                    border-left: none;
                 }
             }
         }
@@ -343,16 +336,9 @@
                 padding: 0;
             }
 
-            .empty {
-                border-right: var(--border) var(--clr-300);
-                border-left: var(--border) var(--clr-300);
-            }
-
             ul {
                 li {
                     flex-flow: column nowrap;
-                    border-right: var(--border) var(--clr-300);
-                    border-left: var(--border) var(--clr-300);
                 }
             }
         }

@@ -523,10 +523,6 @@
             --_disk-offset: 90px;
             --_disk-circle-size: 450px;
 
-            h2 {
-                border: none;
-            }
-
             .closedButtons {
                 top: calc(var(--_pad-vrt) + var(--font-sm) + var(--pad-xs));
                 right: var(--_pad-hrz);
@@ -544,8 +540,6 @@
                         var(--_pad-hrz)
                         var(--pad-3xl)
                         var(--_pad-hrz);
-                    border-right: none;
-                    border-left: none;
                 }
             } 
         }
@@ -557,11 +551,6 @@
             --_disk-width: 100%;
             --_disk-offset: 50px;
             --_disk-circle-size: 250px;
-
-            h2 {
-                border-left: var(--border) var(--clr-300);
-                border-right: var(--border) var(--clr-300);
-            }
 
             .closedButtons {
                 top: calc(var(--_pad-vrt) + var(--font-sm) + var(--pad-xs));
@@ -591,8 +580,6 @@
                         var(--_pad-hrz)
                         var(--pad-3xl)
                         var(--_pad-hrz);
-                    border-right: var(--border) var(--clr-300);
-                    border-left: var(--border) var(--clr-300);
                 }
             }
         }
