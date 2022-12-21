@@ -92,6 +92,10 @@ RESET
         -webkit-appearance: none;
         background: transparent;
 
+        // reset text & number input padding
+        &[type="text"], &[type="number"] {
+            padding: 0;
+        }
 
         // remove number input spin buttons
         &[type="number"]::-webkit-inner-spin-button,
