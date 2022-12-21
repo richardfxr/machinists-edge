@@ -120,12 +120,16 @@
 
         .main {
             display: flex;
-            flex-flow: row nowrap;
+            flex-flow: row wrap;
             align-items: center;
-            gap: var(--pad-2xl);
+            column-gap: var(--pad-2xl);
+            row-gap: var(--padRem-3xs);
 
             input[type="range"] {
-                width: 100%;
+                flex-grow: 1;
+                min-width: 50%;
+
+                margin: calc(0.65 * var(--_range-thumb-size)) 0;
 
                 &:hover, &:focus {
                     &::-webkit-slider-thumb {

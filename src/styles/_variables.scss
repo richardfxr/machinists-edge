@@ -24,7 +24,16 @@ $breakpoint-mobile: 650px;
     --border-xthick: 0.35rem;
     --border-radius-round: 9e5px;
 
-    --padRem-4xs: 0.15rem;
+    --padRem-2xl: calc(2rem * var(--scalor-main));
+    --padRem-xl: calc(1.5rem * var(--scalor-main));
+    --padRem-lg: calc(1.25rem * var(--scalor-main));
+    --padRem-md: calc(1.125rem * var(--scalor-main));
+    --padRem-sm: calc(0.9375rem * var(--scalor-main));
+    --padRem-xs: calc(0.75rem * var(--scalor-main));
+    --padRem-2xs: calc(0.5625rem * var(--scalor-main));
+    --padRem-3xs: calc(0.375rem * var(--scalor-main));
+    --padRem-4xs: calc(0.1875rem * var(--scalor-main));
+    --padRem-5xs: calc(0.09375rem * var(--scalor-main));
 
     --pad-hrz: 80px;
     --pad-7xl: calc(130px * var(--scalor-main));

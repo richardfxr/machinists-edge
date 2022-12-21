@@ -34,7 +34,7 @@
         font-weight: 500;
         line-height: 1em;
 
-        padding: 0 var(--pad-3xs) var(--pad-5xs) var(--pad-3xs);
+        padding: 0 var(--padRem-3xs) var(--pad-5xs) var(--padRem-3xs);
 
         opacity: 0;
         transition: opacity var(--trans-fast);

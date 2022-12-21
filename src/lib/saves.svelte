@@ -289,6 +289,7 @@
                     display: flex;
                     flex-flow: column nowrap;
                     column-gap: var(--pad-2xl);
+                    row-gap: var(--padRem-4xs);
 
                     margin: calc(-1 * var(--pad-2xs)) 0;
                 }

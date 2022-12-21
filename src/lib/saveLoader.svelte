@@ -424,7 +424,7 @@
                         #saved {
                             color: var(--clr-0);
                             font-weight: 500;
-                            padding: var(--pad-4xs) var(--pad-2xs);
+                            padding: var(--pad-4xs) var(--padRem-2xs);
                             border-radius: var(--border-radius-round);
                             background-color: var(--clr-800);
                             
@@ -467,7 +467,8 @@
                     display: flex;
                     flex-flow: row wrap;
                     row-gap: 0;
-                    column-gap: var(--pad-2xl);
+                    column-gap: var(--padRem-2xl);
+                    row-gap: var(--padRem-4xs);
 
                     padding:
                         0

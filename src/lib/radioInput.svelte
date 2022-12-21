@@ -53,7 +53,7 @@
         &__inner {
             display: flex;
             flex-flow: row nowrap;
-            gap: var(--pad-lg);
+            gap: var(--padRem-lg);
         }
 
         p {

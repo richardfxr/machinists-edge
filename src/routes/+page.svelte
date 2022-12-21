@@ -603,7 +603,7 @@
                 flex-flow: row nowrap;
                 align-items: center;
                 justify-content: space-between;
-                gap: var(--pad-lg);
+                gap: var(--padRem-lg);
             }
         }
 

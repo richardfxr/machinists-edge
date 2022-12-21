@@ -159,7 +159,7 @@ input[type="radio"] ~ span {
         font-weight: 600;
         text-transform: uppercase;
 
-        padding: var(--pad-xs) var(--pad-xl);
+        padding: var(--pad-xs) var(--padRem-xl);
     }
 
     &.icon--md, &.icon--lg {

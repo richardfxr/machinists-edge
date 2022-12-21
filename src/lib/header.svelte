@@ -61,7 +61,7 @@
         // internal variables
         --_pad-vrt: var(--pad-xl);
         --_pad-hrz: var(--pad-hrz);
-        --_logo-width: calc(60px * var(--scalor-main));
+        --_logo-width: min(calc(3.75rem * var(--scalor-main)), 80px);
         --_nav-dot-size: calc(4px * var(--scalor-main));
 
         max-width: var(--max-width);
@@ -114,7 +114,7 @@
                         font-weight: 500;
                         white-space: nowrap;
 
-                        padding: 0 var(--pad-xl);
+                        padding: 0 var(--padRem-lg);
                         border-bottom: var(--border) transparent;
                         margin-bottom: calc(-1 * var(--border-width));
 

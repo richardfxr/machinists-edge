@@ -235,7 +235,7 @@
                 .name, .version {
                     color: var(--clr-800);
                     font-family: "ClashDisplay", sans-serif;
-                    font-size: 1.2rem;
+                    font-size: min(1.2rem, 27px);
                     
                     line-height: 1em;
                     text-transform: uppercase;
@@ -250,7 +250,7 @@
                     border-left: var(--border) var(--clr-300);
 
                     :global(.logo) {
-                        height: 2rem;
+                        height: min(2rem, 45px);
                     }
 
                     .name {

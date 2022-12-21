@@ -168,6 +168,7 @@
 
             font-size: var(--font-sm);
             line-height: 1em;
+            word-break: break-all; // prevent overflow at larger rem sizes
 
             .indicators {
                 position: relative;
@@ -176,7 +177,7 @@
 
         .main {
             display: flex;
-            flex-direction: row nowrap;
+            flex-flow: row nowrap;
             align-items: baseline;
             gap: var(--pad-3xs);
 

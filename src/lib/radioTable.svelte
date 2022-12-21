@@ -94,7 +94,7 @@
 
     .radioTable {
         // internal variables
-        --_pad-col: var(--pad-2xl);
+        --_pad-col: var(--padRem-2xl);
         --_indicator-size: 0.8rem;
 
         display: table;
