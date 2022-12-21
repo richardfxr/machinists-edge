@@ -469,7 +469,8 @@
         --_alwaysVisible-height: calc(var(--font-2xl) + var(--font-md) + var(--padRem-4xs) + 2 * var(--pad-2xs));
 
         display: grid;
-        grid-template-columns: var(--_results-width) auto;
+        // minmax(0, 1fr) to prevent width blowout
+        grid-template-columns: var(--_results-width) minmax(0, 1fr);
         grid-template-areas: "results inputs";
         align-items: start;
         position: relative;
@@ -478,6 +479,7 @@
         
         .inputs {
             grid-area: inputs;
+            max-width: 100%;
             height: 100%;
             
             border-left: var(--border) var(--clr-300);
@@ -681,9 +683,31 @@
         .feedCalc {
             // internal variables
             --_results-width: 310px;
+        }
+    }
 
-            border-right: none;
-            border-left: none;
+    @media only screen and (max-width: $breakpoint-lgmobile) {
+        .feedCalc {            
+            .inputs {
+                .toolAndFeed {
+                    grid-template-columns: 1fr;
+
+                    :global(#cuttingFeed::before) {
+                        display: none;
+                    }
+
+                    :global(#toolSpeed::before) {
+                        content: "";
+                        position: absolute;
+                        right: 0;
+                        bottom: calc(-0.5 * var(--border-width));
+                        left: 0;
+                        z-index: -1;
+
+                        border-bottom: var(--border) var(--clr-300);
+                    }
+                }
+            }
         }
     }
 
@@ -691,8 +715,6 @@
         .feedCalc {
             display: flex;
             flex-direction: column-reverse;
-
-            border: var(--border) var(--clr-300);
 
             .inputs {
                 grid-area: unset;
@@ -721,25 +743,6 @@
 
                     :global(#quaterEngagement::before) {
                         display: none;
-                    }
-                }
-
-                .toolAndFeed {
-                    grid-template-columns: 1fr;
-
-                    :global(#cuttingFeed::before) {
-                        display: none;
-                    }
-
-                    :global(#toolSpeed::before) {
-                        content: "";
-                        position: absolute;
-                        right: 0;
-                        bottom: calc(-0.5 * var(--border-width));
-                        left: 0;
-                        z-index: -1;
-
-                        border-bottom: var(--border) var(--clr-300);
                     }
                 }
             }
