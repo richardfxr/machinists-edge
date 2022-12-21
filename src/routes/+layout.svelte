@@ -3,10 +3,9 @@
     import type { LayoutData } from './$types';
     import { cubicInOut } from 'svelte/easing';
     import { fade } from 'svelte/transition';
-    import { colorTheme } from "../store/store";
     import Header from "$lib/header.svelte";
     import Footer from "$lib/footer.svelte";
-    import { motionPref } from "../store/store";
+    import { colorTheme, motionPref } from "../store/store";
 
     /* === PROPS ============================== */
     export let data: LayoutData;

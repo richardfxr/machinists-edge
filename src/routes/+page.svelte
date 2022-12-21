@@ -2,8 +2,7 @@
     /* === IMPORTS ============================ */
     import { writable, derived } from 'svelte/store';
     import type { Writable } from 'svelte/store';
-    import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
-    import type { feedRateSave } from "../store/store";
+    import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount, type feedRateSave } from "../store/store";
 
     import ToolIllus from "$lib/toolIllus.svelte";
     import Output from "$lib/output.svelte";
