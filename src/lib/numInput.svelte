@@ -105,10 +105,12 @@
     id={name}>
     <label for={name + "__input"}>
         <span class="label">{label}</span>
-        <div class="indicators">
-            <Indicator type="change" shown={change && !error} positionAbsolute />
-            <Indicator type="error" shown={error} />
-        </div>
+        {#if type !== "readonly"}
+            <div class="indicators">
+                <Indicator type="change" shown={change && !error} positionAbsolute />
+                <Indicator type="error" shown={error} />
+            </div>
+        {/if}
     </label>
 
     <div class="main">
