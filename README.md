@@ -6,6 +6,10 @@ Machinist’s Edge is a [SvelteKit](https://kit.svelte.dev/) web application con
 
 View the [production website](https://www.machinists-edge.com/) or [development preview](https://preview.machinists-edge.com/).
 
+<br>
+
+![Machinist's Edge displayed on an Asus ZenBook Duo 14.](designs/MachinistsEdge-GitHub-mockup.png)
+
 ## Technical Overview
 
 Machinist’s Edge is built using [SvelteKit](https://kit.svelte.dev/), mostly written in [TypeScript](https://www.typescriptlang.org/), and styled with [Dart Sass](https://sass-lang.com/dart-sass). The production site is deployed using [Vercel](https://vercel.com/).
