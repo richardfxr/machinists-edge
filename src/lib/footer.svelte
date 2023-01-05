@@ -99,7 +99,7 @@
 
     <div class="info">
         <p class="text--sm"><a href="https://github.com/richardfxr/machinists-edge" target="_blank" rel="noopener noreferrer">Source code available on GitHub.</a></p>
-        <p class="text--sm">Copyright © 2022 <a href="https://www.richardfxr.com/" target="_blank" rel="noopener noreferrer">Xiangrui Fu</a>. All rights reserved.</p>
+        <p class="text--sm">Copyright © 2023 <a href="https://www.richardfxr.com/" target="_blank" rel="noopener noreferrer">Xiangrui Fu</a>. All rights reserved.</p>
         <div class="badge">
             <div class="logoAndName">
                 <Logo />
