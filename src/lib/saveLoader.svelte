@@ -202,8 +202,6 @@
 <style lang="scss">
     .saveLoader {
         // internal variables
-        --_pad-hrz: var(--pad-xl);
-        --_pad-vrt: var(--pad-md);
         --_loader-height: var(--pad-3xs);
         --_loader-seam-thickness: 3px;
         --_loader-offset: calc(-1 * var(--pad-3xs) - var(--pad-xs) - (var(--font-2xl) / 2));
@@ -234,10 +232,10 @@
             text-transform: none;
 
             padding:
-                var(--_pad-vrt)
-                var(--_pad-hrz)
+                var(--input-pad-vrt)
+                var(--input-pad-hrz)
                 0
-                var(--_pad-hrz);
+                var(--input-pad-hrz);
             border-left: var(--border) var(--clr-300);
             border-right: var(--border) var(--clr-300);
         }
@@ -248,7 +246,7 @@
             row-gap: 0;
             column-gap: var(--pad-2xl);
             position: absolute;
-            top: calc(var(--_pad-vrt) + var(--font-sm));
+            top: calc(var(--input-pad-vrt) + var(--font-sm));
             left: calc(var(--_disk-width) + var(--pad-lg));
 
             opacity: 1;
@@ -305,7 +303,7 @@
                     z-index: 200;
                     width: var(--_disk-width);
 
-                    padding: 0 calc(var(--_pad-hrz) + var(--pad-md));
+                    padding: 0 calc(var(--input-pad-hrz) + var(--pad-md));
 
                     // shift .loader up so it is centered with .actions
                     margin-top: var(--_loader-offset);
@@ -315,8 +313,8 @@
                         content: "";
                         position: absolute;
                         top: calc(-1 * var(--_loader-height));
-                        right: var(--_pad-hrz);
-                        left: var(--_pad-hrz);
+                        right: var(--input-pad-hrz);
+                        left: var(--input-pad-hrz);
                         z-index: 1;
                         height: calc(2 * var(--_loader-height));
 
@@ -329,8 +327,8 @@
                         content: "";
                         position: absolute;
                         top: calc(-0.5 * var(--_loader-seam-thickness));
-                        right: calc(var(--_pad-hrz) + var(--pad-2xs));
-                        left: calc(var(--_pad-hrz) + var(--pad-2xs));
+                        right: calc(var(--input-pad-hrz) + var(--pad-2xs));
+                        left: calc(var(--input-pad-hrz) + var(--pad-2xs));
                         z-index: 2;
 
                         border-top: solid var(--_loader-seam-thickness) var(--clr-900);
@@ -472,7 +470,7 @@
 
                     padding:
                         0
-                        var(--_pad-hrz)
+                        var(--input-pad-hrz)
                         var(--pad-3xs)
                         calc(var(--_disk-width) + var(--_gap));
                     border: var(--border) var(--clr-300);
@@ -517,7 +515,7 @@
         }
     }
 
-    @media only screen and (max-width: $breakpoint-smdtablet) {
+    @media only screen and (max-width: $breakpoint-smtablet) {
         .saveLoader {
             // internal variables
             --_disk-width: 70%;
@@ -525,9 +523,9 @@
             --_disk-circle-size: 450px;
 
             .closedButtons {
-                top: calc(var(--_pad-vrt) + var(--font-sm) + var(--pad-xs));
-                right: var(--_pad-hrz);
-                left: var(--_pad-hrz);
+                top: calc(var(--input-pad-vrt) + var(--font-sm) + var(--pad-xs));
+                right: var(--input-pad-hrz);
+                left: var(--input-pad-hrz);
             }
 
             .saveDialog form {
@@ -538,9 +536,9 @@
                 .actions {
                     padding:
                         var(--pad-xs)
-                        var(--_pad-hrz)
+                        var(--input-pad-hrz)
                         var(--pad-3xl)
-                        var(--_pad-hrz);
+                        var(--input-pad-hrz);
                 }
             } 
         }
@@ -554,33 +552,33 @@
             --_disk-circle-size: 250px;
 
             .closedButtons {
-                top: calc(var(--_pad-vrt) + var(--font-sm) + var(--pad-xs));
-                right: var(--_pad-hrz);
-                left: var(--_pad-hrz);
+                top: calc(var(--input-pad-vrt) + var(--font-sm) + var(--pad-xs));
+                right: var(--input-pad-hrz);
+                left: var(--input-pad-hrz);
             }
 
             .saveDialog form {
                 .loader {
-                    padding: 0 calc(var(--_pad-hrz) + var(--pad-2xs));
+                    padding: 0 calc(var(--input-pad-hrz) + var(--pad-2xs));
                     margin-top: calc(-1 * var(--pad-2xl));
 
                     &::before {
-                        right: calc(var(--_pad-hrz) - var(--pad-2xs));
-                        left: calc(var(--_pad-hrz) - var(--pad-2xs));
+                        right: calc(var(--input-pad-hrz) - var(--pad-2xs));
+                        left: calc(var(--input-pad-hrz) - var(--pad-2xs));
                     }
 
                     &::after {
-                        right: var(--_pad-hrz);
-                        left: var(--_pad-hrz);
+                        right: var(--input-pad-hrz);
+                        left: var(--input-pad-hrz);
                     }
                 }
 
                 .actions {
                     padding:
                         var(--pad-xs)
-                        var(--_pad-hrz)
+                        var(--input-pad-hrz)
                         var(--pad-3xl)
-                        var(--_pad-hrz);
+                        var(--input-pad-hrz);
                 }
             }
         }

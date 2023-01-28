@@ -38,15 +38,21 @@
     }
 
     /* === BREAKPOINTS ======================== */
-    @media only screen and (max-width: $breakpoint-smdtablet) {
+    @media only screen and (max-width: $breakpoint-smtablet) {
         .heading__container {
-            margin: var(--pad-5xl) var(--pad-xl);
+            margin: var(--pad-5xl) var(--pad-hrz);
         }
     }
 
     @media only screen and (max-width: $breakpoint-mobile) {
         .heading__container {
             margin: var(--pad-5xl) 0;
+        }
+    }
+
+    @media only screen and (max-width: $breakpoint-smmobile) {
+        .heading__container {
+            margin: var(--pad-5xl) var(--pad-hrz);
         }
     }
 

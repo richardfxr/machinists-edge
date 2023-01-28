@@ -59,14 +59,13 @@
 <style lang="scss">
     #header {
         // internal variables
-        --_pad-vrt: var(--pad-xl);
-        --_pad-hrz: var(--pad-hrz);
-        --_logo-width: min(calc(3.75rem * var(--scalor-main)), 80px);
+        --_pad-vrt: var(--pad-lg);
+        --_logo-width: min(calc(3.6rem * var(--scalor-main)), 75px);
         --_nav-dot-size: calc(4px * var(--scalor-main));
 
         max-width: var(--max-width);
 
-        padding: 0 var(--_pad-hrz);
+        padding: 0 var(--pad-hrz);
         margin: auto;
 
         overflow-x: auto;
@@ -170,6 +169,36 @@
         }
     }
 
+    /* === BREAKPOINTS ======================== */
+    @media only screen and (max-width: $breakpoint-smtablet) {
+        #header {
+            // internal variables
+            // --_pad-vrt: var(--pad-lg);
+
+            padding: 0;
+
+            &__inner {
+                padding: 0 var(--pad-hrz);
+            }
+        }
+    }
+
+    @media only screen and (max-width: $breakpoint-mobile) {
+        #header {
+            padding: 0 var(--pad-hrz);
+        }
+    }
+
+    @media only screen and (max-width: $breakpoint-smmobile) {
+        #header {
+            padding: 0;
+
+            &__inner {
+                padding: 0 var(--pad-hrz);
+            }
+        }
+    }
+
     /* === ANIMATIONS ========================= */
     @keyframes moveDown {
         from { transform: translateY(-50%); }
@@ -179,20 +208,5 @@
     @keyframes fade {
         from { opacity: 0; }
         to { opacity: 1; }
-    }
-
-    /* === BREAKPOINTS ======================== */
-    @media only screen and (max-width: $breakpoint-smdtablet) {
-        #header {
-            // internal variables
-            --_pad-hrz: var(--pad-xl);
-        }
-    }
-
-    @media only screen and (max-width: $breakpoint-mobile) {
-        #header {
-            // internal variables
-            --_pad-hrz: var(--pad-hrz);
-        }
     }
 </style>

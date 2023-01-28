@@ -97,6 +97,25 @@
         to { opacity: 1; }
     }
 
+    /* === BREAKPOINTS ======================== */
+    @media only screen and (max-width: $breakpoint-smtablet) {
+        #main {
+            padding: 0;
+        }
+    }
+
+    @media only screen and (max-width: $breakpoint-mobile) {
+        #main {
+            padding: 0 var(--pad-hrz);
+        }
+    }
+
+    @media only screen and (max-width: $breakpoint-smmobile) {
+        #main {
+            padding: 0;
+        }
+    }
+
     /* === A11Y =============================== */
     .motionReduced#main {
         :global(.page) {

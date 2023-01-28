@@ -223,6 +223,30 @@ input[type="radio"] ~ span {
 
 
 
+/* === BREAKPOINTS ======================== */
+@media only screen and (max-width: $breakpoint-smtablet) {
+    h2 {
+        padding-right: var(--pad-hrz);
+        padding-left: var(--pad-hrz);
+    }
+}
+
+@media only screen and (max-width: $breakpoint-mobile) {
+    h2 {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
+
+@media only screen and (max-width: $breakpoint-smmobile) {
+    h2 {
+        padding-right: var(--pad-hrz);
+        padding-left: var(--pad-hrz);
+    }
+}
+
+
+
 /* === A11Y =============================== */
 @media (forced-colors: active) {
     svg.illustration {

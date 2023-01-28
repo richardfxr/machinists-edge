@@ -270,7 +270,7 @@
     }
 
     /* === BREAKPOINTS ======================== */
-    @media only screen and (max-width: $breakpoint-smdtablet) {
+    @media only screen and (max-width: $breakpoint-smtablet) {
         #footer {
             // internal variables
             --_pad-hrz: var(--pad-xl);

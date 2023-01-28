@@ -418,6 +418,7 @@
                     value={$feedRate}
                     units="IPM"
                     position="top-left"
+                    align="end"
                     highlighted
                     error={$error} />
             </ScrollContainer>
@@ -678,7 +679,7 @@
         }
     }
 
-    @media only screen and (max-width: $breakpoint-smdtablet) {
+    @media only screen and (max-width: $breakpoint-smtablet) {
         .feedCalc {
             // internal variables
             --_results-width: 310px;
@@ -767,6 +768,17 @@
                 max-height: unset;
 
                 margin-top: 0;
+            }
+        }
+    }
+
+    @media only screen and (max-width: $breakpoint-smmobile) {
+        .feedCalc {
+            .alwaysVisible {
+                :global(.scrollContainer) {
+                    padding-right: var(--pad-hrz);
+                    padding-left: var(--pad-hrz);
+                }
             }
         }
     }

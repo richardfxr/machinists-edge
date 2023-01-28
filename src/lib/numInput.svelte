@@ -156,7 +156,7 @@
         position: relative;
         z-index: 1;
 
-        padding: var(--pad-md) var(--pad-xl);
+        padding: var(--input-pad-vrt) var(--input-pad-hrz);
 
         label {
             display: flex;

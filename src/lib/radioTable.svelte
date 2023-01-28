@@ -80,7 +80,7 @@
 <style lang="scss">
     :global {
         .radioTable__container .scrollContainer__inner {
-            padding: 0 var(--pad-xl) var(--pad-md) var(--pad-xl);
+            padding: 0 var(--input-pad-hrz) var(--input-pad-vrt) var(--input-pad-hrz);
         }
         
         .radioTable__container {
@@ -116,7 +116,7 @@
                 flex-flow: row wrap;
                 gap: var(--pad-xs);
                 position: sticky;
-                left: var(--pad-xl);
+                left: var(--input-pad-hrz);
             }
         }
 

@@ -127,7 +127,7 @@
             align-items: flex-start;
             width: 100%;
 
-            padding: var(--pad-xl) var(--pad-xl) var(--pad-4xl) var(--pad-xl);
+            padding: var(--input-pad-hrz) var(--input-pad-hrz) var(--pad-4xl) var(--input-pad-hrz);
             border: var(--border) var(--clr-300);
 
             .box {
@@ -179,7 +179,7 @@
                 position: relative;
                 z-index: 1;
 
-                padding: var(--pad-md) var(--pad-xl);
+                padding: var(--input-pad-vrt) var(--input-pad-hrz);
                 border: var(--border) var(--clr-300);
                 margin: calc(-0.5 * var(--border-width));
                 outline-offset: calc(-1 * var(--border-width));
@@ -313,12 +313,8 @@
         }
     }
 
-    @media only screen and (max-width: $breakpoint-smdtablet) {
+    @media only screen and (max-width: $breakpoint-smtablet) {
         .saves {
-            h2 {
-                padding: 0 var(--pad-xl);
-            }
-
             ul {
                 grid-template-columns: 1fr;
 
@@ -332,10 +328,6 @@
     @media only screen and (max-width: $breakpoint-mobile) {
         .saves {
             margin-top: var(--pad-sm);
-
-            h2 {
-                padding: 0;
-            }
 
             ul {
                 li {

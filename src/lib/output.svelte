@@ -7,6 +7,7 @@
     export let value: number;
     export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
     export let position: "top-left" | "top-right" | "bottom-left" | "bottom-right" = "top-left";
+    export let align: "start" | "end" = "start";
     export let highlighted = false;
     export let error = false;
 </script>
@@ -14,6 +15,7 @@
 
 <output
     class="output"
+    class:align-end={align === "end"}
     class:highlighted
     class:error
     name="result"
@@ -47,6 +49,10 @@
             :global(.unitAbbr) {
                 font-weight: 600;
             }
+        }
+
+        &.align-end {
+            align-items: flex-end;
         }
 
         &.highlighted {

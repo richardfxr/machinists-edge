@@ -10,9 +10,10 @@
 // === BREAKPOINTS ============================
 $breakpoint-smdesktop: 1450px;
 $breakpoint-tablet: 1250px;
-$breakpoint-smdtablet: 1000px;
+$breakpoint-smtablet: 1000px;
 $breakpoint-lgmobile: 850px;
 $breakpoint-mobile: 650px;
+$breakpoint-smmobile: 450px;
 
 :root {
     /* === CSS VARIABLES ====================== */
@@ -51,6 +52,9 @@ $breakpoint-mobile: 650px;
     --pad-3xs: calc(6px * var(--scalor-main));
     --pad-4xs: calc(3px * var(--scalor-main));
     --pad-5xs: calc(1.5px * var(--scalor-main));
+
+    --input-pad-vrt: var(--pad-lg);
+    --input-pad-hrz: var(--pad-xl);
 
     --font-4xl: 3.3rem;
     --font-2xl: 1.8rem;
@@ -132,12 +136,14 @@ $breakpoint-mobile: 650px;
     }
 }
 
-@media only screen and (max-width: $breakpoint-smdtablet) {
+@media only screen and (max-width: $breakpoint-smtablet) {
     :root {
         /* === CSS VARIABLES ====================== */
         --scalor-main: 0.85;
 
-        --pad-hrz: 0;
+        --pad-hrz: var(--pad-xl);
+
+        --input-pad-hrz: var(--pad-hrz);
 
         --font-4xl: 2.8rem;
         --font-2xl: 1.75rem;
@@ -153,6 +159,25 @@ $breakpoint-mobile: 650px;
         --scalor-main: 0.85;
 
         --pad-hrz: 5.5%;
+
+        --input-pad-hrz: var(--pad-xl);
+
+        --font-4xl: 2.6rem;
+        --font-2xl: 1.75rem;
+        --font-xl: 1.6rem;
+        --font-lg: 1.4rem;
+        --font-md: 1.1rem;
+    }
+}
+
+@media only screen and (max-width: $breakpoint-smmobile) {
+    :root {
+        /* === CSS VARIABLES ====================== */
+        --scalor-main: 0.85;
+
+        --pad-hrz: 25px;
+
+        --input-pad-hrz: var(--pad-hrz);
 
         --font-4xl: 2.6rem;
         --font-2xl: 1.75rem;

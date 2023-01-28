@@ -14,7 +14,7 @@
         flex-flow: column nowrap;
         align-items: flex-start;
 
-        padding: var(--pad-xl) var(--pad-xl) var(--pad-4xl) var(--pad-xl);
+        padding: var(--input-pad-hrz) var(--input-pad-hrz) var(--pad-4xl) var(--input-pad-hrz);
         border: var(--border) var(--clr-300);
 
         .box {
