@@ -212,7 +212,7 @@
         let save: feedRateSave = {
             name,
             spindleSpeed: $spindleSpeed,
-            feedRate: $spindleSpeed,
+            feedRate: $feedRate,
             cutterDiameter: $cutterDiameter.value,
             numFlutes: $numFlutes.value,
             opType: $opType.value,
