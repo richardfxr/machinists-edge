@@ -44,7 +44,7 @@
         {"code": "G56", "desc": "Use fixture offset 3"},
         {"code": "G57", "desc": "Use fixture offset 4"},
         {"code": "G58", "desc": "Use fixture offset 5"},
-        {"code": "G59", "desc": "Use fixture offfset 6/use general fixture number"},
+        {"code": "G59", "desc": "Use fixture offset 6/use general fixture number"},
         {"code": "G61", "desc": "Exact stop mode"},
         {"code": "G64", "desc": "Constant velocity mode"},
         {"code": "G68", "desc": "Rotate coordinate system"},
