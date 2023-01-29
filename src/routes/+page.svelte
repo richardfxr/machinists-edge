@@ -757,6 +757,11 @@
                 :global(.scrollContainer) {
                     position: relative;
                     width: 100%;
+
+                    // add outline to avoid border on left and right side
+                    outline: var(--border) var(--clr-900);
+
+                    transition: outline-color var(--trans-fast);
                 }
             }
 
@@ -768,6 +773,13 @@
                 max-height: unset;
 
                 margin-top: 0;
+            }
+
+            &.error {
+                :global(.alwaysVisible .scrollContainer) {
+                    // change outline color when error occurs
+                    outline-color: var(--clr-error-800);
+                }
             }
         }
     }
