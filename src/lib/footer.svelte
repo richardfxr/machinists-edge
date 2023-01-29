@@ -74,7 +74,7 @@
                         href="/g-code"
                         class:active={$page.url.pathname === "/g-code"}
                         aria-current={$page.url.pathname === "/g-code"}>
-                        G-code Chart
+                        G- & M-code Charts
                     </a>
                 </li>
                 <li>

@@ -10,7 +10,7 @@
         "desc": string
     };
 
-    const codes: code[] = [
+    const gCodes: code[] = [
         {"code": "G00", "desc": "Rapid repositioning"},
         {"code": "G01", "desc": "Linear interpolation"},
         {"code": "G02", "desc": "Clockwise circular/helical interpolation"},
@@ -69,9 +69,33 @@
         {"code": "G99", "desc": "R-point level return after canned cycle"},
     ];
 
+    const mCodes: code[] = [
+        {"code": "M00", "desc": "Program stop"},
+        {"code": "M01", "desc": "Optional program stop"},
+        {"code": "M02", "desc": "Program end"},
+        {"code": "M03", "desc": "Rotate spindle clockwise"},
+        {"code": "M04", "desc": "Rotate spindle counterclockwise"},
+        {"code": "M05", "desc": "Stop spindle"},
+        {"code": "M06", "desc": "Tool change (by two macros)"},
+        {"code": "M07", "desc": "Coolant on (mist)"},
+        {"code": "M08", "desc": "Coolant on (flood)"},
+        {"code": "M09", "desc": "Coolant off"},
+        {"code": "M30", "desc": "Program end and rewind"},
+        {"code": "M47", "desc": "Repeat program from first line"},
+        {"code": "M48", "desc": "Enable speed and feed override"},
+        {"code": "M49", "desc": "Disable speed and feed override"},
+        {"code": "M98", "desc": "Call subroutine"},
+        {"code": "M99", "desc": "Return from subroutine/repeat"},
+        {"code": "M871", "desc": "Tapping cycle 1"},
+        {"code": "M872", "desc": "Tapping cycle 2"},
+        {"code": "M873", "desc": "Tapping cycle 3"},
+        {"code": "M9981", "desc": "Move to tool change position"},
+    ];
+
     const searchTerm = writable("");
 
-    let filteredCodes: code[] = [];
+    let filteredGCodes: code[] = [];
+    let filteredMCodes: code[] = [];
 
     /* === FUNCTIONS ========================== */
     function searchCodes(searchTerm: string) {
@@ -81,7 +105,7 @@
 
 
 <svelte:head>
-    <title>G-code Chart | Machinist's Edge</title>
+    <title>G- & M-code Charts | Machinist's Edge</title>
     <meta
         name="description"
         content="A list of common G- and M-codes for reference."
@@ -89,14 +113,14 @@
 </svelte:head>
 
 
-<Heading>G-code Chart</Heading>
+<Heading>G- & M-code Charts</Heading>
 
 <div class="page gCode">
     <ScrollContainer contains="gCodeTable">
         <table class="table">
             <caption class="label">G-codes</caption>
 
-            {#if $searchTerm !== "" && filteredCodes.length === 0}
+            {#if $searchTerm !== "" && filteredGCodes.length === 0}
                 <p>no results</p>
             {:else if $searchTerm === ""}
                 <thead>
@@ -106,7 +130,32 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {#each codes as {code, desc}}
+                    {#each gCodes as {code, desc}}
+                        <tr>
+                            <th scope="row" class="code">{code}</th>
+                            <td class="desc">{desc}</td>
+                        </tr>
+                    {/each}
+                </tbody>
+            {/if}
+        </table>
+    </ScrollContainer>
+
+    <ScrollContainer contains="mCodeTable">
+        <table class="table">
+            <caption class="label">M-codes</caption>
+
+            {#if $searchTerm !== "" && filteredMCodes.length === 0}
+                <p>no results</p>
+            {:else if $searchTerm === ""}
+                <thead>
+                    <tr>
+                        <th scope="col" class="label">code</th>
+                        <th scope="col" class="label">description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each mCodes as {code, desc}}
                         <tr>
                             <th scope="row" class="code">{code}</th>
                             <td class="desc">{desc}</td>
@@ -121,8 +170,13 @@
 
 <style lang="scss">
     :global {
-        .gCodeTable__container .scrollContainer__inner {
-            padding: 0 var(--input-pad-hrz) var(--input-pad-vrt) var(--input-pad-hrz);
+        .gCodeTable__container {
+            border-bottom: var(--border) var(--clr-300);
+        }
+
+        .gCodeTable__container .scrollContainer__inner,
+        .mCodeTable__container .scrollContainer__inner {
+            padding: 0 var(--input-pad-hrz) var(--input-pad-hrz) var(--input-pad-hrz);
         }
     }
 
