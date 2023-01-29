@@ -320,6 +320,10 @@
 
                 li {
                     flex-flow: row nowrap;
+
+                    // remove border compensation margin on left and right to avoid overflow
+                    margin-right: 0;
+                    margin-left: 0;
                 }
             }
         }
