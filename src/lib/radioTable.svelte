@@ -24,7 +24,7 @@
 
 <ScrollContainer {selfContained} contains="radioTable">  
     <table
-        class="radioTable"
+        class="table radioTable"
         class:change
         aria-labelledby="{name}__label">
         <caption>
@@ -92,42 +92,12 @@
         }
     }
 
-    .radioTable {
+    .radioTable.table {
         // internal variables
-        --_pad-col: var(--padRem-2xl);
         --_indicator-size: 0.8rem;
 
-        display: table;
-        table-layout: auto;
-        position: relative;
-        z-index: 1;
-        width: 100%;
-
-        padding-right: var(--pad-xl);
-
-        border-collapse: collapse;
-
-        caption {
-            position: relative;
-            padding: var(--pad-md) 0 var(--pad-4xs) 0;
-
-            .sticky {
-                display: inline-flex;
-                flex-flow: row wrap;
-                gap: var(--pad-xs);
-                position: sticky;
-                left: var(--input-pad-hrz);
-            }
-        }
-
         thead {
-            tr {
-                border-bottom: var(--border) var(--clr-300);
-            }
-
-            th {
-                padding: var(--pad-md) calc(var(--_pad-col) / 2) var(--pad-sm) calc(var(--_pad-col) / 2);
-                
+            th {                
                 &:nth-child(1) {
                     width: 40%;
                     padding-left: calc(var(--_indicator-size) + var(--pad-sm));
@@ -142,19 +112,12 @@
                     padding-right: 0;
                     margin-right: var(--pad-xl);
                 }
-
-                &::after {
-                    // override .label ":" ::after element
-                    content: "";
-                }
             }
         }
 
         tbody {
             tr {
-                border-bottom: var(--border) var(--clr-300);
-
-                transition: border var(--trans-fast);
+                font-size: var(--font-2xl);
 
                 &.selected {
                     border-color: var(--clr-900);
@@ -191,6 +154,9 @@
                 }
 
                 &:hover {
+                    // prevent bottom-border from highlighting on hover
+                    border-color: var(--clr-300);
+
                     th label {
                         color: var(--clr-900);
 
@@ -206,7 +172,7 @@
             }
 
             th {
-                padding-left: 0;
+                padding: 0;
 
                 label {
                     cursor: pointer;
@@ -219,7 +185,7 @@
                     font-weight: 600;
                     line-height: 1em;
 
-                    padding: var(--pad-sm) calc(var(--_pad-col) / 2) var(--pad-sm) 0;
+                    padding: var(--pad-md) calc(var(--_pad-col) / 2) var(--pad-md) 0;
 
                     transition: color var(--trans-fast),
                                 border var(--trans-fast);
@@ -240,24 +206,17 @@
             }
 
             td {
-                color: var(--clr-800);
-                font-size: var(--font-2xl);
                 font-family: "ClashDisplay", sans-serif;
                 font-weight: 400;
-                line-height: 1em;
 
-                transition: color var(--trans-fast);
-
-                &:last-child label {
-                   padding-right: 0; 
-                }
+                padding: 0;
 
                 label {
                     display: block;
                     white-space: nowrap;
                     cursor: pointer;
                     width: 100%;
-                    padding: var(--pad-sm) calc(var(--_pad-col) / 2) var(--pad-sm) calc(var(--_pad-col) / 2);
+                    padding: var(--pad-md) calc(var(--_pad-col) / 2) var(--pad-md) calc(var(--_pad-col) / 2);
                 }
             }
         }
