@@ -117,57 +117,47 @@
 
         tbody {
             tr {
+                // internal variables
+                --_clr: var(--clr-800);
+
                 font-size: var(--font-2xl);
 
-                &.selected {
-                    border-color: var(--clr-900);
+                th label {
+                    color: var(--_clr);
 
-                    th label {
-                        color: var(--clr-900);
-
-                        &::before {
-                            background-color: var(--clr-900);
-                            border-color: var(--clr-900);
-                        }
+                    &::before {
+                        border-color: var(--_clr);
                     }
+                }
 
-                    td {
-                        color: var(--clr-900);
+                td {
+                    color: var(--_clr);
+                }
+
+                &.selected {
+                    // internal variables
+                    --_clr: var(--clr-900);
+
+                    border-color: var(--_clr);
+
+                    th label::before {
+                        background-color: var(--_clr);
                     }
 
                     &:hover {
-                        border-color: var(--clr-1000);
+                        // internal variables
+                        --_clr: var(--clr-1000);
 
-                        th label {
-                            color: var(--clr-1000);
-
-                            &::before {
-                                background-color: var(--clr-1000);
-                                border-color: var(--clr-1000);
-                            }
-                        }
-
-                        td {
-                            color: var(--clr-1000);
-                        }
+                        border-color: var(--_clr);
                     }
                 }
 
                 &:hover {
+                    // internal variables
+                    --_clr: var(--clr-900);
+
                     // prevent bottom-border from highlighting on hover
                     border-color: var(--clr-300);
-
-                    th label {
-                        color: var(--clr-900);
-
-                        &::before {
-                            border-color: var(--clr-900);
-                        }
-                    }
-
-                    td {
-                        color: var(--clr-900);
-                    }
                 }
             }
 

@@ -152,7 +152,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        gap: var(--pad-4xs);
+        gap: var(--input-gap);
         position: relative;
         z-index: 1;
 

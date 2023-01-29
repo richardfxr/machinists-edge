@@ -44,7 +44,7 @@
     .radioInput {
         display: flex;
         flex-direction: column;
-        gap: var(--pad-4xs);
+        gap: var(--input-gap);
         position: relative;
         z-index: 1;
 
