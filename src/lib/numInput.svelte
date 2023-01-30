@@ -120,7 +120,8 @@
                 class:error
                 {name}
                 bind:value={fracValue}
-                type="text">
+                type="text"
+                autocomplete="off">
         {:else if type === "readonly"}
             <input
                 id={name + "__input"}
@@ -187,8 +188,6 @@
                 font-size: var(--font-2xl);
                 font-weight: 600;
                 line-height: 1em;
-
-                border: none;
 
                 transition: color var(--trans-fast);
             }
