@@ -95,6 +95,7 @@ RESET
         // reset text & number input padding
         &[type="text"], &[type="number"] {
             padding: 0;
+            border: none;
         }
 
         // remove number input spin buttons
