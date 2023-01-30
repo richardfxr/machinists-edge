@@ -112,7 +112,6 @@
             id="newSaveButton"
             class="button icon--lg"
             tabindex={isOpen ? -1 : 0}
-            type="icon--lg"
             on:click={() => {
                 showDialog();
                 newSave = true;
