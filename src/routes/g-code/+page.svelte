@@ -1,8 +1,12 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
     import { writable } from 'svelte/store';
+    import {flip} from 'svelte/animate';
+    import { slide, fade } from 'svelte/transition';
     import Heading from "$lib/heading.svelte";
     import ScrollContainer from "$lib/scrollContainer.svelte";
+    import SearchBar from '$lib/searchBar.svelte';
+    import { motionPref } from "../../store/store";
 
     /* === VARAIBLES ========================== */
     interface code {
@@ -19,7 +23,7 @@
         {"code": "G10", "desc": "Coordinate system origin setting"},
         {"code": "G12", "desc": "Clockwise circular pocket"},
         {"code": "G13", "desc": "Counterclockwise circular pocket"},
-        {"code": "G15", "desc": "Swtich to Cartesian coordiantes"},
+        {"code": "G15", "desc": "Switch to Cartesian coordiantes"},
         {"code": "G16", "desc": "Switch to polar coordinates"},
         {"code": "G17", "desc": "XY plane selection"},
         {"code": "G18", "desc": "ZX plane selection"},
@@ -94,12 +98,33 @@
 
     const searchTerm = writable("");
 
-    let filteredGCodes: code[] = [];
-    let filteredMCodes: code[] = [];
+    let filteredGCodes: code[] = gCodes;
+    let filteredMCodes: code[] = mCodes;
+
+    /* === REACTIVE DECLARATIONS ============== */
+    // call searchCodes() every time $searchTerm changes
+    $: ($searchTerm || $searchTerm === "") && searchCodes($searchTerm);
 
     /* === FUNCTIONS ========================== */
+    function animate(node: HTMLElement, options: { animation: Function, duration: number, delay?: number }) {
+        if ($motionPref === "reduced")
+            return fade(node, { duration: 200 });
+        else
+            return options.animation(node, options);
+    }
+
     function searchCodes(searchTerm: string) {
-        
+        filteredGCodes = gCodes.filter(gCode => {
+            const codeMatch = gCode.code.toLowerCase().includes(searchTerm.toLowerCase());
+            const descMatch = gCode.desc.toLowerCase().includes(searchTerm.toLowerCase());
+            return codeMatch || descMatch;
+        });
+
+        filteredMCodes = mCodes.filter(mCode => {
+            const codeMatch = mCode.code.toLowerCase().includes(searchTerm.toLowerCase());
+            const descMatch = mCode.desc.toLowerCase().includes(searchTerm.toLowerCase());
+            return codeMatch || descMatch;
+        });
     }
 </script>
 
@@ -116,22 +141,32 @@
 <Heading>G- & M-code Charts</Heading>
 
 <div class="page gCode">
+    <SearchBar
+        label="search codes"
+        placeholder="Search codes"
+        bind:value={$searchTerm}
+        sticky />
+
     <ScrollContainer contains="gCodeTable">
         <table class="table">
             <caption class="label">G-codes</caption>
 
             {#if $searchTerm !== "" && filteredGCodes.length === 0}
-                <p>no results</p>
-            {:else if $searchTerm === ""}
-                <thead>
+                <p class="noResult" in:animate={{ animation: slide, duration: 200, delay: 150 }}>
+                    <span>no results</span>
+                </p>
+            {:else}
+                <thead transition:animate={{ animation: slide, duration: 300 }}>
                     <tr>
                         <th scope="col" class="label">code</th>
                         <th scope="col" class="label">description</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {#each gCodes as {code, desc}}
-                        <tr>
+                <tbody transition:animate={{ animation: slide, duration: 300 }}>
+                    {#each filteredGCodes as {code, desc} (code)}
+                        <tr
+                            in:animate|local={{ animation: fade, duration: 200 }}
+                            animate:flip|local={{ duration: $motionPref === "reduced" ? 0 : 200 }}>
                             <th scope="row" class="code">{code}</th>
                             <td class="desc">{desc}</td>
                         </tr>
@@ -146,17 +181,21 @@
             <caption class="label">M-codes</caption>
 
             {#if $searchTerm !== "" && filteredMCodes.length === 0}
-                <p>no results</p>
-            {:else if $searchTerm === ""}
-                <thead>
+                <p class="noResult" in:animate={{ animation: slide, duration: 200, delay: 150 }}>
+                    <span>no results</span>
+                </p>
+            {:else}
+                <thead transition:animate={{ animation: slide, duration: 300 }}>
                     <tr>
                         <th scope="col" class="label">code</th>
                         <th scope="col" class="label">description</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {#each mCodes as {code, desc}}
-                        <tr>
+                <tbody transition:animate={{ animation: slide, duration: 300 }}>
+                    {#each filteredMCodes as {code, desc} (code)}
+                        <tr
+                            in:animate={{ animation: fade, duration: 200 }}
+                            animate:flip|local={{ duration: $motionPref === "reduced" ? 0 : 200 }}>
                             <th scope="row" class="code">{code}</th>
                             <td class="desc">{desc}</td>
                         </tr>
@@ -170,8 +209,11 @@
 
 <style lang="scss">
     :global {
-        .gCodeTable__container {
+        .gCodeTable__container,
+        .mCodeTable__container {
+            border-right: var(--border) var(--clr-300);
             border-bottom: var(--border) var(--clr-300);
+            border-left: var(--border) var(--clr-300);
         }
 
         .gCodeTable__container .scrollContainer__inner,
@@ -182,6 +224,32 @@
 
     .gCode {
         position: relative;
-        border: var(--border) var(--clr-300);
+
+        .table {
+            .noResult {
+                display: flex;
+                align-items: flex-start;
+
+                color: var(--clr-0);
+                font-weight: 500;
+                text-transform: uppercase;
+                margin-top: var(--pad-md);
+
+                span {
+                    display: block;
+                    padding: 0 var(--pad-2xs);
+                    background-color: var(--clr-900);
+                }
+            }
+
+            thead {
+                th {
+                    &:nth-child(1) {
+                        // ensure all tables have uniform sizing for code column
+                        width: 15%;
+                    }
+                }
+            }
+        }
     }
 </style>
