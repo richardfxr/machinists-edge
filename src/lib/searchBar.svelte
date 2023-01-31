@@ -74,6 +74,10 @@
 
                 transition: color var(--trans-fast);
             }
+
+            &::-webkit-search-cancel-button {
+                -webkit-appearance: none;
+            }
         }
 
         &.sticky {
