@@ -105,7 +105,7 @@
                 <Logo />
                 <p class="name">Machinist's<br> Edge</p>
             </div>
-            <p class="version">v0.1.4 alpha</p>
+            <p class="version">v0.1.5 alpha</p>
         </div>
     </div>
 </footer>
