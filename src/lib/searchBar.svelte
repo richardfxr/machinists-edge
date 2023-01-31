@@ -26,7 +26,7 @@
 
     <input
         bind:this={searchInput}
-        type="text"
+        type="search"
         {placeholder}
         id="search__input"
         bind:value

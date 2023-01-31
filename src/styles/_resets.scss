@@ -93,7 +93,7 @@ RESET
         background: transparent;
 
         // reset text & number input padding
-        &[type="text"], &[type="number"] {
+        &[type="text"], &[type="number"], &[type="search"] {
             padding: 0;
             border: none;
         }
