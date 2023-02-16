@@ -165,8 +165,7 @@
                 <tbody transition:animate={{ animation: slide, duration: 300 }}>
                     {#each filteredGCodes as {code, desc} (code)}
                         <tr
-                            in:animate|local={{ animation: fade, duration: 200 }}
-                            animate:flip|local={{ duration: $motionPref === "reduced" ? 0 : 200 }}>
+                            transition:animate|local={{ animation: fade, duration: 200 }}>
                             <th scope="row" class="code">{code}</th>
                             <td class="desc">{desc}</td>
                         </tr>
@@ -194,8 +193,7 @@
                 <tbody transition:animate={{ animation: slide, duration: 300 }}>
                     {#each filteredMCodes as {code, desc} (code)}
                         <tr
-                            in:animate={{ animation: fade, duration: 200 }}
-                            animate:flip|local={{ duration: $motionPref === "reduced" ? 0 : 200 }}>
+                            transition:animate={{ animation: fade, duration: 200 }}>
                             <th scope="row" class="code">{code}</th>
                             <td class="desc">{desc}</td>
                         </tr>
