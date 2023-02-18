@@ -1,7 +1,6 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
     import { writable } from 'svelte/store';
-    import {flip} from 'svelte/animate';
     import { slide, fade } from 'svelte/transition';
     import Heading from "$lib/heading.svelte";
     import ScrollContainer from "$lib/scrollContainer.svelte";
@@ -147,7 +146,7 @@
         bind:value={$searchTerm}
         sticky />
 
-    <ScrollContainer contains="gCodeTable">
+    <ScrollContainer contains="fullTable">
         <table class="table">
             <caption class="label">G-codes</caption>
 
@@ -175,7 +174,7 @@
         </table>
     </ScrollContainer>
 
-    <ScrollContainer contains="mCodeTable">
+    <ScrollContainer contains="fullTable">
         <table class="table">
             <caption class="label">M-codes</caption>
 
@@ -206,20 +205,6 @@
 
 
 <style lang="scss">
-    :global {
-        .gCodeTable__container,
-        .mCodeTable__container {
-            border-right: var(--border) var(--clr-300);
-            border-bottom: var(--border) var(--clr-300);
-            border-left: var(--border) var(--clr-300);
-        }
-
-        .gCodeTable__container .scrollContainer__inner,
-        .mCodeTable__container .scrollContainer__inner {
-            padding: 0 var(--input-pad-hrz) var(--input-pad-hrz) var(--input-pad-hrz);
-        }
-    }
-
     .gCode {
         position: relative;
 
