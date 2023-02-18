@@ -82,7 +82,7 @@
                         href="/tap-and-clearance"
                         class:active={$page.url.pathname === "/tap-and-clearance"}
                         aria-current={$page.url.pathname === "/tap-and-clearance"}>
-                        Tap & Clearance Chart
+                        Tap & Clearance Drill Sizes
                     </a>
                 </li>
                 <li>
