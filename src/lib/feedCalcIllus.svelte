@@ -32,7 +32,7 @@
 
 
 <tool-illus
-    class="tool__illus"
+    class="feedCalcIllus"
     class:motionRedcued={$motionPref === "reduced"}
     style="
         --spindleSpeed: {displayedSpindleSpeed}s;
@@ -80,7 +80,7 @@
 
 
 <style lang="scss">
-    .tool__illus {
+    .feedCalcIllus {
         // internal varaibles
         --_width: 180px;
         --_shoulder-height: 20px;
@@ -171,21 +171,21 @@
 
     /* === BREAKPOINTS ======================== */
     @media only screen and (max-width: $breakpoint-tablet) {
-        .tool__illus {
+        .feedCalcIllus {
             // internal variables
             --_width: 160px;
         }
     }
 
     @media only screen and (max-width: $breakpoint-smtablet) {
-        .tool__illus {
+        .feedCalcIllus {
             // internal variables
             --_width: 140px;
         }
     }
 
     /* === A11Y =============================== */
-    .motionRedcued.tool__illus {
+    .motionRedcued.feedCalcIllus {
         .bit .flutes__inner {
             animation: none;
         }

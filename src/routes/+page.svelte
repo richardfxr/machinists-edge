@@ -4,7 +4,7 @@
     import type { Writable } from 'svelte/store';
     import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount, type feedRateSave } from "../store/store";
 
-    import ToolIllus from "$lib/toolIllus.svelte";
+    import FeedCalcIllus from "$lib/feedCalcIllus.svelte";
     import Output from "$lib/output.svelte";
 	import NumInput from "$lib/numInput.svelte";
 	import RangeInput from "$lib/rangeInput.svelte";
@@ -426,7 +426,7 @@
 
         <div class="results">
             <div class="results__inner">
-                <ToolIllus
+                <FeedCalcIllus
                     scaleX={$cutterDiameter.value * 2}
                     flutes={$numFlutes.value}
                     spindleSpeed={$spindleSpeed}
