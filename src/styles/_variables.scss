@@ -55,7 +55,7 @@ $breakpoint-smmobile: 450px;
 
     --input-pad-vrt: var(--pad-lg);
     --input-pad-hrz: var(--pad-xl);
-    --input-gap: 3px;
+    --input-gap: var(--pad-2xs);
 
     --font-4xl: 3rem;
     --font-2xl: 1.7rem;

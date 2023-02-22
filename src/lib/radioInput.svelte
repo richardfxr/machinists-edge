@@ -70,7 +70,7 @@
             font-weight: 600;
             line-height: 1em;
 
-            padding-top: var(--pad-xs);
+            padding-top: var(--pad-3xs);
             padding-bottom: var(--pad-3xs);
             border-bottom: var(--border) transparent;
 

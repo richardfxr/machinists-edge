@@ -101,7 +101,7 @@
 
         display: flex;
         flex-direction: column;
-        gap: var(--pad-2xs);
+        gap: var(--input-gap);
         position: relative;
         z-index: 1;
 
