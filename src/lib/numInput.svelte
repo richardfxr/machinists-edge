@@ -102,7 +102,9 @@
     class:change={change && !error}
     class:error
     class:input__container={selfContained}
-    id={name}>
+    id={name}
+    on:pointerenter
+    on:pointerleave>
     <label for={name + "__input"}>
         <span class="label">{label}</span>
         {#if type !== "readonly"}
@@ -140,7 +142,9 @@
                 type="number"
                 min={allowZero ? "-0.001" : "0"}
                 {step}
-                on:input>
+                on:input
+                on:focus
+                on:blur>
         {/if}
 
         <UnitAbbr {units} position="top-left" />
