@@ -18,9 +18,9 @@
     /* === REACTIVE DECLARATIONS ============== */
     $: fracValue = value as number | string;
     // run checkFracError() when fracValue changes for allowFractions numInput
-    $: type === "allowFractions" && fracValue && checkFracError();
+    $: type === "allowFractions" && fracValue !== undefined && checkFracError();
     // run checkNumError() when value changes for number numInput
-    $: type === "number" && value && checkNumError();
+    $: type === "number" && value !== undefined && checkNumError();
 
     /* === FUNCTIONS ========================== */
     /**
@@ -80,16 +80,13 @@
         // reset error
         error = false;
 
-        if (value == null) {
-            value = 1;
+        if (value === null) {
             error = true;
         } else if (allowZero && value < 0) {
             // disallow negative values
-            value = 1;
             error = true;
         } else if (!allowZero && value <= 0) {
             // disallow zero
-            value = 1;
             error = true;
         }
     }
@@ -123,7 +120,8 @@
                 {name}
                 bind:value={fracValue}
                 type="text"
-                autocomplete="off">
+                autocomplete="off"
+                on:input>
         {:else if type === "readonly"}
             <input
                 id={name + "__input"}
