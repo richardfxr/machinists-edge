@@ -8,6 +8,7 @@
     export let name: string;
     export let value: number;
     export let error = false;
+    export let externalErrorChecking = false;
     export let change = false;
     export let units: "RPM"| "IPM" | "in" | "SFPM" | "IPR";
     export let step = 0.001;
@@ -78,7 +79,7 @@
      */
      function checkNumError() {
         // reset error
-        error = false;
+        if (!externalErrorChecking) error = false;
 
         if (value === null) {
             error = true;
