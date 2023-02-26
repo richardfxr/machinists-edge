@@ -81,7 +81,7 @@
         hasChanged: false
     });
 
-    /* === REACTIVE DECLARATIONS ============== */
+    /* === DERIVED STORES ===================== */
     const loadedSave = derived(
         [loadedFeedRateSave, feedRateSaves],
         ([$loadedFeedRateSave, $feedRateSaves]) => $loadedFeedRateSave !== -1 ? $feedRateSaves[$loadedFeedRateSave] : null
@@ -318,8 +318,7 @@
                     change={$cutterDiameter.hasChanged}
                     bind:error={$cutterDiameter.error}
                     units="in"
-                    type="allowFractions"
-                    on:update={e => $cutterDiameter = e.detail}/>
+                    type="allowFractions" />
 
                 <NumInput
                     label="1/2 engagement"
@@ -504,8 +503,8 @@
                 :global(#halfEngagement::before), :global( #quaterEngagement::before) {
                     content: "";
                     position: absolute;
-                    top: var(--pad-sm);
-                    bottom: var(--pad-sm);
+                    top: var(--pad-lg);
+                    bottom: var(--pad-lg);
                     left: calc(-0.5 * var(--border-width));
                     z-index: -1;
 
