@@ -2,6 +2,10 @@
 import { browser } from '$app/environment';
 import { writable, get } from 'svelte/store';
 
+/* === TYPES ============================== */
+export type ToolSection = "none" | "all" | "baseToFlute" | "flute" | "baseToShoulder" | "shoulder" | "holder" | "body";
+export type EndMillType = "flat" | "ball" | "bull-nose";
+
 /* === INTERFACES ========================= */
 export interface feedRateSave {
     [key: string]: any;
