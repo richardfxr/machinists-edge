@@ -31,6 +31,7 @@
         z-index: 2;
 
         color: var(--clr-0);
+        font-size: var(--font-sm);
         font-weight: 500;
         line-height: 1em;
 
