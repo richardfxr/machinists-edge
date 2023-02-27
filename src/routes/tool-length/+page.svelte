@@ -511,7 +511,9 @@
         </div>
 
         <div class="illus--wrapper">
-            <Indicator type="error" shown={$error} positionAbsolute />
+            <div class="indicator--wrapper">
+                <Indicator type="error" shown={$error} positionAbsolute />
+            </div>
             <ToolLengthIllus
                 highlighted={$hasFocused ? $focused : $highlighted}
                 highlightedError={$highlightedError}
@@ -584,9 +586,23 @@
             background-color: var(--clr-100);
             border-right: var(--border) var(--clr-300);
 
-            :global(.indicator) {
-                top: var(--input-pad-vrt);
-                right: var(--input-pad-hrz);
+            .indicator--wrapper {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: flex-end;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+
+                :global(.indicator) {
+                    position: sticky;
+                    top: var(--input-pad-vrt);
+                    margin-top: var(--input-pad-vrt);
+                    margin-right: var(--input-pad-hrz);
+                    margin-bottom: 180px;
+                }
             }
         }
     }
@@ -596,6 +612,12 @@
         .toolLength {
             // internal variables
             --_illus-width: 380px;
+
+            .illus--wrapper .indicator--wrapper {
+                :global(.indicator) {
+                    margin-bottom: 160px;
+                }
+            }
         }
     }
 
@@ -638,6 +660,12 @@
                     }
                 }
             }
+
+            .illus--wrapper .indicator--wrapper {
+                :global(.indicator) {
+                    margin-bottom: 140px;
+                }
+            }
         }
     }
 
@@ -659,6 +687,25 @@
                 border-right: none;
                 margin-bottom: calc(1.5 * var(--border-width));
                 outline: var(--border) var(--clr-300);
+
+                .indicator--wrapper {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: flex-end;
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+
+                    :global(.indicator) {
+                        position: relative;
+                        top: var(--input-pad-vrt);
+                        margin-top: 0;
+                        margin-right: var(--input-pad-hrz);
+                        margin-bottom: 0;
+                    }
+                }
             }
         }
     }
