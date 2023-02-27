@@ -347,6 +347,7 @@
                     allowZero
                     on:input={() => {
                         $fluteLength.value = calculate("flute");
+                        $manualFluteLength = false;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "baseToFlute"}
@@ -354,7 +355,6 @@
                     on:focus={() => {
                         $hasFocused = true;
                         $focused = "baseToFlute";
-                        $manualFluteLength = false;
                     }}
                     on:blur={() => $hasFocused = false} />
 
@@ -371,6 +371,7 @@
                     allowZero
                     on:input={() => {
                         $baseToFluteLength.value = calculate("baseToFlute");
+                        $manualFluteLength = true;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "flute"}
@@ -378,7 +379,6 @@
                     on:focus={() => {
                         $hasFocused = true;
                         $focused = "flute";
-                        $manualFluteLength = true;
                     }}
                     on:blur={() => $hasFocused = false} />
             </div>
@@ -399,6 +399,7 @@
                     allowZero
                     on:input={() => {
                         $shoulderLength.value = calculate("shoulder");
+                        $manualShoulderLegnth = false;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "baseToShoulder"}
@@ -406,7 +407,6 @@
                     on:focus={() => {
                         $hasFocused = true;
                         $focused = "baseToShoulder";
-                        $manualShoulderLegnth = false;
                     }}
                     on:blur={() => $hasFocused = false} />
 
@@ -423,6 +423,7 @@
                     allowZero
                     on:input={() => {
                         $baseToShoulderLength.value = calculate("baseToShoulder");
+                        $manualShoulderLegnth = true;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "shoulder"}
@@ -430,7 +431,6 @@
                     on:focus={() => {
                         $hasFocused = true;
                         $focused = "shoulder";
-                        $manualShoulderLegnth = true;
                     }}
                     on:blur={() => $hasFocused = false} />
             </div>
@@ -451,6 +451,7 @@
                     allowZero
                     on:input={() => {
                         $bodyLength.value = calculate("body");
+                        $manualBodyLength = false;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "holder"}
@@ -458,7 +459,6 @@
                     on:focus={() => {
                         $hasFocused = true;
                         $focused = "holder";
-                        $manualBodyLength = false;
                     }}
                     on:blur={() => $hasFocused = false} />
 
@@ -475,6 +475,7 @@
                     allowZero
                     on:input={() => {
                         $holderLength.value = calculate("holder");
+                        $manualBodyLength = true;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "body"}
@@ -482,7 +483,6 @@
                     on:focus={() => {
                         $hasFocused = true;
                         $focused = "body";
-                        $manualBodyLength = true;
                     }}
                     on:blur={() => $hasFocused = false} />
             </div>
