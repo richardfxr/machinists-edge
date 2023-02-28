@@ -2,23 +2,27 @@
     /* === IMPORTS ============================ */
     import { writable, derived } from 'svelte/store';
     import type { Writable } from 'svelte/store';
-
-    import type { ToolSection, EndMillType } from '../../store/store';
+    import { motionPref, toolLengthSaves, loadedToolLengthSave, toolLengthSaveCount } from '../../store/store';
+    import type { ToolSection, EndMillType, toolLengthSave } from '../../store/store';
 
     import Heading from "$lib/heading.svelte";
     import NumInput from "$lib/numInput.svelte";
     import ToolLengthIllus from '$lib/toolLengthIllus.svelte';
     import RadioInput from "$lib/radioInput.svelte";
     import Indicator from '$lib/indicator.svelte';
+    import SaveLoader from "$lib/saveLoader.svelte";
+	import Saves from "$lib/saves.svelte";
 
     /* === BINDINGS =========================== */
     let calculator: HTMLElement;
 
-    
     /* === WRITABLE STORES ==================== */
     const highlighted: Writable<ToolSection> = writable("none");
     const focused: Writable<ToolSection> = writable("none");
     const hasFocused = writable(false);
+    const savedBaseToFluteLength = writable(0);
+    const savedShoulderLength = writable(0);
+    const savedBodyLength = writable(0);
 
     const overallLength = writable({
         value: 3.583,
@@ -79,11 +83,25 @@
         hasChanged: false
     });
 
-    const manualFluteLength = writable(false);
-    const manualShoulderLegnth = writable(false);
-    const manualBodyLength = writable(false);
+    const manualFluteLength = writable({
+        isTrue: false,
+        hasChanged: false
+    });
+    const manualShoulderLegnth = writable({
+        isTrue: false,
+        hasChanged: false
+    });
+    const manualBodyLength = writable({
+        isTrue: false,
+        hasChanged: false
+    });
 
     /* === DERIVED STORES ===================== */
+    const loadedSave = derived(
+        [loadedToolLengthSave, toolLengthSaves],
+        ([$loadedToolLengthSave, $toolLengthSaves]) => $loadedToolLengthSave !== -1 ? $toolLengthSaves[$loadedToolLengthSave] : null
+    );
+
     const error = derived(
         [
             overallLength,
@@ -155,6 +173,77 @@
             }
         }
     );
+
+    /* === REACTIVE DECLARATIONS ============== */
+    // call loadSave() every time $loadedFeedRateSave changes
+    $: $loadedToolLengthSave !== -1 && loadSave();
+
+    // change tracking for saves
+    $: $loadedSave && $loadedSave.overallLength !== $overallLength.value ?
+        $overallLength.hasChanged = true :
+        $overallLength.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.endMillType !== $endMillType.value ?
+        $endMillType.hasChanged = true :
+        $endMillType.hasChanged = false;
+
+    $: $loadedSave && $savedBaseToFluteLength !== $baseToFluteLength.value ?
+        $baseToFluteLength.hasChanged = true :
+        $baseToFluteLength.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.fluteLength !== $fluteLength.value ?
+        $fluteLength.hasChanged = true :
+        $fluteLength.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.baseToShoulderLength !== $baseToShoulderLength.value ?
+        $baseToShoulderLength.hasChanged = true :
+        $baseToShoulderLength.hasChanged = false;
+
+    $: $loadedSave && $savedShoulderLength !== $shoulderLength.value ?
+        $shoulderLength.hasChanged = true :
+        $shoulderLength.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.holderLength !== $holderLength.value ?
+        $holderLength.hasChanged = true :
+        $holderLength.hasChanged = false;
+
+    $: $loadedSave && $savedBodyLength !== $bodyLength.value ?
+        $bodyLength.hasChanged = true :
+        $bodyLength.hasChanged = false;
+    
+    $: $loadedSave && $loadedSave.cutterDiameter !== $cutterDiameter.value ?
+        $cutterDiameter.hasChanged = true :
+        $cutterDiameter.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.shoulderDiameter !== $shoulderDiameter.value ?
+        $shoulderDiameter.hasChanged = true :
+        $shoulderDiameter.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.manualFluteLength !== $manualFluteLength.isTrue ?
+        $manualFluteLength.hasChanged = true :
+        $manualFluteLength.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.manualShoulderLegnth !== $manualShoulderLegnth.isTrue ?
+        $manualShoulderLegnth.hasChanged = true :
+        $manualShoulderLegnth.hasChanged = false;
+
+    $: $loadedSave && $loadedSave.manualBodyLength !== $manualBodyLength.isTrue ?
+        $manualBodyLength.hasChanged = true :
+        $manualBodyLength.hasChanged = false;
+
+    $: hasChanged = $overallLength.hasChanged ||
+                    $endMillType.hasChanged ||
+                    $baseToFluteLength.hasChanged ||
+                    $fluteLength.hasChanged ||
+                    $baseToFluteLength.hasChanged ||
+                    $shoulderLength.hasChanged ||
+                    $holderLength.hasChanged ||
+                    $bodyLength.hasChanged ||
+                    $cutterDiameter.hasChanged ||
+                    $shoulderDiameter.hasChanged ||
+                    $manualFluteLength.hasChanged ||
+                    $manualShoulderLegnth.hasChanged ||
+                    $manualBodyLength.hasChanged;
 
     /* === FUNCTIONS ========================== */
     /* error checking for all lengths */
@@ -265,6 +354,103 @@
                 return 0;
         }
     }
+
+    /* checks if index is valid for feedRateSaves array */
+    function isValid(index: number) {
+        return index >= 0 && index <= $toolLengthSaves.length - 1;
+    }
+
+    function createSave(name: string): toolLengthSave {
+        // determine save count
+        let saveCount;
+        $loadedSave ? saveCount = $loadedSave.saveCount : saveCount = $toolLengthSaveCount;
+
+        // create save of interface toolLengthSave
+        let save: toolLengthSave = {
+            name,
+            overallLength: $overallLength.value,
+            endMillType: $endMillType.value,
+            fluteLength: $fluteLength.value,
+            baseToShoulderLength: $baseToShoulderLength.value,
+            holderLength: $holderLength.value,
+            cutterDiameter: $cutterDiameter.value,
+            shoulderDiameter: $shoulderDiameter.value,
+            manualFluteLength: $manualFluteLength.isTrue,
+            manualShoulderLegnth: $manualShoulderLegnth.isTrue,
+            manualBodyLength: $manualBodyLength.isTrue,
+            saveCount,
+        }
+
+        // update internal saved variables
+        $savedBaseToFluteLength = $baseToFluteLength.value;
+        $savedShoulderLength = $shoulderLength.value;
+        $savedBodyLength = $bodyLength.value;
+
+        return save;
+    }
+
+    function createNewSave(detail: {name: string}) {
+        // do not save if there is an error
+        if ($error) return;
+
+        const newSave = createSave(detail.name);
+
+        // add new save to feedRateSaves array, load it, and increment save count
+        toolLengthSaves.update(oldSaves => [...oldSaves, newSave]);
+        loadedToolLengthSave.set($toolLengthSaves.indexOf(newSave));
+        toolLengthSaveCount.update(count => count + 1);
+    }
+
+    function updateSave(detail: {name: string}) {
+        // do not save if there is an error
+        if ($error) return;
+
+        const updatedSave = createSave(detail.name);
+
+        // update feedRateSaves array with updated save
+        if (isValid($loadedToolLengthSave)) $toolLengthSaves[$loadedToolLengthSave] = updatedSave;
+    }
+
+    function loadSave() {
+        // check index is valid
+        if (!isValid($loadedToolLengthSave)) return;
+
+        const loadingSave = $toolLengthSaves[$loadedToolLengthSave];
+
+        // update all values
+        $overallLength = { value: loadingSave.overallLength, error: false, hasChanged: false };
+        $endMillType = { value: loadingSave.endMillType, hasChanged: false };
+        $fluteLength = { value: loadingSave.fluteLength, error: false, hasChanged: false };
+        $baseToShoulderLength = { value: loadingSave.baseToShoulderLength, error: false, hasChanged: false };
+        $holderLength = { value: loadingSave.holderLength, error: false, hasChanged: false };
+        $cutterDiameter = { value: loadingSave.cutterDiameter, error: false, hasChanged: false };
+        $shoulderDiameter = { value: loadingSave.shoulderDiameter, error: false, hasChanged: false };
+        $manualFluteLength = { isTrue: loadingSave.manualFluteLength, hasChanged: false };
+        $manualShoulderLegnth = { isTrue: loadingSave.manualShoulderLegnth, hasChanged: false };
+        $manualBodyLength = { isTrue: loadingSave.manualBodyLength, hasChanged: false };
+
+        // update realted values
+        $baseToFluteLength = { value: calculate("baseToFlute"), error: false, hasChanged: false };
+        $shoulderLength = { value: calculate("shoulder"), error: false, hasChanged: false };
+        $bodyLength = { value: calculate("body"), error: false, hasChanged: false };
+        $savedBaseToFluteLength = calculate("baseToFlute");
+        $savedShoulderLength = calculate("shoulder");
+        $savedBodyLength = calculate("body");
+
+        validateAll();
+    }
+
+    function deleteSave(index: number) {
+        // check index is valid
+        if (!isValid(index)) return;
+
+        const saveToBeDeleted = $toolLengthSaves[index];
+        // remove save from feedRateSaves array
+        toolLengthSaves.update(saves => saves.filter(save => save !== saveToBeDeleted));
+
+        // eject save if it was loaded
+        if (index === $loadedToolLengthSave) loadedToolLengthSave.set(-1);
+    }
 </script>
 
 
@@ -299,13 +485,13 @@
                     selfContained
                     on:input={() => {
                         // recalculate all lengths
-                        $manualFluteLength ? 
+                        $manualFluteLength.isTrue ? 
                             $baseToFluteLength.value = calculate("baseToFlute") :
                             $fluteLength.value = calculate("flute");
-                        $manualShoulderLegnth ?
+                        $manualShoulderLegnth.isTrue ?
                             $baseToShoulderLength.value = calculate("baseToShoulder"):
                             $shoulderLength.value = calculate("shoulder");
-                        $manualBodyLength ?
+                        $manualBodyLength.isTrue ?
                             $holderLength.value = calculate("holder") :
                             $bodyLength.value = calculate("body");
                         
@@ -327,6 +513,7 @@
                         { name: "ball", value: "ball" },
                         { name: "bull-nose", value: "bull-nose" },
                     ]}
+                    change={$endMillType.hasChanged}
                     selfContained
                     bind:value={$endMillType.value}/>
             </div>
@@ -347,7 +534,7 @@
                     allowZero
                     on:input={() => {
                         $fluteLength.value = calculate("flute");
-                        $manualFluteLength = false;
+                        $manualFluteLength.isTrue = false;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "baseToFlute"}
@@ -371,7 +558,7 @@
                     allowZero
                     on:input={() => {
                         $baseToFluteLength.value = calculate("baseToFlute");
-                        $manualFluteLength = true;
+                        $manualFluteLength.isTrue = true;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "flute"}
@@ -399,7 +586,7 @@
                     allowZero
                     on:input={() => {
                         $shoulderLength.value = calculate("shoulder");
-                        $manualShoulderLegnth = false;
+                        $manualShoulderLegnth.isTrue = false;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "baseToShoulder"}
@@ -423,7 +610,7 @@
                     allowZero
                     on:input={() => {
                         $baseToShoulderLength.value = calculate("baseToShoulder");
-                        $manualShoulderLegnth = true;
+                        $manualShoulderLegnth.isTrue = true;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "shoulder"}
@@ -451,7 +638,7 @@
                     allowZero
                     on:input={() => {
                         $bodyLength.value = calculate("body");
-                        $manualBodyLength = false;
+                        $manualBodyLength.isTrue = false;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "holder"}
@@ -475,7 +662,7 @@
                     allowZero
                     on:input={() => {
                         $holderLength.value = calculate("holder");
-                        $manualBodyLength = true;
+                        $manualBodyLength.isTrue = true;
                         validateAll();
                     }}
                     on:pointerenter={() => $highlighted = "body"}
@@ -522,6 +709,30 @@
                  />
         </div>
     </form>
+
+    <SaveLoader
+        loadedSaveName={$loadedSave ? $loadedSave.name : null}
+        hasChanges={hasChanged}
+        error={$error}
+        currentSaveCount={$loadedSave ? $loadedSave.saveCount : $toolLengthSaveCount}
+        on:save={e => createNewSave(e.detail)}
+        on:update={e => updateSave(e.detail)}
+        on:eject={() => loadedToolLengthSave.set(-1)}
+        on:delete={() => deleteSave($loadedToolLengthSave)} />
+
+    <Saves
+        toolLengthSaves={$toolLengthSaves}
+        loadedIndex={$loadedToolLengthSave}
+        on:load={e => {
+            loadedToolLengthSave.set(e.detail.index)
+            // scroll calculator into view and focus on it
+            let scrollBehavior;
+            $motionPref === "reduced" ? scrollBehavior = "auto" : scrollBehavior = "smooth";
+            calculator.scrollIntoView({ behavior: "auto" });
+            calculator.focus({ preventScroll: true });
+        }}
+        on:eject={() => loadedToolLengthSave.set(-1)}
+        on:delete={e => deleteSave(e.detail.index)} />
 </div>
 
 
@@ -538,6 +749,7 @@
         position: relative;
 
         border: var(--border) var(--clr-300);
+        border-bottom: none;
 
         .inputs {
             .twoInputs, .pairedInputs {

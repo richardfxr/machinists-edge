@@ -5,11 +5,12 @@
     import Save from "$lib/SVGs/save.svelte";
     import Eject from "$lib/SVGs/eject.svelte";
 	import DeleteSave from "$lib/SVGs/deleteSave.svelte";
-    import { motionPref, type feedRateSave } from "../store/store";
+    import { motionPref } from "../store/store";
+    import type { feedRateSave, toolLengthSave } from "../store/store";
 
     /* === PROPS ============================== */
-    export let saves: feedRateSave[];
-    export let type: "feedRate";
+    export let feedRateSaves: feedRateSave[] | null = null;
+    export let toolLengthSaves: toolLengthSave[] | null = null;
     export let loadedIndex = 0;
 
     /* === FUNCTIONS ========================== */
@@ -40,15 +41,18 @@
 <div class="saves" id="saves">
     <h2><Save />Saves</h2>
     
-    {#if saves.length === 0}
+    {
+        #if (feedRateSaves === null || feedRateSaves.length === 0) &&
+            (toolLengthSaves === null || toolLengthSaves.length === 0)
+    }
         <div class="empty" transition:animate|local={{ animation: slide, duration: 300 }}>
             <div class="box" role="presentation"></div>
             <p class="highlighted">No saves found</p>
             <p class="text--sm">Create new saves in the <a href="#saveLoader">loaded save section</a> above.</p>
         </div>
-    {:else if type === "feedRate"}
-        <ul>
-            {#each saves as save, i}
+    {:else if feedRateSaves}
+        <ul class="feedRateSaves">
+            {#each feedRateSaves as save, i}
                 <li
                     class="input__container"
                     class:loaded={loadedIndex === i}
@@ -61,6 +65,48 @@
                                 {save.spindleSpeed} RPM — {save.feedRate} IPM
                             </span>
                             {save.cutterDiameter}in • {save.numFlutes}FL — {save.opType} {save.material}
+                        </p>
+                    </div>
+                    
+                    <div class="actions">
+                        <button
+                            class="button icon--md"
+                            type="button"
+                            on:click={() => {
+                                if (loadedIndex === i)
+                                    dispatch('eject');
+                                else
+                                    loadSave(i)
+                            }}>
+                            <Eject />
+                            <span>{loadedIndex === i ? "eject" : "load"}</span>
+                        </button>
+                        <button
+                            class="button icon--md"
+                            type="button"
+                            on:click={() => deleteSave(i)}>
+                            <DeleteSave />
+                            <span>delete</span>
+                        </button>
+                    </div>
+                </li>
+            {/each}
+        </ul>
+    {:else if toolLengthSaves}
+        <ul class="toolLengthSaves">
+            {#each toolLengthSaves as save, i}
+                <li
+                    class="input__container"
+                    class:loaded={loadedIndex === i}
+                    aria-current={loadedIndex === i}
+                    transition:animate|local={{ animation: slide, duration: 300 }} >
+                    <div class="main">
+                        <h3>{save.name}</h3>
+                        <p class="details">
+                            <span class="highlighted">
+                                {save.overallLength}in overall
+                            </span>
+                            {save.fluteLength}in FL • {save.cutterDiameter}in cutter diameter
                         </p>
                     </div>
                     
@@ -111,7 +157,6 @@
         .highlighted {
             color: var(--clr-0);
             font-weight: 500;
-            text-transform: uppercase;
             padding: 0 var(--pad-2xs);
             background-color: var(--clr-900);
 
