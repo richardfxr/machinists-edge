@@ -7,18 +7,25 @@
     import BitFluteVrt from '$lib/SVGs/bit-flute-vrt.svelte';
     import BitTipVrt from '$lib/SVGs/bit-tip-vrt.svelte';
     import HolderAndBitHrz from '$lib/SVGs/holderAndBit-hrz.svelte';
+    import { motionPref } from "../store/store";
+    import type { ToolSection } from "../store/store";
 
     /* === PROPS ============================== */
-    export let highlighted: "none" | "all" | "baseToFlute" | "flute" | "baseToShoulder" | "shoulder" | "holder" | "body";
+    export let highlighted: ToolSection;
     export let highlightedError = false;
     export let overallLength: number;
     export let holderLength: number;
 
+    /* === FUNCTIONS ========================== */
+    function clamp(input: number, min: number, max: number): number {
+        return Math.min(Math.max(input, min), max);
+    }
+
     /* === REACTIVE DECLARATIONS ============== */
     // height of illustration as a coefficient of --_width
-    $: height = 1.7 + (Math.min(Math.max(overallLength, 3), 4) - 3);
-    // percentage of overallLength that is taken up by the
-    $: holderPercentage = Math.min(Math.max(holderLength / overallLength, 0.31), 0.41);
+    $: height = 1.7 + (clamp(overallLength, 3 , 4) - 3);
+    // percentage of overallLength that is taken up by the holder
+    $: holderPercentage = clamp(holderLength / overallLength, 0.31, 0.41);
     // toolHolderMain translateY as a coefficient of --_width
     $: toolHolderMainTrans = 2 * (0.41 - holderPercentage);
     // BitFluteVrt height as a coefficient of --_width
@@ -26,9 +33,10 @@
 </script>
 
 
-<div
+<tool-illus
     class="toolLengthIllus"
     class:highlightedError
+    class:motionRedcued={$motionPref === "reduced"}
     style="
         --_toolHolderMainTrans: {toolHolderMainTrans};
         --_fluteHeight: {fluteHeight};
@@ -106,7 +114,7 @@
         }>
         <ToolHolderBaseVrt />
     </div>
-</div>
+</tool-illus>
 
 
 <style lang="scss">
@@ -340,6 +348,13 @@
             :global(.illustration.vertical) {
                 display: none;
             }
+        }
+    }
+
+    /* === A11Y =============================== */
+    .motionRedcued.toolLengthIllus {
+        .illusContainer {
+            transition: none;
         }
     }
 </style>
