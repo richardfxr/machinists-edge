@@ -2,7 +2,8 @@
     /* === IMPORTS ============================ */
     import { writable, derived } from 'svelte/store';
     import type { Writable } from 'svelte/store';
-    import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount, type feedRateSave } from "../store/store";
+    import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
+    import type { OpType, Material, feedRateSave } from "../store/store";
 
     import FeedCalcIllus from "$lib/feedCalcIllus.svelte";
     import Output from "$lib/output.svelte";
@@ -59,12 +60,12 @@
         hasChanged: false
     });
 
-    const opType: Writable<{ value: "drill" | "mill", hasChanged: boolean }> = writable({
+    const opType: Writable<{ value: OpType, hasChanged: boolean }> = writable({
         value: "drill",
         hasChanged: false
     });
 
-    const material: Writable<{ value: "aluminum" | "brass" | "delrin" | "steel" | "custom", hasChanged: boolean }> = writable({
+    const material: Writable<{ value: Material, hasChanged: boolean }> = writable({
         value: "aluminum",
         hasChanged: false
     });
@@ -134,7 +135,6 @@
                 $toolSpeed.error = false;
                 $cuttingFeed.value = aluminum.feed[$cutterDiameterIndex];
                 $cuttingFeed.error = false;
-                console.log("aluminum: " + aluminum[$opType.value] + ", " + aluminum.feed[$cutterDiameterIndex]);
                 break;
             
             case "brass":
@@ -142,7 +142,6 @@
                 $toolSpeed.error = false;
                 $cuttingFeed.value = brass.feed[$cutterDiameterIndex];
                 $cuttingFeed.error = false;
-                console.log("brass: " + brass[$opType.value] + ", " + brass.feed[$cutterDiameterIndex]);
                 break;
 
             case "delrin":
@@ -150,7 +149,6 @@
                 $toolSpeed.error = false;
                 $cuttingFeed.value = delrin.feed[$cutterDiameterIndex];
                 $cuttingFeed.error = false;
-                console.log("delrin: " + delrin[$opType.value] + ", " + delrin.feed[$cutterDiameterIndex]);
                 break;
 
             case "steel":
@@ -158,7 +156,6 @@
                 $toolSpeed.error = false;
                 $cuttingFeed.value = steel.feed[$cutterDiameterIndex];
                 $cuttingFeed.error = false;
-                console.log("steel: " + steel[$opType.value] + ", " + steel.feed[$cutterDiameterIndex]);
                 break;
         }
     };
@@ -201,12 +198,10 @@
         return index >= 0 && index <= $feedRateSaves.length - 1;
     }
 
-    function createSave(name: string) {
+    function createSave(name: string): feedRateSave {
         // determine save count
         let saveCount;
         $loadedSave ? saveCount = $loadedSave.saveCount : saveCount = $feedRateSaveCount;
-
-        console.log("saving");
 
         // create save of interface feedRateSave
         let save: feedRateSave = {
@@ -229,16 +224,12 @@
         // do not save if there is an error
         if ($error) return;
 
-        console.log("creating new save");
-
         const newSave = createSave(detail.name);
 
         // add new save to feedRateSaves array, load it, and increment save count
         feedRateSaves.update(oldSaves => [...oldSaves, newSave]);
         loadedFeedRateSave.set($feedRateSaves.indexOf(newSave));
         feedRateSaveCount.update(count => count + 1);
-
-        console.log("saved:", $feedRateSaves);
     }
 
     function updateSave(detail: {name: string}) {
@@ -249,21 +240,13 @@
 
         // update feedRateSaves array with updated save
         if (isValid($loadedFeedRateSave)) $feedRateSaves[$loadedFeedRateSave] = updatedSave;
-
-        console.log("updated:", $feedRateSaves);
     }
 
     function loadSave() {
         // check index is valid
         if (!isValid($loadedFeedRateSave)) return;
 
-        loadedFeedRateSave.set($loadedFeedRateSave);
-
         const loadingSave = $feedRateSaves[$loadedFeedRateSave];
-
-        console.log("cutterDiameter: {" + $cutterDiameter.value + ", " + $cutterDiameter.error + "}");
-
-        console.log("loadingSave:" + JSON.stringify(loadingSave));
 
         // update all values
         $cutterDiameter = { value: loadingSave.cutterDiameter, error: false, hasChanged: false };
@@ -345,8 +328,7 @@
                     min={1}
                     max={9}
                     step={1}
-                    selfContained
-                    on:update={e => $numFlutes = e.detail}/>
+                    selfContained />
 
                 <RadioInput
                     label="operation type"
@@ -357,7 +339,7 @@
                     ]}
                     change={$opType.hasChanged}
                     selfContained
-                    bind:value={$opType.value}/>
+                    bind:value={$opType.value} />
             </div>
 
             <RadioTable
@@ -373,7 +355,7 @@
                 change={$material.hasChanged}
                 tableHeadings={["material", "tool speed", "cutting feeds"]}
                 selfContained
-                bind:value={$material.value}/>
+                bind:value={$material.value} />
 
             <div class="toolAndFeed">
                 <NumInput
@@ -386,7 +368,7 @@
                     type="number"
                     step={1}
                     selfContained
-                    on:input={() => $material.value = "custom"}/>
+                    on:input={() => $material.value = "custom"} />
                 
                 <NumInput
                     label="cutting feed"
@@ -398,7 +380,7 @@
                     type="number"
                     allowZero
                     selfContained
-                    on:input={() => $material.value = "custom"}/>
+                    on:input={() => $material.value = "custom"} />
             </div>
         </div>
 

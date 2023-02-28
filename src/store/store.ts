@@ -3,6 +3,8 @@ import { browser } from '$app/environment';
 import { writable, get } from 'svelte/store';
 
 /* === TYPES ============================== */
+export type OpType = "drill" | "mill";
+export type Material = "aluminum" | "brass" | "delrin" | "steel" | "custom";
 export type ToolSection = "none" | "all" | "baseToFlute" | "flute" | "baseToShoulder" | "shoulder" | "holder" | "body";
 export type EndMillType = "flat" | "ball" | "bull-nose";
 
@@ -14,8 +16,8 @@ export interface feedRateSave {
     feedRate: number;
     cutterDiameter: number;
     numFlutes: number;
-    opType: "drill" | "mill";
-    material: "aluminum" | "brass" | "delrin" | "steel" | "custom";
+    opType: OpType;
+    material: Material;
     toolSpeed: number;
     cuttingFeed: number;
     saveCount: number;
