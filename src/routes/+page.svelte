@@ -445,8 +445,7 @@
         on:delete={() => deleteSave($loadedFeedRateSave)} />
 
     <Saves
-        saves={$feedRateSaves}
-        type="feedRate"
+        feedRateSaves={$feedRateSaves}
         loadedIndex={$loadedFeedRateSave}
         on:load={e => {
             loadedFeedRateSave.set(e.detail.index)

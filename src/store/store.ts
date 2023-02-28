@@ -21,25 +21,51 @@ export interface feedRateSave {
     saveCount: number;
 }
 
+export interface toolLengthSave {
+    name: string;
+    overallLength: number;
+    endMillType: EndMillType;
+    fluteLength: number;
+    baseToShoulderLength: number;
+    holderLength: number;
+    cutterDiameter: number;
+    shoulderDiameter: number;
+    manualFluteLength: boolean;
+    manualShoulderLegnth: boolean;
+    manualBodyLength: boolean;
+    saveCount: number;
+}
+
 /* === INIT VARIABLES ===================== */
 let feedRateSavesArray: feedRateSave[] = [];
+let toolLengthSavesArray: toolLengthSave[] = [];
 
 /* === STORES ============================= */
 export const colorTheme = writable("light");
 export const hasColorTheme = writable(false);
 export const motionPref = writable("full");
 export const hasMotionPref = writable(false);
+// feed rate saves
 export const feedRateSaves = writable(feedRateSavesArray);
 export const loadedFeedRateSave = writable(-1);
 export const feedRateSaveCount = writable(1);
+// tool length saves
+export const toolLengthSaves = writable(toolLengthSavesArray);
+export const loadedToolLengthSave = writable(-1);
+export const toolLengthSaveCount = writable(1);
 
 /* === LOCAL STORAGE ====================== */
 if (browser) {
     if (localStorage.colorTheme) {colorTheme.set(localStorage.colorTheme); hasColorTheme.set(true);};
     if (localStorage.motionPref) {motionPref.set(localStorage.motionPref); hasMotionPref.set(true);};
+    // feed rate saves
     if (localStorage.feedRateSaves) feedRateSaves.set(JSON.parse(localStorage.feedRateSaves));
     if (parseInt(localStorage.loadedFeedRateSave) < localStorage.feedRateSaves?.length) loadedFeedRateSave.set(parseInt(localStorage.loadedFeedRateSave));
-    if (localStorage.feedRateSaves) feedRateSaveCount.set(parseInt(localStorage.feedRateSaveCount));
+    if (localStorage.feedRateSaveCount) feedRateSaveCount.set(parseInt(localStorage.feedRateSaveCount));
+    // tool length saves
+    if (localStorage.toolLengthSaves) toolLengthSaves.set(JSON.parse(localStorage.toolLengthSaves));
+    if (parseInt(localStorage.loadedToolLengthSave) < localStorage.toolLengthSaves?.length) loadedToolLengthSave.set(parseInt(localStorage.loadedToolLengthSave));
+    if (localStorage.toolLengthSaveCount) toolLengthSaveCount.set(parseInt(localStorage.toolLengthSaveCount));
 };
 
 /* === UPDATES ============================ */
@@ -97,6 +123,24 @@ loadedFeedRateSave.subscribe(value => {
 feedRateSaveCount.subscribe(value => {
     if (!browser) return;
     localStorage.feedRateSaveCount = value;
+});
+
+toolLengthSaves.subscribe(value => {
+    if (!browser) return;
+    localStorage.toolLengthSaves = JSON.stringify(value);
+
+    // reset feedRateSaveCount to 1 if all saves are deleted
+    if (value.length === 0) toolLengthSaveCount.set(1);
+});
+
+loadedToolLengthSave.subscribe(value => {
+    if (!browser) return;
+    localStorage.loadedToolLengthSave = value;
+});
+
+toolLengthSaveCount.subscribe(value => {
+    if (!browser) return;
+    localStorage.toolLengthSaveCount = value;
 });
 
 /* === CLIENT SIDE INITIALIZATION ========= */
