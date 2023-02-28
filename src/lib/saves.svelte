@@ -205,6 +205,10 @@
                 }
             }
 
+            p.highlighted {
+                text-transform: uppercase;
+            }
+
             p.text--sm {
                 padding-top: var(--pad-2xs);
             }
