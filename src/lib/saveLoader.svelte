@@ -21,7 +21,6 @@
     /* === VARAIBLES ========================== */
     let newSave = false;
     let isSaving = false;
-    console.log("hasChanged:", hasChanged);
 
     /* === REACTIVE DECLARATIONS ============== */
     $: isOpen = loadedSave !== undefined;
