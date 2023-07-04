@@ -1,6 +1,7 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
     import { createEventDispatcher, tick, onMount } from 'svelte';
+    import type { feedRateSave, toolLengthSave } from '../store/db';
     import NewSave from "$lib/SVGs/newSave.svelte";
     import Save from "$lib/SVGs/save.svelte";
 	import Eject from "$lib/SVGs/eject.svelte";
@@ -8,10 +9,10 @@
     import { motionPref } from "../store/store";
 
     /* === PROPS ============================== */
-    export let loadedSaveName: string | null = null;
-    export let hasChanges = false;
+    export let loadedSave: feedRateSave| toolLengthSave | undefined = undefined;
+    export let currentName: string; // bind
+    export let hasChanged = false;
     export let error = false;
-    export let currentSaveCount = 1;
 
     /* === BINDINGS =========================== */
     let dialog: any;
@@ -20,13 +21,11 @@
     /* === VARAIBLES ========================== */
     let newSave = false;
     let isSaving = false;
-    console.log("hasChanges:", hasChanges);
+    console.log("hasChanged:", hasChanged);
 
     /* === REACTIVE DECLARATIONS ============== */
-    $: isOpen = loadedSaveName !== null;
-    $: loadedSaveName === null ? closeDialog() : showDialogWithoutFocus();
-    $: saveTitle = loadedSaveName === null ? "" : loadedSaveName;
-    $: canSave = hasChanges || saveTitle !== loadedSaveName;
+    $: isOpen = loadedSave !== undefined;
+    $: loadedSave === undefined ? closeDialog() : showDialogWithoutFocus();
 
     /* === FUNCTIONS ========================== */
     function showDialog() {
@@ -65,23 +64,11 @@
     const dispatch = createEventDispatcher();
 
     async function save() {
-        // replace empty save title
-        if (saveTitle === "") saveTitle = "save #" + currentSaveCount;
-
         // dispatch appropriate event
-        if (newSave) {
-            dispatch('save', {
-                name: saveTitle,
-            });
-        } else {
-            dispatch('update', {
-                name: saveTitle
-            });
-        }
+        newSave ? dispatch('save') : dispatch('update');
         
         // reset internal variables
         newSave = false;
-        canSave = false;
 
         // trigger and await save animation
         isSaving = true;
@@ -115,7 +102,6 @@
             on:click={() => {
                 showDialog();
                 newSave = true;
-                canSave = true;
             }}>
             <NewSave />
             <span>new save</span>
@@ -144,18 +130,18 @@
                             <span class="label">save title</span>
                             <span
                                 id="saved"
-                                class:hidden={canSave}
-                                aria-hidden={canSave}>
+                                class:hidden={newSave || hasChanged}
+                                aria-hidden={newSave || hasChanged}>
                                 saved
                             </span>
                         </label>
                         <input
                             id="savedTitle"
                             tabindex={isOpen ? 0 : -1}
-                            placeholder={"save #" + currentSaveCount}
+                            placeholder={loadedSave ? "save #" + loadedSave.id : "new save"}
                             autocomplete="off"
                             type="text"
-                            bind:value={saveTitle} />
+                            bind:value={currentName} />
                     </div>
                 </div>
             </article>
@@ -165,7 +151,7 @@
                     class="button icon--lg"
                     value="confirm"
                     tabindex={isOpen ? 0 : -1}
-                    disabled={!canSave || error}
+                    disabled={(!newSave && !hasChanged) || error}
                     on:click|preventDefault={save}>
                     <Save />
                     <span>save</span>

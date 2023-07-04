@@ -1,10 +1,14 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-    import { writable, derived } from 'svelte/store';
-    import type { Writable } from 'svelte/store';
-    import { motionPref, toolLengthSaves, loadedToolLengthSave, toolLengthSaveCount } from '../../store/store';
-    import type { ToolSection, EndMillType, toolLengthSave } from '../../store/store';
-
+    // Svelte
+    import { onMount } from 'svelte';
+    import { writable, derived, type Writable } from 'svelte/store';
+    // store
+    import { liveQuery } from "dexie";
+    import { db } from "../../store/db";
+    import { motionPref, loadedToolLengthSave } from '../../store/store';
+    import type { ToolSection, EndMillType, toolLengthSave } from '../../store/db';
+    // components
     import Heading from "$lib/heading.svelte";
     import NumInput from "$lib/numInput.svelte";
     import ToolLengthIllus from '$lib/toolLengthIllus.svelte';
@@ -13,16 +17,27 @@
     import SaveLoader from "$lib/saveLoader.svelte";
 	import Saves from "$lib/saves.svelte";
 
+    /* === DATABASE =========================== */
+    $: saves = liveQuery(
+        () => db.toolLengthSaves.toArray()
+    );
+
     /* === BINDINGS =========================== */
     let calculator: HTMLElement;
 
     /* === WRITABLE STORES ==================== */
+    const loadedSave: Writable<toolLengthSave | undefined> = writable(undefined);
     const highlighted: Writable<ToolSection> = writable("none");
     const focused: Writable<ToolSection> = writable("none");
     const hasFocused = writable(false);
     const savedBaseToFluteLength = writable(0);
     const savedShoulderLength = writable(0);
     const savedBodyLength = writable(0);
+
+    const name = writable({
+        value: "",
+        hasChanged: false
+    });
 
     const overallLength = writable({
         value: 3.583,
@@ -97,11 +112,6 @@
     });
 
     /* === DERIVED STORES ===================== */
-    const loadedSave = derived(
-        [loadedToolLengthSave, toolLengthSaves],
-        ([$loadedToolLengthSave, $toolLengthSaves]) => $loadedToolLengthSave !== -1 ? $toolLengthSaves[$loadedToolLengthSave] : null
-    );
-
     const error = derived(
         [
             overallLength,
@@ -175,10 +185,11 @@
     );
 
     /* === REACTIVE DECLARATIONS ============== */
-    // call loadSave() every time $loadedFeedRateSave changes
-    $: $loadedToolLengthSave !== -1 && loadSave();
-
     // change tracking for saves
+    $: $loadedSave && $loadedSave.name !== $name.value ?
+        $name.hasChanged = true :
+        $name.hasChanged = false;
+
     $: $loadedSave && $loadedSave.overallLength !== $overallLength.value ?
         $overallLength.hasChanged = true :
         $overallLength.hasChanged = false;
@@ -231,7 +242,8 @@
         $manualBodyLength.hasChanged = true :
         $manualBodyLength.hasChanged = false;
 
-    $: hasChanged = $overallLength.hasChanged ||
+    $: hasChanged = $name.hasChanged ||
+                    $overallLength.hasChanged ||
                     $endMillType.hasChanged ||
                     $baseToFluteLength.hasChanged ||
                     $fluteLength.hasChanged ||
@@ -247,7 +259,7 @@
 
     /* === FUNCTIONS ========================== */
     /* error checking for all lengths */
-    function validateAll() {
+    function validateAll(): void {
         if ($overallLength.error) return;
 
         if (
@@ -355,19 +367,10 @@
         }
     }
 
-    /* checks if index is valid for feedRateSaves array */
-    function isValid(index: number) {
-        return index >= 0 && index <= $toolLengthSaves.length - 1;
-    }
-
-    function createSave(name: string): toolLengthSave {
-        // determine save count
-        let saveCount;
-        $loadedSave ? saveCount = $loadedSave.saveCount : saveCount = $toolLengthSaveCount;
-
+    function createSave(): toolLengthSave {
         // create save of interface toolLengthSave
         let save: toolLengthSave = {
-            name,
+            name: $name.value,
             overallLength: $overallLength.value,
             endMillType: $endMillType.value,
             fluteLength: $fluteLength.value,
@@ -377,8 +380,7 @@
             shoulderDiameter: $shoulderDiameter.value,
             manualFluteLength: $manualFluteLength.isTrue,
             manualShoulderLegnth: $manualShoulderLegnth.isTrue,
-            manualBodyLength: $manualBodyLength.isTrue,
-            saveCount,
+            manualBodyLength: $manualBodyLength.isTrue
         }
 
         // update internal saved variables
@@ -389,45 +391,69 @@
         return save;
     }
 
-    function createNewSave(detail: {name: string}) {
+    async function createNewSave(): Promise<void> {
         // do not save if there is an error
         if ($error) return;
 
-        const newSave = createSave(detail.name);
+        let id: number;
+        const newSave = createSave();
 
-        // add new save to feedRateSaves array, load it, and increment save count
-        toolLengthSaves.update(oldSaves => [...oldSaves, newSave]);
-        loadedToolLengthSave.set($toolLengthSaves.indexOf(newSave));
-        toolLengthSaveCount.update(count => count + 1);
+        try {
+            // add new save to database
+            id = await db.toolLengthSaves.add(newSave);
+            $loadedToolLengthSave = id;
+            $loadedSave = { id, ...newSave };
+            if ($name.value === "") await updateSave();
+        } catch (err) {
+            console.log("createNewSave(): " + err);
+        }
     }
 
-    function updateSave(detail: {name: string}) {
+    async function updateSave(): Promise<void> {
         // do not save if there is an error
-        if ($error) return;
+        if ($error || !$loadedSave) return;
 
-        const updatedSave = createSave(detail.name);
+        // add default name is none is provided
+        if ($name.value === "") $name.value = "save #" + $loadedSave.id;
 
-        // update feedRateSaves array with updated save
-        if (isValid($loadedToolLengthSave)) $toolLengthSaves[$loadedToolLengthSave] = updatedSave;
+        const updatedSave = createSave();
+
+        try {
+            // update database and loadedSave
+            await db.toolLengthSaves.update($loadedToolLengthSave, updatedSave);
+            $loadedSave = { id: $loadedSave.id, ...updatedSave };
+        } catch (err) {
+            console.log("updateSave(): " + err);
+        }
     }
 
-    function loadSave() {
-        // check index is valid
-        if (!isValid($loadedToolLengthSave)) return;
+    async function loadSave(id: number): Promise<void> {
+        if (id < 1) return;
 
-        const loadingSave = $toolLengthSaves[$loadedToolLengthSave];
+        try {
+            // load save from database
+            $loadedSave = await db.toolLengthSaves.get(id);
+            $loadedToolLengthSave = id;
+        } catch (err) {
+            // display error and eject save
+            console.log("loadSave(): " + err);
+            ejectSave();
+        }
+
+        if(!$loadedSave) return;
 
         // update all values
-        $overallLength = { value: loadingSave.overallLength, error: false, hasChanged: false };
-        $endMillType = { value: loadingSave.endMillType, hasChanged: false };
-        $fluteLength = { value: loadingSave.fluteLength, error: false, hasChanged: false };
-        $baseToShoulderLength = { value: loadingSave.baseToShoulderLength, error: false, hasChanged: false };
-        $holderLength = { value: loadingSave.holderLength, error: false, hasChanged: false };
-        $cutterDiameter = { value: loadingSave.cutterDiameter, error: false, hasChanged: false };
-        $shoulderDiameter = { value: loadingSave.shoulderDiameter, error: false, hasChanged: false };
-        $manualFluteLength = { isTrue: loadingSave.manualFluteLength, hasChanged: false };
-        $manualShoulderLegnth = { isTrue: loadingSave.manualShoulderLegnth, hasChanged: false };
-        $manualBodyLength = { isTrue: loadingSave.manualBodyLength, hasChanged: false };
+        $name = { value: $loadedSave.name, hasChanged: false };
+        $overallLength = { value: $loadedSave.overallLength, error: false, hasChanged: false };
+        $endMillType = { value: $loadedSave.endMillType, hasChanged: false };
+        $fluteLength = { value: $loadedSave.fluteLength, error: false, hasChanged: false };
+        $baseToShoulderLength = { value: $loadedSave.baseToShoulderLength, error: false, hasChanged: false };
+        $holderLength = { value: $loadedSave.holderLength, error: false, hasChanged: false };
+        $cutterDiameter = { value: $loadedSave.cutterDiameter, error: false, hasChanged: false };
+        $shoulderDiameter = { value: $loadedSave.shoulderDiameter, error: false, hasChanged: false };
+        $manualFluteLength = { isTrue: $loadedSave.manualFluteLength, hasChanged: false };
+        $manualShoulderLegnth = { isTrue: $loadedSave.manualShoulderLegnth, hasChanged: false };
+        $manualBodyLength = { isTrue: $loadedSave.manualBodyLength, hasChanged: false };
 
         // update realted values
         $baseToFluteLength = { value: calculate("baseToFlute"), error: false, hasChanged: false };
@@ -440,17 +466,28 @@
         validateAll();
     }
 
-    function deleteSave(index: number) {
-        // check index is valid
-        if (!isValid(index)) return;
-
-        const saveToBeDeleted = $toolLengthSaves[index];
-        // remove save from feedRateSaves array
-        toolLengthSaves.update(saves => saves.filter(save => save !== saveToBeDeleted));
-
-        // eject save if it was loaded
-        if (index === $loadedToolLengthSave) loadedToolLengthSave.set(-1);
+    function ejectSave(): void {
+        $loadedToolLengthSave = -1;
+        $loadedSave = undefined;
+        $name.value = "";
     }
+
+    async function deleteSave(id: number): Promise<void> {
+        try {
+            await db.toolLengthSaves.delete(id);
+        } catch (err) {
+            console.log("deleteSave(): " + err);
+        }
+
+        // eject save if it is currently loaded
+        if (id === $loadedToolLengthSave) ejectSave();
+    }
+
+    /* === LIFECYCLE ========================== */
+    onMount(async () => {
+        // load tool length save
+        await loadSave($loadedToolLengthSave);
+    });
 </script>
 
 
@@ -711,28 +748,28 @@
     </form>
 
     <SaveLoader
-        loadedSaveName={$loadedSave ? $loadedSave.name : null}
-        hasChanges={hasChanged}
+        loadedSave={$loadedSave}
+        bind:currentName={$name.value}
+        {hasChanged}
         error={$error}
-        currentSaveCount={$loadedSave ? $loadedSave.saveCount : $toolLengthSaveCount}
-        on:save={e => createNewSave(e.detail)}
-        on:update={e => updateSave(e.detail)}
-        on:eject={() => loadedToolLengthSave.set(-1)}
-        on:delete={() => deleteSave($loadedToolLengthSave)} />
+        on:save={async () => await createNewSave()}
+        on:update={async () => await updateSave()}
+        on:eject={ejectSave}
+        on:delete={async () => await deleteSave($loadedToolLengthSave)} />
 
     <Saves
-        toolLengthSaves={$toolLengthSaves}
-        loadedIndex={$loadedToolLengthSave}
-        on:load={e => {
-            loadedToolLengthSave.set(e.detail.index)
+        toolLengthSaves={$saves}
+        loadedSaveId={$loadedToolLengthSave}
+        on:load={async (e) => {
+            await loadSave(e.detail.id);
             // scroll calculator into view and focus on it
             let scrollBehavior;
             $motionPref === "reduced" ? scrollBehavior = "auto" : scrollBehavior = "smooth";
             calculator.scrollIntoView({ behavior: "auto" });
             calculator.focus({ preventScroll: true });
         }}
-        on:eject={() => loadedToolLengthSave.set(-1)}
-        on:delete={e => deleteSave(e.detail.index)} />
+        on:eject={ejectSave}
+        on:delete={async (e) => await deleteSave(e.detail.index)} />
 </div>
 
 

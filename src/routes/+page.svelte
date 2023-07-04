@@ -1,10 +1,14 @@
 <script lang="ts">
     /* === IMPORTS ============================ */
-    import { writable, derived } from 'svelte/store';
-    import type { Writable } from 'svelte/store';
-    import { motionPref, feedRateSaves, loadedFeedRateSave, feedRateSaveCount } from "../store/store";
-    import type { OpType, Material, feedRateSave } from "../store/store";
-
+    // Svelte
+    import { onMount } from 'svelte';
+    import { writable, derived, type Writable } from 'svelte/store';
+    // store
+    import { liveQuery } from "dexie";
+    import { db } from "../store/db";
+    import type { OpType, Material, feedRateSave } from "../store/db";
+    import { motionPref, loadedFeedRateSave } from "../store/store";
+    // components
     import FeedCalcIllus from "$lib/feedCalcIllus.svelte";
     import Output from "$lib/output.svelte";
 	import NumInput from "$lib/numInput.svelte";
@@ -16,38 +20,55 @@
 	import Saves from "$lib/saves.svelte";
 	import Heading from "$lib/heading.svelte";
 
+    /* === DATABASE =========================== */
+    $: saves = liveQuery(
+        () => db.feedRateSaves.toArray()
+    );
+
     /* === BINDINGS =========================== */
     let calculator: any;
 
-    /* === VARAIBLES ========================== */
+    /* === INTERFACES ========================= */
     interface materialData {
         [key: string]: any;
         drill: number;
         mill: number;
         feed: number[];
     }
-    let aluminum: materialData = {
+
+    /* === ÇONSTANTS ========================== */
+    const aluminum: materialData = {
         drill: 300,
         mill: 600,
         feed: [0.002, 0.002, 0.005, 0.006, 0.007],
     };
-    let brass: materialData = {
+
+    const brass: materialData = {
         drill: 120,
         mill: 175,
         feed: [0.001, 0.002, 0.002, 0.004, 0.005],
     };
-    let delrin: materialData = {
+
+    const delrin: materialData = {
         drill: 150,
         mill: 400,
         feed: [0.002, 0.002, 0.005, 0.006, 0.007],
     };
-    let steel: materialData = {
+
+    const steel: materialData = {
         drill: 90,
         mill: 70,
         feed: [0.0005, 0.0005, 0.001, 0.002, 0.003],
     };
 
     /* === WRITABLE STORES ==================== */
+    const loadedSave: Writable<feedRateSave | undefined> = writable(undefined);
+    
+    const name = writable({
+        value: "",
+        hasChanged: false
+    });
+
     const cutterDiameter = writable({
         value: 0.5,
         error: false,
@@ -83,11 +104,6 @@
     });
 
     /* === DERIVED STORES ===================== */
-    const loadedSave = derived(
-        [loadedFeedRateSave, feedRateSaves],
-        ([$loadedFeedRateSave, $feedRateSaves]) => $loadedFeedRateSave !== -1 ? $feedRateSaves[$loadedFeedRateSave] : null
-    );
-
     const cutterDiameterIndex = derived(
         cutterDiameter,
         $cutterDiameter => {
@@ -124,9 +140,6 @@
     );
     
     /* === REACTIVE DECLARATIONS ============== */
-    // call loadSave() every time $loadedFeedRateSave changes
-    $: $loadedFeedRateSave !== -1 && loadSave();
-
     // switch material toolSpeed and cuttingFeed
     $: {
         switch ($material.value) {
@@ -161,6 +174,10 @@
     };
 
     // change tracking for saves
+    $: $loadedSave && $loadedSave.name !== $name.value ?
+        $name.hasChanged = true :
+        $name.hasChanged = false;
+    
     $: $loadedSave && $loadedSave.cutterDiameter !== $cutterDiameter.value ?
         $cutterDiameter.hasChanged = true :
         $cutterDiameter.hasChanged = false;
@@ -185,7 +202,8 @@
         $cuttingFeed.hasChanged = true :
         $cuttingFeed.hasChanged = false;
 
-    $: hasChanged = $cutterDiameter.hasChanged ||
+    $: hasChanged = $name.hasChanged ||
+                    $cutterDiameter.hasChanged ||
                     $numFlutes.hasChanged ||
                     $opType.hasChanged ||
                     $material.hasChanged ||
@@ -193,19 +211,10 @@
                     $cuttingFeed.hasChanged;
 
     /* === FUNCTIONS ========================== */
-    /* checks if index is valid for feedRateSaves array */
-    function isValid(index: number) {
-        return index >= 0 && index <= $feedRateSaves.length - 1;
-    }
-
-    function createSave(name: string): feedRateSave {
-        // determine save count
-        let saveCount;
-        $loadedSave ? saveCount = $loadedSave.saveCount : saveCount = $feedRateSaveCount;
-
+    function createSave(): feedRateSave {
         // create save of interface feedRateSave
         let save: feedRateSave = {
-            name,
+            name: $name.value,
             spindleSpeed: $spindleSpeed,
             feedRate: $feedRate,
             cutterDiameter: $cutterDiameter.value,
@@ -214,60 +223,94 @@
             material: $material.value,
             toolSpeed: $toolSpeed.value,
             cuttingFeed: $cuttingFeed.value,
-            saveCount,
         };
 
         return save;
     }
 
-    function createNewSave(detail: {name: string}) {
+    async function createNewSave(): Promise<void> {
         // do not save if there is an error
         if ($error) return;
 
-        const newSave = createSave(detail.name);
+        let id: number;
+        const newSave = createSave();
 
-        // add new save to feedRateSaves array, load it, and increment save count
-        feedRateSaves.update(oldSaves => [...oldSaves, newSave]);
-        loadedFeedRateSave.set($feedRateSaves.indexOf(newSave));
-        feedRateSaveCount.update(count => count + 1);
+        try {
+            // add new save to database
+            id = await db.feedRateSaves.add(newSave);
+            $loadedFeedRateSave = id;
+            $loadedSave = { id, ...newSave };
+            if ($name.value === "") await updateSave();
+        } catch (err) {
+            console.log("createNewSave(): " + err);
+        }
     }
 
-    function updateSave(detail: {name: string}) {
+    async function updateSave(): Promise<void> {
         // do not save if there is an error
-        if ($error) return;
+        if ($error || !$loadedSave) return;
 
-        const updatedSave = createSave(detail.name);
+        // add default name is none is provided
+        if ($name.value === "") $name.value = "save #" + $loadedSave.id;
 
-        // update feedRateSaves array with updated save
-        if (isValid($loadedFeedRateSave)) $feedRateSaves[$loadedFeedRateSave] = updatedSave;
+        const updatedSave = createSave();
+
+        try {
+            // update database and loadedSave
+            await db.feedRateSaves.update($loadedFeedRateSave, updatedSave);
+            $loadedSave = { id: $loadedSave.id, ...updatedSave };
+        } catch (err) {
+            console.log("updateSave(): " + err);
+        }
     }
 
-    function loadSave() {
-        // check index is valid
-        if (!isValid($loadedFeedRateSave)) return;
+    async function loadSave(id: number): Promise<void> {
+        if (id < 1) return;
 
-        const loadingSave = $feedRateSaves[$loadedFeedRateSave];
+        try {
+            // load save from database
+            $loadedSave = await db.feedRateSaves.get(id);
+            $loadedFeedRateSave = id;
+        } catch (err) {
+            // display error and eject save
+            console.log("loadSave(): " + err);
+            ejectSave();
+        }
+
+        if(!$loadedSave) return;
 
         // update all values
-        $cutterDiameter = { value: loadingSave.cutterDiameter, error: false, hasChanged: false };
-        $numFlutes = { value: loadingSave.numFlutes, error: false, hasChanged: false };
-        $opType = { value: loadingSave.opType, hasChanged: false };
-        $material = { value: loadingSave.material, hasChanged: false };
-        $toolSpeed = { value: loadingSave.toolSpeed, error: false, hasChanged: false };
-        $cuttingFeed = { value: loadingSave.cuttingFeed, error: false, hasChanged: false };
+        $name = { value: $loadedSave.name, hasChanged: false };
+        $cutterDiameter = { value: $loadedSave.cutterDiameter, error: false, hasChanged: false };
+        $numFlutes = { value: $loadedSave.numFlutes, error: false, hasChanged: false };
+        $opType = { value: $loadedSave.opType, hasChanged: false };
+        $material = { value: $loadedSave.material, hasChanged: false };
+        $toolSpeed = { value: $loadedSave.toolSpeed, error: false, hasChanged: false };
+        $cuttingFeed = { value: $loadedSave.cuttingFeed, error: false, hasChanged: false };
     }
 
-    function deleteSave(index: number) {
-        // check index is valid
-        if (!isValid(index)) return;
-
-        const saveToBeDeleted = $feedRateSaves[index];
-        // remove save from feedRateSaves array
-        feedRateSaves.update(saves => saves.filter(save => save !== saveToBeDeleted));
-
-        // eject save if it was loaded
-        if (index === $loadedFeedRateSave) loadedFeedRateSave.set(-1);        
+    function ejectSave(): void {
+        $loadedFeedRateSave = -1;
+        $loadedSave = undefined;
+        $name.value = "";
     }
+
+    async function deleteSave(id: number): Promise<void> {
+        try {
+            await db.feedRateSaves.delete(id);
+        } catch (err) {
+            console.log("deleteSave(): " + err);
+        }
+
+        // eject save if it is currently loaded
+        if (id === $loadedFeedRateSave) ejectSave();
+    }
+
+    /* === LIFECYCLE ========================== */
+    onMount(async () => {
+        // load feed rate save
+        await loadSave($loadedFeedRateSave);
+    });
 </script>
 
 
@@ -417,28 +460,28 @@
     </form>
 
     <SaveLoader
-        loadedSaveName={$loadedSave ? $loadedSave.name : null}
-        hasChanges={hasChanged}
+        loadedSave={$loadedSave}
+        bind:currentName={$name.value}
+        {hasChanged}
         error={$error}
-        currentSaveCount={$loadedSave ? $loadedSave.saveCount : $feedRateSaveCount}
-        on:save={e => createNewSave(e.detail)}
-        on:update={e => updateSave(e.detail)}
-        on:eject={() => loadedFeedRateSave.set(-1)}
-        on:delete={() => deleteSave($loadedFeedRateSave)} />
+        on:save={async () => await createNewSave()}
+        on:update={async () => await updateSave()}
+        on:eject={ejectSave}
+        on:delete={async () => await deleteSave($loadedFeedRateSave)} />
 
     <Saves
-        feedRateSaves={$feedRateSaves}
-        loadedIndex={$loadedFeedRateSave}
-        on:load={e => {
-            loadedFeedRateSave.set(e.detail.index)
+        feedRateSaves={$saves}
+        loadedSaveId={$loadedFeedRateSave}
+        on:load={async (e) => {
+            await loadSave(e.detail.id);
             // scroll calculator into view and focus on it
             let scrollBehavior;
             $motionPref === "reduced" ? scrollBehavior = "auto" : scrollBehavior = "smooth";
             calculator.scrollIntoView({ behavior: "auto" });
             calculator.focus({ preventScroll: true });
         }}
-        on:eject={() => loadedFeedRateSave.set(-1)}
-        on:delete={e => deleteSave(e.detail.index)} />
+        on:eject={ejectSave}
+        on:delete={async (e) => await deleteSave(e.detail.id)} />
 </div>
 
 

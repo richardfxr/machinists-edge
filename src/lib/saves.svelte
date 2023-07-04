@@ -6,12 +6,12 @@
     import Eject from "$lib/SVGs/eject.svelte";
 	import DeleteSave from "$lib/SVGs/deleteSave.svelte";
     import { motionPref } from "../store/store";
-    import type { feedRateSave, toolLengthSave } from "../store/store";
+    import type { feedRateSave, toolLengthSave } from "../store/db";
 
     /* === PROPS ============================== */
     export let feedRateSaves: feedRateSave[] | null = null;
     export let toolLengthSaves: toolLengthSave[] | null = null;
-    export let loadedIndex = 0;
+    export let loadedSaveId = -1;
 
     /* === FUNCTIONS ========================== */
     function animate(node: HTMLElement, options: { animation: Function, duration: number }) {
@@ -24,16 +24,14 @@
     /* === EVENTS ============================= */
     const dispatch = createEventDispatcher();
 
-    function loadSave(index: number) {
-        dispatch('load', {
-            index,
-        });
+    function loadSave(id: number | undefined): void {
+        if (!id) return;
+        dispatch('load', { id });
     }
 
-    function deleteSave(index: number) {
-        dispatch('delete', {
-            index,
-        });
+    function deleteSave(id: number | undefined): void {
+        if (!id) return;
+        dispatch('delete', { id });
     }
 </script>
 
@@ -41,22 +39,27 @@
 <div class="saves" id="saves">
     <h2><Save />Saves</h2>
     
-    {
-        #if (feedRateSaves === null || feedRateSaves.length === 0) &&
-            (toolLengthSaves === null || toolLengthSaves.length === 0)
-    }
-        <div class="empty" transition:animate|local={{ animation: slide, duration: 300 }}>
-            <div class="box" role="presentation"></div>
+    {#if (!feedRateSaves && !toolLengthSaves)}
+        <div class="message" transition:animate|local={{ animation: slide, duration: 300 }}>
+            <div class="box loading" role="presentation">
+                <div class="inner"></div>
+            </div>
+            <p class="highlighted">Loading saves</p>
+            <p class="text--sm">Awaiting response from local IndexedDB.</p>
+        </div>
+    {:else if (feedRateSaves?.length === 0 || toolLengthSaves?.length === 0)}
+        <div class="message" transition:animate|local={{ animation: slide, duration: 300 }}>
+            <div class="box empty" role="presentation"></div>
             <p class="highlighted">No saves found</p>
             <p class="text--sm">Create new saves in the <a href="#saveLoader">loaded save section</a> above.</p>
         </div>
     {:else if feedRateSaves}
         <ul class="feedRateSaves">
-            {#each feedRateSaves as save, i}
+            {#each feedRateSaves as save}
                 <li
                     class="input__container"
-                    class:loaded={loadedIndex === i}
-                    aria-current={loadedIndex === i}
+                    class:loaded={loadedSaveId === save.id}
+                    aria-current={loadedSaveId === save.id}
                     transition:animate|local={{ animation: slide, duration: 300 }} >
                     <div class="main">
                         <h3>{save.name}</h3>
@@ -73,18 +76,18 @@
                             class="button icon--md"
                             type="button"
                             on:click={() => {
-                                if (loadedIndex === i)
+                                if (loadedSaveId === save.id)
                                     dispatch('eject');
                                 else
-                                    loadSave(i)
+                                    loadSave(save.id)
                             }}>
                             <Eject />
-                            <span>{loadedIndex === i ? "eject" : "load"}</span>
+                            <span>{loadedSaveId === save.id ? "eject" : "load"}</span>
                         </button>
                         <button
                             class="button icon--md"
                             type="button"
-                            on:click={() => deleteSave(i)}>
+                            on:click={() => deleteSave(save.id)}>
                             <DeleteSave />
                             <span>delete</span>
                         </button>
@@ -94,11 +97,11 @@
         </ul>
     {:else if toolLengthSaves}
         <ul class="toolLengthSaves">
-            {#each toolLengthSaves as save, i}
+            {#each toolLengthSaves as save}
                 <li
                     class="input__container"
-                    class:loaded={loadedIndex === i}
-                    aria-current={loadedIndex === i}
+                    class:loaded={loadedSaveId === save.id}
+                    aria-current={loadedSaveId === save.id}
                     transition:animate|local={{ animation: slide, duration: 300 }} >
                     <div class="main">
                         <h3>{save.name}</h3>
@@ -115,18 +118,18 @@
                             class="button icon--md"
                             type="button"
                             on:click={() => {
-                                if (loadedIndex === i)
+                                if (loadedSaveId === save.id)
                                     dispatch('eject');
                                 else
-                                    loadSave(i)
+                                    loadSave(save.id)
                             }}>
                             <Eject />
-                            <span>{loadedIndex === i ? "eject" : "load"}</span>
+                            <span>{loadedSaveId === save.id ? "eject" : "load"}</span>
                         </button>
                         <button
                             class="button icon--md"
                             type="button"
-                            on:click={() => deleteSave(i)}>
+                            on:click={() => deleteSave(save.id)}>
                             <DeleteSave />
                             <span>delete</span>
                         </button>
@@ -163,7 +166,7 @@
             transition: background-color var(--trans-fast);
         }
 
-        .empty {
+        .message {
             // internal variables
             --_box-size: 80px;
 
@@ -185,23 +188,56 @@
 
                 overflow: hidden;
 
-                &::before, &::after {
-                    // two borders that form the cross
-                    content: "";
-                    position: absolute;
-                    top: calc(-1 * var(--_box-size));
-                    right: calc(50% - var(--border-width) / 2);
-                    bottom: calc(-1 * var(--_box-size));
+                &.loading {
+                    &::before, &::after {
+                        // two inner circles
+                        content: "";
+                        position: absolute;
+                        bottom: calc(-1 * var(--border-width));
+                        border: var(--border) var(--clr-300);
+                        border-radius: var(--border-radius-round);
+                    }
 
-                    border-left: var(--border) var(--clr-300);
+                    &::before {
+                        top: 56%;
+                        right: 28%;
+                        left: 28%;
+                    }
+
+                    &::after {
+                        top: 28%;
+                        right: 14%;
+                        left: 14%;
+                    }
+
+                    .inner {
+                        // largest circle
+                        position: absolute;
+                        inset: calc(-1 * var(--border-width));
+                        border: var(--border) var(--clr-300);
+                        border-radius: var(--border-radius-round);
+                    }
                 }
 
-                &::before {
-                    transform: rotate(45deg);
-                }
+                &.empty {
+                    &::before, &::after {
+                        // two borders that form the cross
+                        content: "";
+                        position: absolute;
+                        top: calc(-1 * var(--_box-size));
+                        right: calc(50% - var(--border-width) / 2);
+                        bottom: calc(-1 * var(--_box-size));
 
-                &::after {
-                    transform: rotate(-45deg);
+                        border-left: var(--border) var(--clr-300);
+                    }
+
+                    &::before {
+                        transform: rotate(45deg);
+                    }
+
+                    &::after {
+                        transform: rotate(-45deg);
+                    }
                 }
             }
 
